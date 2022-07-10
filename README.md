@@ -67,3 +67,29 @@ More information about the usage of this directory in [the documentation](https:
 This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+
+======================================================================================
+
+## Необходимо добавить Vuelidate
+
+-- yarn add @vuelidate/core @vuelidate/validators
+
+--- (см. файл package.json)
+-- npm uninstall @vuelidate/core --save
+-- npm install @vuelidate/core --save
+
+-- не работает...
+
+-- npm install vuelidate --save
+
+нужно использовать yarn !!!
+
+-- заработало...
+
+======================================================================================
+
+## vue-chartjs
+
+yarn add vue-chartjs chart.js
+
+-- yarn remove vue-chartjs chart.js
