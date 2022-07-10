@@ -90,6 +90,14 @@ More information about the usage of this directory in [the documentation](https:
 
 ## vue-chartjs
 
-yarn add vue-chartjs chart.js
+с
 
 -- yarn remove vue-chartjs chart.js
+
+======================================================================================
+
+## установка moment для chart.js обслуживание врменной обслуживание
+
+-- npm install moment chartjs-adapter-moment --save
+
+yarn add moment chartjs-adapter-moment

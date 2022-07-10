@@ -147,8 +147,12 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import { required, decimal, between } from 'vuelidate/lib/validators'
+import moment from 'moment'
+import 'chartjs-adapter-moment'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { nextTimePoint } from '~/assets/datetime'
+
+moment.locale('ru')
 
 Vue.use(Vuelidate)
 
@@ -163,8 +167,6 @@ export default {
   name: 'ForecastCard',
 
   components: { ForecastChart },
-
-  // moment.locale('ru'),
 
   props: {
     element: {
@@ -206,16 +208,24 @@ export default {
             gridLines: {
               display: true
             },
+            // adapters: {
+            //  date: moment
+            // },
             time: {
-              displayFormats: {
+              /* displayFormats: {
                 hour: 'HH:mm'
-              },
+              }, */
               unit: 'hour',
               // Шаг сетки: каждые шесть часов.
               // stepSize: 6,
               // Задаем формат даты для парсинга из русской локали.
-              // parser: (value) => moment(value, 'HH:mm')
-              parser: 'HH:mm'
+              parser: (value) => {
+                /* eslint-disable no-console */
+                console.log('>> moment.parser', value)
+                /* eslint-enable no-console */
+                return moment(value, 'HH:mm')
+              }
+              // parser: 'HH:mm'
             }
           }
         ],
@@ -283,18 +293,6 @@ export default {
       /* eslint-disable no-console */
       console.log('>> данные графика', res)
       /* eslint-enable no-console */
-      /* const pts = [
-        { x: '00:10', y: 2 },
-        { x: '01:00', y: 1 },
-        { x: '02:00', y: 16 },
-        { x: '04:30', y: 3 },
-        { x: '05:00', y: 4 },
-        { x: '06:10', y: 5 },
-        { x: '07:20', y: 0 },
-        { x: '11:00', y: 4 },
-        { x: '16:00', y: 12 },
-        { x: '20:00', y: 2 }
-      ] */
       return {
         datasets: [
           {
