@@ -135,7 +135,7 @@
         <v-col>
           <!--BarChart :chart-data="chartData" :options="chartOptions" :height="400" /-->
           <client-only>
-            <ForecastChart :chart-data="chartData" :options="chartOptions" :height="400" />
+            <ForecastChart :chart-data="axesdata" :options="chartOptions" :height="400" />
           </client-only>
         </v-col>
       </v-row>
@@ -164,6 +164,8 @@ export default {
 
   components: { ForecastChart },
 
+  // moment.locale('ru'),
+
   props: {
     element: {
       type: Object,
@@ -184,29 +186,6 @@ export default {
       offset: 0
     },
     scrolltarget: Number(9999),
-    chartData: {
-      labels: [
-        '2019-06',
-        '2019-07',
-        '2019-08',
-        '2019-09',
-        '2019-10',
-        '2019-11',
-        '2019-12',
-        '2020-01',
-        '2020-02',
-        '2020-03'
-      ],
-      datasets: [
-        {
-          label: 'Visualizaciones',
-          data: [2, 1, 16, 3, 4, 5, 0, 0, 4, 12, 2],
-          backgroundColor: 'rgba(20, 255, 0, 0.3)',
-          borderColor: 'rgba(100, 255, 0, 1)',
-          borderWidth: 2
-        }
-      ]
-    },
     chartOptions: {
       responsive: true,
       legend: {
@@ -226,6 +205,17 @@ export default {
           {
             gridLines: {
               display: true
+            },
+            time: {
+              displayFormats: {
+                hour: 'HH:mm'
+              },
+              unit: 'hour',
+              // Шаг сетки: каждые шесть часов.
+              // stepSize: 6,
+              // Задаем формат даты для парсинга из русской локали.
+              // parser: (value) => moment(value, 'HH:mm')
+              parser: 'HH:mm'
             }
           }
         ],
@@ -286,6 +276,37 @@ export default {
     },
     downloadEnabled () {
       return this.forecast.data.length > 0 && this.forecast.id > 0
+    },
+
+    axesdata () {
+      const res = this.forecast.data.map(n => ({ x: n.point, y: Number(n.value) }))
+      /* eslint-disable no-console */
+      console.log('>> данные графика', res)
+      /* eslint-enable no-console */
+      /* const pts = [
+        { x: '00:10', y: 2 },
+        { x: '01:00', y: 1 },
+        { x: '02:00', y: 16 },
+        { x: '04:30', y: 3 },
+        { x: '05:00', y: 4 },
+        { x: '06:10', y: 5 },
+        { x: '07:20', y: 0 },
+        { x: '11:00', y: 4 },
+        { x: '16:00', y: 12 },
+        { x: '20:00', y: 2 }
+      ] */
+      return {
+        datasets: [
+          {
+            label: 'Visualizaciones',
+            data: res,
+            backgroundColor: 'rgba(20, 255, 0, 0.3)',
+            borderColor: 'rgba(100, 255, 0, 1)',
+            borderWidth: 2,
+            stepped: true
+          }
+        ]
+      }
     }
   },
 
