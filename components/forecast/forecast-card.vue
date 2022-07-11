@@ -15,7 +15,7 @@
       <v-btn
         icon
         color="green"
-        :disabled="!dataChanged || forecast.data.length === 0"
+        :disabled="!dataChanged || forecast.data.length === 0 || $v.forecast.data.$invalid"
       >
         <v-icon>
           mdi-check
@@ -65,6 +65,9 @@
                     dense
                     class="right-input"
                     type="time"
+                    :error-messages="geterrors_forpoint($v.forecast.data.$each[index].point)"
+                    @input="$v.forecast.data.$each[index].point.$touch()"
+                    @blur="$v.forecast.data.$each[index].point.$touch()"
                   />
                 </td>
                 <td>
@@ -73,6 +76,9 @@
                     dense
                     class="right-input"
                     type="number"
+                    :error-messages="geterrors_forvalue($v.forecast.data.$each[index].value)"
+                    @input="$v.forecast.data.$each[index].value.$touch()"
+                    @blur="$v.forecast.data.$each[index].value.$touch()"
                   />
                 </td>
                 <td>
@@ -133,10 +139,7 @@
           </table>
         </v-col>
         <v-col>
-          <!--BarChart :chart-data="chartData" :options="chartOptions" :height="400" /-->
-          <client-only>
-            <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :height="400" />
-          </client-only>
+          <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :height="400" />
         </v-col>
       </v-row>
     </v-card-text>
@@ -159,6 +162,13 @@ Vue.use(Vuelidate)
 function pointCheck (value) {
   if (this.forecast !== undefined && this.forecast.data !== undefined) {
     return this.forecast.data.find(e => e.point === value) === undefined
+  }
+  return true
+}
+
+function pointDuplicateCheck (value) {
+  if (this.forecast !== undefined && this.forecast.data !== undefined) {
+    return this.forecast.data.filter(e => e.point === value).length === 1
   }
   return true
 }
@@ -212,12 +222,7 @@ export default {
             // Шаг сетки: каждые шесть часов.
             // stepSize: 6,
             // Задаем формат даты для парсинга из русской локали.
-            parser: (value) => {
-              /* eslint-disable no-console */
-              console.log('>> moment.parser', value)
-              /* eslint-enable no-console */
-              return moment(value, 'HH:mm')
-            }
+            parser: value => moment(value, 'HH:mm')
           },
           title: {
             display: true,
@@ -245,6 +250,21 @@ export default {
       point: {
         required,
         pointCheck
+      }
+    },
+    forecast: {
+      data: {
+        $each: {
+          value: {
+            required,
+            decimal,
+            betweenValue: between(0.0, 1.0)
+          },
+          point: {
+            required,
+            pointDuplicateCheck
+          }
+        }
       }
     }
   },
@@ -278,15 +298,11 @@ export default {
     },
 
     axesdata () {
-      const res = this.forecast.data.map(n => ({ x: n.point, y: Number(n.value) }))
-      /* eslint-disable no-console */
-      console.log('>> данные графика', res)
-      /* eslint-enable no-console */
       return {
         datasets: [
           {
             label: 'Visualizaciones',
-            data: res,
+            data: this.forecast.data.map(n => ({ x: n.point, y: Number(n.value) })),
             backgroundColor: 'rgba(20, 255, 0, 0.3)',
             borderColor: 'rgba(100, 255, 0, 1)',
             borderWidth: 2,
@@ -333,6 +349,26 @@ export default {
     },
     deleteRow (index) {
       this.forecast.data.splice(index, 1)
+    },
+
+    geterrors_forpoint (item) {
+      const errors = []
+      if (!item.$dirty) {
+        return errors
+      }
+      !item.pointDuplicateCheck && errors.push('точка уже задана')
+      !item.required && errors.push('должно быть определенно')
+      return errors
+    },
+    geterrors_forvalue (item) {
+      const errors = []
+      if (!item.$dirty) {
+        return errors
+      }
+      !item.decimal && errors.push('должно быть вещественное число')
+      !item.required && errors.push('должно быть определенно')
+      !item.betweenValue && errors.push('только значения от 0,0 до 1,0')
+      return errors
     }
   }
 }

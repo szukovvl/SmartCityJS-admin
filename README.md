@@ -101,3 +101,9 @@ More information about the usage of this directory in [the documentation](https:
 -- npm install moment chartjs-adapter-moment --save
 
 yarn add moment chartjs-adapter-moment
+
+======================================================================================
+
+## проверка массивов
+
+-- yarn add vuelidate/components
