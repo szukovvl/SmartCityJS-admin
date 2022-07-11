@@ -135,7 +135,7 @@
         <v-col>
           <!--BarChart :chart-data="chartData" :options="chartOptions" :height="400" /-->
           <client-only>
-            <ForecastChart :chart-data="axesdata" :options="chartOptions" :height="400" />
+            <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :height="400" />
           </client-only>
         </v-col>
       </v-row>
@@ -188,60 +188,49 @@ export default {
       offset: 0
     },
     scrolltarget: Number(9999),
+
     chartOptions: {
       responsive: true,
-      legend: {
-        display: false
-      },
-      title: {
-        display: true,
-        text: 'Google analytics data',
-        fontSize: 24,
-        fontColor: '#6b7280'
-      },
-      tooltips: {
-        backgroundColor: '#17BF62'
+      plugins: {
+        legend: {
+          position: 'top'
+        },
+        title: {
+          display: true,
+          text: 'Chart.js Line Chart'
+        }
       },
       scales: {
-        xAxes: [
-          {
-            gridLines: {
-              display: true
+        x: {
+          display: true,
+          type: 'time',
+          time: {
+            displayFormats: {
+              hour: 'HH:mm'
             },
-            // adapters: {
-            //  date: moment
-            // },
-            time: {
-              /* displayFormats: {
-                hour: 'HH:mm'
-              }, */
-              unit: 'hour',
-              // Шаг сетки: каждые шесть часов.
-              // stepSize: 6,
-              // Задаем формат даты для парсинга из русской локали.
-              parser: (value) => {
-                /* eslint-disable no-console */
-                console.log('>> moment.parser', value)
-                /* eslint-enable no-console */
-                return moment(value, 'HH:mm')
-              }
-              // parser: 'HH:mm'
+            unit: 'hour',
+            // Шаг сетки: каждые шесть часов.
+            // stepSize: 6,
+            // Задаем формат даты для парсинга из русской локали.
+            parser: (value) => {
+              /* eslint-disable no-console */
+              console.log('>> moment.parser', value)
+              /* eslint-enable no-console */
+              return moment(value, 'HH:mm')
             }
+          },
+          title: {
+            display: true,
+            text: 'Month'
           }
-        ],
-        yAxes: [
-          {
-            ticks: {
-              beginAtZero: true,
-              max: 7,
-              min: 0,
-              stepSize: 1
-            },
-            gridLines: {
-              display: true
-            }
+        },
+        y: {
+          display: true,
+          title: {
+            display: true,
+            text: 'Value'
           }
-        ]
+        }
       }
     }
   }),

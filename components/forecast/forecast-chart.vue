@@ -13,7 +13,7 @@ export default {
       type: Object,
       default: null
     },
-    options: {
+    chartOptions: {
       type: Object,
       default: null
     }
