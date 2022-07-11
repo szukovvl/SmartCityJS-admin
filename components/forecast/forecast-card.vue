@@ -10,17 +10,11 @@
         persistent-hint
         placeholder="введите название прогноза"
         dense
+        :error-messages="fnameErrors"
+        @input="$v.forecast.name.$touch()"
+        @blur="$v.forecast.name.$touch()"
       />
       <v-spacer />
-      <v-btn
-        icon
-        color="green"
-        :disabled="!dataChanged || forecast.data.length === 0 || $v.forecast.data.$invalid"
-      >
-        <v-icon>
-          mdi-check
-        </v-icon>
-      </v-btn>
       <v-btn
         icon
         color="red"
@@ -83,6 +77,7 @@
                 </td>
                 <td>
                   <v-btn
+                    v-if="forecast.data.length > 1 || forecast.id < 1"
                     icon
                     color="red"
                     @click="deleteRow(index)"
@@ -154,6 +149,8 @@ import moment from 'moment'
 import 'chartjs-adapter-moment'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { nextTimePoint } from '~/assets/datetime'
+import { CHART_OPTIONS } from '~/assets/charts'
+import { DELAY_BEFORE_SAVE_CHANGES } from '~/assets/helpers'
 
 moment.locale('ru')
 
@@ -191,53 +188,13 @@ export default {
       value: 0
     },
     forecast: undefined,
-    dataChanged: false,
     forecastWatch: false,
     scrolloptions: {
       duration: 900,
       offset: 0
     },
     scrolltarget: Number(9999),
-
-    chartOptions: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top'
-        },
-        title: {
-          display: true,
-          text: 'Chart.js Line Chart'
-        }
-      },
-      scales: {
-        x: {
-          display: true,
-          type: 'time',
-          time: {
-            displayFormats: {
-              hour: 'HH:mm'
-            },
-            unit: 'hour',
-            // Шаг сетки: каждые шесть часов.
-            // stepSize: 6,
-            // Задаем формат даты для парсинга из русской локали.
-            parser: value => moment(value, 'HH:mm')
-          },
-          title: {
-            display: true,
-            text: 'Month'
-          }
-        },
-        y: {
-          display: true,
-          title: {
-            display: true,
-            text: 'Value'
-          }
-        }
-      }
-    }
+    postdelay: undefined
   }),
 
   validations: {
@@ -253,6 +210,9 @@ export default {
       }
     },
     forecast: {
+      name: {
+        required
+      },
       data: {
         $each: {
           value: {
@@ -289,6 +249,14 @@ export default {
       !this.$v.newrow.point.required && errors.push('должно быть определенно')
       return errors
     },
+    fnameErrors () {
+      const errors = []
+      if (!this.$v.forecast.name.$dirty) {
+        return errors
+      }
+      !this.$v.forecast.name.required && errors.push('название должно быть задано')
+      return errors
+    },
 
     deleteEnabled () {
       return this.forecast.id > 0
@@ -301,8 +269,8 @@ export default {
       return {
         datasets: [
           {
-            label: 'Visualizaciones',
-            data: this.forecast.data.map(n => ({ x: n.point, y: Number(n.value) })),
+            label: 'прогноз',
+            data: this.forecast.data.map(n => ({ x: n.point, y: Number(n.value) })).sort((a, b) => a.x.localeCompare(b.x)),
             backgroundColor: 'rgba(20, 255, 0, 0.3)',
             borderColor: 'rgba(100, 255, 0, 1)',
             borderWidth: 2,
@@ -310,19 +278,16 @@ export default {
           }
         ]
       }
-    }
+    },
+
+    chartOptions: () => CHART_OPTIONS
   },
 
   watch: {
-    'forecast.name' (v) {
-      /* eslint-disable no-console */
-      console.log('>> название изменено', v)
-      /* eslint-enable no-console */
-    },
-    'forecast.data': {
+    forecast: {
       handler (v) {
         if (this.forecastWatch) {
-          this.dataChanged = true
+          this.saveChanges()
         }
         this.forecastWatch = true
       },
@@ -346,6 +311,8 @@ export default {
         value: this.newrow.value
       }
       this.$vuetify.goTo(this.scrolltarget, this.scrolloptions)
+      //
+      this.forecast.data = this.forecast.data.sort((a, b) => a.point.localeCompare(b.point))
     },
     deleteRow (index) {
       this.forecast.data.splice(index, 1)
@@ -369,6 +336,34 @@ export default {
       !item.required && errors.push('должно быть определенно')
       !item.betweenValue && errors.push('только значения от 0,0 до 1,0')
       return errors
+    },
+
+    saveChanges () {
+      clearTimeout(this.postdelay)
+      this.$v.forecast.$touch()
+      if (this.$v.forecast.$invalid) {
+        return
+      }
+      this.postdelay = setTimeout(() => {
+        this.postdelay = undefined
+        this.$v.forecast.$touch()
+        if (this.$v.forecast.$invalid) {
+          return
+        }
+        /* eslint-disable no-console */
+        console.log('>> фиксация на сервере')
+        /* eslint-enable no-console */
+        // !!! ВНИМАНИЕ !!! массив может быть не упорядочен или не содержать точек
+        if (this.forecast.id < 0) {
+          /* eslint-disable no-console */
+          console.log('>> новый прогноз')
+          /* eslint-enable no-console */
+        } else {
+          /* eslint-disable no-console */
+          console.log('>> обновление прогноза')
+          /* eslint-enable no-console */
+        }
+      }, DELAY_BEFORE_SAVE_CHANGES)
     }
   }
 }
