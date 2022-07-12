@@ -19,7 +19,7 @@
         icon
         color="red"
         :disabled="!deleteEnabled"
-        @click="removeItem(forecast.id)"
+        @click="$emit('doRemoveItem', forecast.id)"
       >
         <v-icon>
           mdi-delete
@@ -180,10 +180,6 @@ export default {
     element: {
       type: Object,
       required: true
-    },
-    removeItem: {
-      type: Function,
-      default: undefined
     }
   },
 
@@ -309,6 +305,11 @@ export default {
 
   created () {
     this.forecast = this.element
+    if (this.forecast.data !== undefined && this.forecast.data.length !== 0) {
+      const lastpoint = this.forecast.data[this.forecast.data.length - 1]
+      this.newrow.point = nextTimePoint(String(lastpoint.point))
+      this.newrow.value = lastpoint.value
+    }
   },
 
   methods: {

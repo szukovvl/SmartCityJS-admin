@@ -44,11 +44,11 @@
       <div v-if="resultItems !== undefined && resultItems.length !== 0">
         <div
           v-for="(item, index) in resultItems"
-          :key="'f_' + (index + 1)"
+          :key="'f_' + item.fc_type + item.id"
         >
           <v-divider v-if="index != 0" />
           <v-container fluid>
-            <ForecastCard :element="item" :remove-item="onRemoveItem" />
+            <ForecastCard :element="item" @doRemoveItem="onRemoveItem" />
           </v-container>
         </div>
       </div>
@@ -132,15 +132,12 @@ export default {
       }
     },
     onRemoveItem (id) {
-      const index = this.resultItems.findIndex(e => e.id === (id + 100))
+      const index = this.resultItems.findIndex(e => e.id === id)
       if (index < 0) {
         return
       }
       this.$axios.$delete(API_FORECAST_SERVICE + '/' + id, { progress: false })
-        .then((v) => {
-          // this.resultItems = this.resultItems.filter(e => e.id !== id)
-          // this.resultItems.splice(index, 1)
-        })
+        // .then((v) => {})
         .catch((error) => {
           /* eslint-disable no-console */
           if (error.response) {
@@ -148,6 +145,7 @@ export default {
           }
           /* eslint-enable no-console */
         })
+      this.resultItems.splice(index, 1)
     }
   }
 }
