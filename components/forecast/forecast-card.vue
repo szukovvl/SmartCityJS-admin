@@ -151,7 +151,7 @@ import 'chartjs-adapter-moment'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { nextTimePoint } from '~/assets/datetime'
 import { CHART_OPTIONS } from '~/assets/charts'
-import { DELAY_BEFORE_SAVE_CHANGES, API_ENERGY_SERVICE_FORECAST } from '~/assets/helpers'
+import { DELAY_BEFORE_SAVE_CHANGES, API_ENERGY_SERVICE_FORECAST, API_FORECAST_SERVICE } from '~/assets/helpers'
 
 moment.locale('ru')
 
@@ -365,13 +365,7 @@ export default {
         if (this.forecast.data.length === 0) {
           return
         }
-        /* eslint-disable no-console */
-        console.log('>> фиксация на сервере')
-        /* eslint-enable no-console */
         if (this.forecast.id < 0) {
-          /* eslint-disable no-console */
-          console.log('>> новый прогноз')
-          /* eslint-enable no-console */
           this.$axios.$post(API_ENERGY_SERVICE_FORECAST + '/' + this.element.fc_type,
             {
               name: this.forecast.name,
@@ -389,9 +383,19 @@ export default {
               /* eslint-enable no-console */
             })
         } else {
-          /* eslint-disable no-console */
-          console.log('>> обновление прогноза')
-          /* eslint-enable no-console */
+          this.$axios.$put(API_FORECAST_SERVICE + '/' + this.element.id,
+            {
+              name: this.forecast.name,
+              data: this.forecast.data
+            }, { progress: false })
+            // .then((v) => {})
+            .catch((error) => {
+              /* eslint-disable no-console */
+              if (error.response) {
+                console.error('ошибка %d: %s', error.response.status, error.response.data)
+              }
+              /* eslint-enable no-console */
+            })
         }
       }, DELAY_BEFORE_SAVE_CHANGES)
     }
