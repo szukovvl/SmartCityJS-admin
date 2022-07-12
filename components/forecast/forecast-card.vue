@@ -19,6 +19,7 @@
         icon
         color="red"
         :disabled="!deleteEnabled"
+        @click="removeItem(forecast.id)"
       >
         <v-icon>
           mdi-delete
@@ -150,7 +151,7 @@ import 'chartjs-adapter-moment'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { nextTimePoint } from '~/assets/datetime'
 import { CHART_OPTIONS } from '~/assets/charts'
-import { DELAY_BEFORE_SAVE_CHANGES } from '~/assets/helpers'
+import { DELAY_BEFORE_SAVE_CHANGES, API_ENERGY_SERVICE_FORECAST } from '~/assets/helpers'
 
 moment.locale('ru')
 
@@ -179,6 +180,10 @@ export default {
     element: {
       type: Object,
       required: true
+    },
+    removeItem: {
+      type: Function,
+      default: undefined
     }
   },
 
@@ -189,6 +194,7 @@ export default {
     },
     forecast: undefined,
     forecastWatch: false,
+    forecastNameWatch: false,
     scrolloptions: {
       duration: 900,
       offset: 0
@@ -284,7 +290,13 @@ export default {
   },
 
   watch: {
-    forecast: {
+    'forecast.name' (v) {
+      if (this.forecastNameWatch) {
+        this.saveChanges()
+      }
+      this.forecastNameWatch = true
+    },
+    'forecast.data': {
       handler (v) {
         if (this.forecastWatch) {
           this.saveChanges()
@@ -305,12 +317,11 @@ export default {
       if (this.$v.newrow.$invalid) {
         return
       }
-      this.forecast.data.push(this.newrow)
-      this.newrow = {
-        point: nextTimePoint(this.newrow.point),
+      this.forecast.data.push({
+        point: this.newrow.point,
         value: this.newrow.value
-      }
-      this.$vuetify.goTo(this.scrolltarget, this.scrolloptions)
+      })
+      this.newrow.point = nextTimePoint(this.newrow.point)
       //
       this.forecast.data = this.forecast.data.sort((a, b) => a.point.localeCompare(b.point))
     },
@@ -350,14 +361,32 @@ export default {
         if (this.$v.forecast.$invalid) {
           return
         }
+        if (this.forecast.data.length === 0) {
+          return
+        }
         /* eslint-disable no-console */
         console.log('>> фиксация на сервере')
         /* eslint-enable no-console */
-        // !!! ВНИМАНИЕ !!! массив может быть не упорядочен или не содержать точек
         if (this.forecast.id < 0) {
           /* eslint-disable no-console */
           console.log('>> новый прогноз')
           /* eslint-enable no-console */
+          this.$axios.$post(API_ENERGY_SERVICE_FORECAST + '/' + this.element.fc_type,
+            {
+              name: this.forecast.name,
+              data: this.forecast.data
+            }, { progress: false })
+            .then((v) => {
+              this.forecast.id = v.id
+              // !!! запустить интерполяцию
+            })
+            .catch((error) => {
+              /* eslint-disable no-console */
+              if (error.response) {
+                console.error('ошибка %d: %s', error.response.status, error.response.data)
+              }
+              /* eslint-enable no-console */
+            })
         } else {
           /* eslint-disable no-console */
           console.log('>> обновление прогноза')

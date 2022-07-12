@@ -44,11 +44,11 @@
       <div v-if="resultItems !== undefined && resultItems.length !== 0">
         <div
           v-for="(item, index) in resultItems"
-          :key="'f_' + item.id"
+          :key="'f_' + (index + 1)"
         >
           <v-divider v-if="index != 0" />
           <v-container fluid>
-            <ForecastCard :element="item" />
+            <ForecastCard :element="item" :remove-item="onRemoveItem" />
           </v-container>
         </div>
       </div>
@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { API_ENERGY_SERVICE_FORECAST } from '~/assets/helpers'
+import { API_ENERGY_SERVICE_FORECAST, API_FORECAST_SERVICE } from '~/assets/helpers'
 import ForecastCard from '~/components/forecast/forecast-card.vue'
 
 export default {
@@ -130,6 +130,23 @@ export default {
           data: []
         })
       }
+    },
+    onRemoveItem (id) {
+      const index = this.resultItems.findIndex(e => e.id === id)
+      if (index < 0) {
+        return
+      }
+      this.$axios.$delete(API_FORECAST_SERVICE + '/' + id, { progress: false })
+        // .then((v) => {})
+        .catch((error) => {
+          /* eslint-disable no-console */
+          if (error.response) {
+            console.error('ошибка %d: %s', error.response.status, error.response.data)
+          }
+          /* eslint-enable no-console */
+        })
+      this.resultItems = this.resultItems.filter(e => e.id !== id)
+      // this.resultItems.splice(index, 1)
     }
   }
 }
