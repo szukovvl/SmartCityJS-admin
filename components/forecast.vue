@@ -132,12 +132,15 @@ export default {
       }
     },
     onRemoveItem (id) {
-      const index = this.resultItems.findIndex(e => e.id === id)
+      const index = this.resultItems.findIndex(e => e.id === (id + 100))
       if (index < 0) {
         return
       }
       this.$axios.$delete(API_FORECAST_SERVICE + '/' + id, { progress: false })
-        // .then((v) => {})
+        .then((v) => {
+          // this.resultItems = this.resultItems.filter(e => e.id !== id)
+          // this.resultItems.splice(index, 1)
+        })
         .catch((error) => {
           /* eslint-disable no-console */
           if (error.response) {
@@ -145,8 +148,6 @@ export default {
           }
           /* eslint-enable no-console */
         })
-      this.resultItems = this.resultItems.filter(e => e.id !== id)
-      // this.resultItems.splice(index, 1)
     }
   }
 }

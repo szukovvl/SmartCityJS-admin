@@ -135,7 +135,7 @@
           </table>
         </v-col>
         <v-col>
-          <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :height="400" />
+          <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :height="200" />
         </v-col>
       </v-row>
     </v-card-text>
