@@ -17,6 +17,7 @@ export const API_ENERGY_SERVICE_FIND = REST_API_URL + '/energy/find'
 export const API_ENERGY_SERVICE_DATA = REST_API_URL + '/energy/data'
 export const API_ENERGY_SERVICE_FORECAST = REST_API_URL + '/energy/forecast'
 export const API_FORECAST_SERVICE = REST_API_URL + '/forecast'
+export const API_FORECAST_SERVICE_INTERPOLATION = REST_API_URL + '/forecast/interpolate'
 
 //
 export const DELAY_BEFORE_SAVE_CHANGES = 500

@@ -151,7 +151,13 @@ import 'chartjs-adapter-moment'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { nextTimePoint } from '~/assets/datetime'
 import { CHART_OPTIONS } from '~/assets/charts'
-import { DELAY_BEFORE_SAVE_CHANGES, API_ENERGY_SERVICE_FORECAST, API_FORECAST_SERVICE } from '~/assets/helpers'
+
+import {
+  DELAY_BEFORE_SAVE_CHANGES,
+  API_ENERGY_SERVICE_FORECAST,
+  API_FORECAST_SERVICE,
+  API_FORECAST_SERVICE_INTERPOLATION
+} from '~/assets/helpers'
 
 moment.locale('ru')
 
@@ -196,7 +202,8 @@ export default {
       offset: 0
     },
     scrolltarget: Number(9999),
-    postdelay: undefined
+    postdelay: undefined,
+    interpolate: []
   }),
 
   validations: {
@@ -271,12 +278,23 @@ export default {
       return {
         datasets: [
           {
-            label: 'прогноз',
-            data: this.forecast.data.map(n => ({ x: n.point, y: Number(n.value) })).sort((a, b) => a.x.localeCompare(b.x)),
-            backgroundColor: 'rgba(20, 255, 0, 0.3)',
-            borderColor: 'rgba(100, 255, 0, 1)',
+            data: this.forecast.data.map(n => n).sort(),
+            borderColor: '#B0BEC5',
             borderWidth: 2,
-            stepped: true
+            stepped: true,
+            radius: 0,
+            hoverRadius: 0,
+            hitRadius: 0,
+            borderDash: [2, 2]
+          },
+          {
+            data: this.interpolate,
+            backgroundColor: 'rgba(20, 0, 255, 0.3)',
+            borderColor: '#03A9F4',
+            borderWidth: 2,
+            radius: 0,
+            hoverRadius: 0,
+            hitRadius: 0
           }
         ]
       }
@@ -310,6 +328,9 @@ export default {
       this.newrow.point = nextTimePoint(String(lastpoint.point))
       this.newrow.value = lastpoint.value
     }
+  },
+  mounted () {
+    this.getInterpolations()
   },
 
   methods: {
@@ -373,7 +394,7 @@ export default {
             }, { progress: false })
             .then((v) => {
               this.forecast.id = v.id
-              // !!! запустить интерполяцию
+              this.getInterpolations()
             })
             .catch((error) => {
               /* eslint-disable no-console */
@@ -388,7 +409,9 @@ export default {
               name: this.forecast.name,
               data: this.forecast.data
             }, { progress: false })
-            // .then((v) => {})
+            .then((v) => {
+              this.getInterpolations()
+            })
             .catch((error) => {
               /* eslint-disable no-console */
               if (error.response) {
@@ -398,6 +421,23 @@ export default {
             })
         }
       }, DELAY_BEFORE_SAVE_CHANGES)
+    },
+    getInterpolations () {
+      if (this.forecast.id < 0) {
+        return
+      }
+      this.$axios.$get(API_FORECAST_SERVICE_INTERPOLATION + '/' + this.forecast.id, { progress: false })
+        .then((v) => {
+          this.interpolate = v.items
+        })
+        .catch((error) => {
+          this.interpolate = []
+          /* eslint-disable no-console */
+          if (error.response) {
+            console.error('ошибка %d: %s', error.response.status, error.response.data)
+          }
+          /* eslint-enable no-console */
+        })
     }
   }
 }

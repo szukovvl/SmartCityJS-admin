@@ -3,6 +3,11 @@ import moment from 'moment'
 //
 export const CHART_OPTIONS = {
   responsive: true,
+  animation: false,
+  parsing: {
+    xAxisKey: 'point',
+    yAxisKey: 'value'
+  },
   plugins: {
     legend: {
       display: false,
@@ -10,6 +15,9 @@ export const CHART_OPTIONS = {
     },
     title: {
       display: false
+    },
+    tooltip: {
+      enabled: false
     }
   },
   scales: {
