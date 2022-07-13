@@ -17,6 +17,16 @@
       <v-spacer />
       <v-btn
         icon
+        color="amber"
+        :disabled="!deleteEnabled"
+        @click="setRandom"
+      >
+        <v-icon>
+          mdi-arrange-send-to-back
+        </v-icon>
+      </v-btn>
+      <v-btn
+        icon
         color="red"
         :disabled="!deleteEnabled"
         @click="$emit('doRemoveItem', forecast.id)"
@@ -156,7 +166,8 @@ import {
   DELAY_BEFORE_SAVE_CHANGES,
   API_ENERGY_SERVICE_FORECAST,
   API_FORECAST_SERVICE,
-  API_FORECAST_SERVICE_INTERPOLATION
+  API_FORECAST_SERVICE_INTERPOLATION,
+  API_FORECAST_SERVICE_RANDOMIZE
 } from '~/assets/helpers'
 
 moment.locale('ru')
@@ -429,6 +440,24 @@ export default {
       this.$axios.$get(API_FORECAST_SERVICE_INTERPOLATION + '/' + this.forecast.id, { progress: false })
         .then((v) => {
           this.interpolate = v.items
+        })
+        .catch((error) => {
+          this.interpolate = []
+          /* eslint-disable no-console */
+          if (error.response) {
+            console.error('ошибка %d: %s', error.response.status, error.response.data)
+          }
+          /* eslint-enable no-console */
+        })
+    },
+    setRandom () {
+      if (this.forecast.id < 0) {
+        return
+      }
+      this.interpolate = []
+      this.$axios.$get(API_FORECAST_SERVICE_RANDOMIZE + '/' + this.forecast.id, { progress: false })
+        .then((v) => {
+          this.forecast.data = v.data
         })
         .catch((error) => {
           this.interpolate = []
