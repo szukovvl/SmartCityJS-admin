@@ -42,7 +42,7 @@
       <v-col
         cols="4"
       >
-        <div class="d-inline-flex">
+        <div class="d-flex">
           <v-text-field
             v-model="energyobj.data.energy"
             class="right-input"
@@ -74,18 +74,46 @@
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
-        <div class="d-inline-flex">
-          <v-select
-            dense
-            return-object
-            clearable
-            disabled
-            hint="Шаблон прогноза"
-            persistent-hint
-            placeholder="выберите прогноз"
-          />
+        <div class="d-flex">
+          <v-menu
+            v-model="showMenu"
+            bottom
+            offset-y
+          >
+            <template #activator="{}">
+              <v-text-field
+                v-model="forecastName"
+                hint="Шаблон прогноза"
+                persistent-hint
+                placeholder="выберите прогноз"
+                dense
+                clearable
+                readonly
+                append-icon="mdi-menu-down"
+                :loading="loading"
+                @click:clear="tfClickClear"
+                @click:append="tfClickAppend"
+                @focus="tfFocus"
+              />
+            </template>
+            <v-list>
+              <v-list-item-group
+                v-model="selectedItem"
+                color="primary"
+              >
+                <v-list-item
+                  v-for="index in 6"
+                  :key="index"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title>{{ index }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
+          </v-menu>
         </div>
-        <div class="d-inline-flex">
+        <div class="d-flex">
           <v-switch
             v-model="energyobj.data.useforecast"
             :label="energyobj.data.useforecast ? 'Прогнозирование' : 'Без прогнозирования'"
@@ -182,7 +210,13 @@ export default {
     postdelay: undefined,
     useforecast_enabled: false,
     energy_enabled: false,
-    forecast_enabled: false
+    forecast_enabled: false,
+
+    loading: false,
+    forecastItems: undefined,
+
+    selectedItem: undefined, // -
+    showMenu: false
   }),
 
   validations: {
@@ -204,6 +238,15 @@ export default {
       !this.$v.energyobj.data.energy.powerValidate && errors.push('Мощность не должна быть меньше нуля')
       !this.$v.energyobj.data.energy.required && errors.push('Мощность необходимо определить')
       return errors
+    },
+
+    forecastName: {
+      get () {
+        return this.energyobj.data.forecast !== undefined
+          ? this.energyobj.data.forecast.name
+          : undefined
+      },
+      set: (newvalue) => { }
     }
   },
 
@@ -260,6 +303,27 @@ export default {
             /* eslint-enable no-console */
           })
       }, DELAY_BEFORE_SAVE_CHANGES)
+    },
+
+    tfClickClear (event) {
+      /* eslint-disable no-console */
+      console.log('tfClickClear', event)
+      /* eslint-enable no-console */
+    },
+    tfClickAppend () {
+      /* eslint-disable no-console */
+      console.log('tfClickAppend')
+      /* eslint-enable no-console */
+      this.loading = true
+      setTimeout(() => {
+        this.showMenu = true
+        this.loading = false
+      }, 3000)
+    },
+    tfFocus () {
+      /* eslint-disable no-console */
+      console.log('tfFocus')
+      /* eslint-enable no-console */
     }
   }
 }
