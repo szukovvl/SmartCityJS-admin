@@ -229,7 +229,9 @@ export default {
     showMenu: false,
     interpolate: [],
     chartPoints: [],
-    selForecast: undefined
+    selForecast: undefined,
+
+    aaa: undefined
   }),
 
   validations: {
@@ -291,21 +293,21 @@ export default {
   },
 
   watch: {
-    'energyobj.data.useforecast' (v) {
+    /* 'energyobj.data.useforecast' (v) {
       if (this.useforecast_enabled) {
         this.saveChanges()
       }
       this.useforecast_enabled = true
     },
     'energyobj.data.energy' (v) {
-      /* eslint-disable no-console */
+      / * eslint-disable no-console * /
       console.log('energyobj.data.energy')
-      /* eslint-enable no-console */
+      / * eslint-enable no-console * /
       if (this.energy_enabled) {
         this.saveChanges()
       }
       this.energy_enabled = true
-    },
+    }, */
     'energyobj.data.forecast' (v) {
       /* eslint-disable no-console */
       console.log('energyobj.data.forecast')
@@ -318,18 +320,37 @@ export default {
       console.log('-> energyobj.data.forecast')
       /* eslint-enable no-console */
     },
+    'energyobj.data': {
+      handler (newval, oldval) {
+        /* eslint-disable no-console */
+        console.log('-> energyobj.data:')
+        console.log('-> новые:', newval)
+        console.log('-> старые:', oldval)
+        if (oldval === undefined || newval === undefined) {
+          return
+        }
+        console.log('===')
+        /* eslint-enable no-console */
+        // this.saveChanges()
+      },
+      deep: true
+    },
+    aaa: {
+      handler (v) {
+        /* eslint-disable no-console */
+        console.log('-> watch(aaa)', v)
+        console.log('+++')
+        /* eslint-enable no-console */
+      },
+      deep: true
+    },
 
     selForecast (idx) {
-      /* eslint-disable no-console */
-      console.log('selForecast', idx, this.selForecast)
-      /* eslint-enable no-console */
       if (this.selForecast !== undefined) {
-        /* eslint-disable no-console */
-        console.log('-> selForecast', this.forecastItems[idx].forecast)
-        /* eslint-enable no-console */
         this.energyobj.data.forecast = this.forecastItems[idx].forecast
+        this.aaa = this.energyobj.data.forecast
         /* eslint-disable no-console */
-        console.log('-> selForecast', this.energyobj.data.forecast)
+        console.log('-> selForecast', this.energyobj)
         /* eslint-enable no-console */
       }
     }
@@ -337,6 +358,10 @@ export default {
 
   created () {
     this.energyobj = this.element
+    this.aaa = this.element.data.forecast
+    /* eslint-disable no-console */
+    console.log('==> created', this.energyobj)
+    /* eslint-enable no-console */
     this.forecast_enabled = this.energyobj.data.forecast === undefined
     if (this.energyobj.data.forecast !== undefined) {
       this.doInterpolate()
@@ -346,6 +371,9 @@ export default {
   methods: {
     saveChanges () {
       clearTimeout(this.postdelay)
+      /* eslint-disable no-console */
+      console.log('-> saveChanges')
+      /* eslint-enable no-console */
       if (this.$v.energyobj.$invalid) {
         return
       }
@@ -406,6 +434,9 @@ export default {
         })
     },
     doInterpolate () {
+      /* eslint-disable no-console */
+      console.log('-> doInterpolate')
+      /* eslint-enable no-console */
       this.interpolate = []
       if (this.energyobj.data.forecast === undefined) {
         return
