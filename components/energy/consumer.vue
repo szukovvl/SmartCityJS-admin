@@ -90,23 +90,25 @@
                 clearable
                 readonly
                 append-icon="mdi-menu-down"
-                :loading="loading"
-                @click:clear="tfClickClear"
-                @click:append="tfClickAppend"
-                @focus="tfFocus"
+                :loading="forecastLoading"
+                @click:clear="forecastClear"
+                @click:append="doLoadForecasts"
+                @focus="doLoadForecasts"
               />
             </template>
-            <v-list>
+            <v-list
+              :disabled="forecastItems[0].forecast === undefined"
+            >
               <v-list-item-group
-                v-model="selectedItem"
+                v-model="selForecast"
                 color="primary"
               >
                 <v-list-item
-                  v-for="index in 6"
-                  :key="index"
+                  v-for="item in forecastItems"
+                  :key="item.key"
                 >
                   <v-list-item-content>
-                    <v-list-item-title>{{ index }}</v-list-item-title>
+                    <v-list-item-title>{{ item.text }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
@@ -148,7 +150,7 @@
           прогноз не задан
         </div>
         <div v-else>
-          ... прогноз ...
+          <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :height="200" />
         </div>
       </v-col>
     </v-row>
@@ -159,14 +161,25 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import { required, decimal } from 'vuelidate/lib/validators'
-import { DELAY_BEFORE_SAVE_CHANGES, API_ENERGY_SERVICE_DATA } from '~/assets/helpers'
+import ForecastChart from '~/components/forecast/forecast-chart.vue'
+import { CHART_OPTIONS } from '~/assets/charts'
+import {
+  DELAY_BEFORE_SAVE_CHANGES,
+  API_ENERGY_SERVICE_DATA,
+  API_ENERGY_SERVICE_FORECAST,
+  API_ENERGY_SERVICE_INTERPOLATE
+} from '~/assets/helpers'
 
 Vue.use(Vuelidate)
 
 const powerValidate = value => value !== undefined && value !== null && value >= 0.0
 
+const notfoundForecasts = [{ key: '_EMPTY_FORECAST_', text: 'прогнозы не найдены', forecast: undefined }]
+
 export default {
   name: 'ConsumerObjet',
+
+  components: { ForecastChart },
 
   props: {
     element: {
@@ -211,12 +224,12 @@ export default {
     useforecast_enabled: false,
     energy_enabled: false,
     forecast_enabled: false,
-
-    loading: false,
-    forecastItems: undefined,
-
-    selectedItem: undefined, // -
-    showMenu: false
+    forecastLoading: false,
+    forecastItems: notfoundForecasts,
+    showMenu: false,
+    interpolate: [],
+    chartPoints: [],
+    selForecast: undefined
   }),
 
   validations: {
@@ -247,6 +260,33 @@ export default {
           : undefined
       },
       set: (newvalue) => { }
+    },
+
+    chartOptions: () => CHART_OPTIONS,
+    axesdata () {
+      return {
+        datasets: [
+          {
+            data: this.energyobj.data.forecast.data.map(e => ({ point: e.point, value: e.value * this.energyobj.data.energy })),
+            borderColor: '#B0BEC5',
+            borderWidth: 2,
+            stepped: true,
+            radius: 0,
+            hoverRadius: 0,
+            hitRadius: 0,
+            borderDash: [2, 2]
+          },
+          {
+            data: this.interpolate,
+            backgroundColor: 'rgba(20, 0, 255, 0.3)',
+            borderColor: '#03A9F4',
+            borderWidth: 2,
+            radius: 0,
+            hoverRadius: 0,
+            hitRadius: 0
+          }
+        ]
+      }
     }
   },
 
@@ -258,22 +298,49 @@ export default {
       this.useforecast_enabled = true
     },
     'energyobj.data.energy' (v) {
+      /* eslint-disable no-console */
+      console.log('energyobj.data.energy')
+      /* eslint-enable no-console */
       if (this.energy_enabled) {
         this.saveChanges()
       }
       this.energy_enabled = true
     },
     'energyobj.data.forecast' (v) {
+      /* eslint-disable no-console */
+      console.log('energyobj.data.forecast')
+      /* eslint-enable no-console */
       if (this.forecast_enabled) {
         this.saveChanges()
       }
       this.forecast_enabled = true
+      /* eslint-disable no-console */
+      console.log('-> energyobj.data.forecast')
+      /* eslint-enable no-console */
+    },
+
+    selForecast (idx) {
+      /* eslint-disable no-console */
+      console.log('selForecast', idx, this.selForecast)
+      /* eslint-enable no-console */
+      if (this.selForecast !== undefined) {
+        /* eslint-disable no-console */
+        console.log('-> selForecast', this.forecastItems[idx].forecast)
+        /* eslint-enable no-console */
+        this.energyobj.data.forecast = this.forecastItems[idx].forecast
+        /* eslint-disable no-console */
+        console.log('-> selForecast', this.energyobj.data.forecast)
+        /* eslint-enable no-console */
+      }
     }
   },
 
   created () {
-    this.forecast_enabled = !('forecast' in this.element)
     this.energyobj = this.element
+    this.forecast_enabled = this.energyobj.data.forecast === undefined
+    if (this.energyobj.data.forecast !== undefined) {
+      this.doInterpolate()
+    }
   },
 
   methods: {
@@ -294,7 +361,9 @@ export default {
             useforecast: this.energyobj.data.useforecast,
             forecast: this.energyobj.data.forecast
           }, { progress: false })
-          // .then((v) => {})
+          .then((v) => {
+            this.doInterpolate()
+          })
           .catch((error) => {
             /* eslint-disable no-console */
             if (error.response) {
@@ -305,25 +374,55 @@ export default {
       }, DELAY_BEFORE_SAVE_CHANGES)
     },
 
-    tfClickClear (event) {
-      /* eslint-disable no-console */
-      console.log('tfClickClear', event)
-      /* eslint-enable no-console */
+    forecastClear () {
+      this.energyobj.data.forecast = undefined
+      this.interpolate = []
     },
-    tfClickAppend () {
-      /* eslint-disable no-console */
-      console.log('tfClickAppend')
-      /* eslint-enable no-console */
-      this.loading = true
-      setTimeout(() => {
-        this.showMenu = true
-        this.loading = false
-      }, 3000)
+    doLoadForecasts () {
+      if (this.forecastLoading) {
+        return
+      }
+      this.forecastLoading = true
+      this.forecastItems = notfoundForecasts
+      this.selForecast = undefined
+
+      this.$axios.$get(API_ENERGY_SERVICE_FORECAST + '/' + this.energyobj.componentType, { progress: false })
+        .then((v) => {
+          if (v !== undefined && v.length !== 0) {
+            this.forecastItems = v.map((item) => {
+              return {
+                key: 'FORECAST_' + item.fc_type + '_' + item.id,
+                text: item.name,
+                forecast: item
+              }
+            })
+          }
+          this.forecastLoading = false
+          this.showMenu = true
+        })
+        .catch(() => {
+          this.forecastLoading = false
+          this.showMenu = true
+        })
     },
-    tfFocus () {
-      /* eslint-disable no-console */
-      console.log('tfFocus')
-      /* eslint-enable no-console */
+    doInterpolate () {
+      this.interpolate = []
+      if (this.energyobj.data.forecast === undefined) {
+        return
+      }
+      this.$axios.$get(API_ENERGY_SERVICE_INTERPOLATE + '/' + this.energyobj.identy, { progress: false })
+        .then((v) => {
+          if (v !== undefined) {
+            this.interpolate = v.items
+          }
+        })
+        .catch((error) => {
+          /* eslint-disable no-console */
+          if (error.response) {
+            console.error('ошибка %d: %s', error.response.status, error.response.data)
+          }
+          /* eslint-enable no-console */
+        })
     }
   }
 }
