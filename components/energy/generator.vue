@@ -393,12 +393,12 @@ export default {
       carbon: { required, integer, carbonValidate },
       highload: {
         required,
-        betweenValue: between(0.0, 1.0),
+        betweenValue: between(0.5, 1.0),
         loadStateCheck
       },
       criticalload: {
         required,
-        betweenValue: between(0.0, 1.0),
+        betweenValue: between(0.5, 1.0),
         loadStateCheck
       },
       blackouttime: { required, integer, carbonValidate },
@@ -432,7 +432,7 @@ export default {
       if (!this.$v.data.highload.$dirty) {
         return errors
       }
-      !this.$v.data.highload.betweenValue && errors.push('Только значения от 0,0 до 1,0')
+      !this.$v.data.highload.betweenValue && errors.push('Только значения от 0,5 до 1,0')
       !this.$v.data.highload.loadStateCheck && errors.push('Не должно превышать установленный порог критической перегрузки')
       !this.$v.data.highload.required && errors.push('Необходимо определить')
       return errors
@@ -442,7 +442,7 @@ export default {
       if (!this.$v.data.criticalload.$dirty) {
         return errors
       }
-      !this.$v.data.criticalload.betweenValue && errors.push('Только значения от 0,0 до 1,0')
+      !this.$v.data.criticalload.betweenValue && errors.push('Только значения от 0,5 до 1,0')
       !this.$v.data.criticalload.loadStateCheck && errors.push('Не должно быть меньше высокой нагрузки')
       !this.$v.data.criticalload.required && errors.push('Необходимо определить')
       return errors

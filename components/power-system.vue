@@ -67,7 +67,7 @@ export default {
       { text: 'хранение', value: 'STORAGE' },
       { text: 'альтернативная энергетика', value: 'GREEGENERATOR' },
       { text: 'мини-подстанции', value: 'DISTRIBUTOR' },
-      { text: 'главная подстанция', value: 'MAINSUBSTATION' }
+      { text: 'главные подстанции', value: 'MAINSUBSTATION' }
     ],
     selectedType: undefined,
     extSelection: false,
