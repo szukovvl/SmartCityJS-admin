@@ -402,6 +402,84 @@
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
+        <div class="d-flex">
+          <v-select
+            v-model="data.mode"
+            :items="generationMode"
+            hint="Режим использования"
+            persistent-hint
+            dense
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Определяет режим использования устройства хранения энергии.
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-select
+            v-model="data.chargebehavior"
+            :items="storageCharge"
+            hint="Восстановление хранилища"
+            persistent-hint
+            dense
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Определяет каким образом хранилище будет восстанавливаться.
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-select
+            v-model="data.initstate"
+            :items="initState"
+            hint="Начальное состояние в игровом сценарии"
+            persistent-hint
+            dense
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Определяет состояние хранилище перед началом игрового сценария.
+          </v-tooltip>
+        </div>
       </v-col>
     </v-row>
   </v-card>
@@ -413,7 +491,10 @@ import Vuelidate from 'vuelidate'
 import { required, decimal, integer, between } from 'vuelidate/lib/validators'
 import {
   DELAY_BEFORE_SAVE_CHANGES,
-  API_ENERGY_SERVICE_DATA
+  API_ENERGY_SERVICE_DATA,
+  GENERATION_USAGE_MODES,
+  ENERGYSTORAGE_CHARGEBEHAVIORS,
+  ENERGYSTORAGE_STATES
 } from '~/assets/helpers'
 
 Vue.use(Vuelidate)
@@ -452,7 +533,6 @@ export default {
 
     energy_enabled: false,
     carbon_enabled: false,
-    highload_endbled: false,
     criticalload_enabled: false,
     blackouttime_enabled: false,
     tariff_enabled: false
@@ -461,12 +541,7 @@ export default {
   validations: {
     data: {
       energy: { required, decimal, powerValidate },
-      carbon: { required, integer, carbonValidate },
-      highload: {
-        required,
-        betweenValue: between(0.5, 1.0),
-        loadStateCheck
-      },
+      carbon: { required, decimal, carbonValidate },
       criticalload: {
         required,
         betweenValue: between(0.5, 1.0),
@@ -498,16 +573,6 @@ export default {
       !this.$v.data.carbon.required && errors.push('Необходимо определить')
       return errors
     },
-    highloadErrors () {
-      const errors = []
-      if (!this.$v.data.highload.$dirty) {
-        return errors
-      }
-      !this.$v.data.highload.betweenValue && errors.push('Только значения от 0,5 до 1,0')
-      !this.$v.data.highload.loadStateCheck && errors.push('Не должно превышать установленный порог критической перегрузки')
-      !this.$v.data.highload.required && errors.push('Необходимо определить')
-      return errors
-    },
     criticalloadErrors () {
       const errors = []
       if (!this.$v.data.criticalload.$dirty) {
@@ -537,7 +602,11 @@ export default {
       !this.$v.data.tariff.powerValidate && errors.push('Не должно быть меньше нуля')
       !this.$v.data.tariff.required && errors.push('Необходимо определить')
       return errors
-    }
+    },
+
+    generationMode: () => GENERATION_USAGE_MODES,
+    storageCharge: () => ENERGYSTORAGE_CHARGEBEHAVIORS,
+    initState: () => ENERGYSTORAGE_STATES
   },
 
   watch: {
@@ -552,12 +621,6 @@ export default {
         this.saveChanges()
       }
       this.carbon_enabled = true
-    },
-    'data.highload' (v) {
-      if (this.highload_enabled) {
-        this.saveChanges()
-      }
-      this.highload_enabled = true
     },
     'data.criticalload' (v) {
       if (this.criticalload_enabled) {

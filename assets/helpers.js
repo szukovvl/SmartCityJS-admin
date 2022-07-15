@@ -31,6 +31,16 @@ export const GENERATION_USAGE_MODES = [
   { text: 'Резервная генерация', value: 'RESERVE' }
 ]
 
+export const ENERGYSTORAGE_CHARGEBEHAVIORS = [
+  { text: 'Зарядка в любое время', value: 'ANYTIME' },
+  { text: 'Зарядка только при действии низкого тарифа', value: 'LOWTARIFF' }
+]
+
+export const ENERGYSTORAGE_STATES = [
+  { text: 'Заряжено', value: 'CHARGED' },
+  { text: 'Разряжено', value: 'DISCHARGED' }
+]
+
 //
 const REST_API_URL = '/api'
 export const API_COMMON_INFO_SERVICE = REST_API_URL + '/common'
