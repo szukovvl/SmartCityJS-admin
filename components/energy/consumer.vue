@@ -255,7 +255,7 @@
 <script>
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
-import { required, decimal, integer } from 'vuelidate/lib/validators'
+import { required, decimal } from 'vuelidate/lib/validators'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { CHART_OPTIONS } from '~/assets/charts'
 import {
@@ -336,7 +336,7 @@ export default {
   validations: {
     data: {
       energy: { required, decimal, powerValidate },
-      carbon: { required, integer, carbonValidate }
+      carbon: { required, decimal, carbonValidate }
     }
   },
 
@@ -356,7 +356,7 @@ export default {
       if (!this.$v.data.carbon.$dirty) {
         return errors
       }
-      !this.$v.data.carbon.integer && errors.push('Задается целым числом')
+      !this.$v.data.carbon.decimal && errors.push('Задается вещественным числом')
       !this.$v.data.carbon.carbonValidate && errors.push('Не должно быть меньше нуля')
       !this.$v.data.carbon.required && errors.push('Необходимо определить')
       return errors

@@ -390,7 +390,7 @@ export default {
   validations: {
     data: {
       energy: { required, decimal, powerValidate },
-      carbon: { required, integer, carbonValidate },
+      carbon: { required, decimal, carbonValidate },
       highload: {
         required,
         betweenValue: between(0.5, 1.0),
@@ -422,7 +422,7 @@ export default {
       if (!this.$v.data.carbon.$dirty) {
         return errors
       }
-      !this.$v.data.carbon.integer && errors.push('Задается целым числом')
+      !this.$v.data.carbon.decimal && errors.push('Задается вещественным числом')
       !this.$v.data.carbon.carbonValidate && errors.push('Не должно быть меньше нуля')
       !this.$v.data.carbon.required && errors.push('Необходимо определить')
       return errors
