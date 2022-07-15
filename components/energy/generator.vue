@@ -78,6 +78,171 @@
           </v-tooltip>
         </div>
         <div class="d-flex">
+          <v-text-field
+            v-model="data.carbon"
+            class="right-input"
+            type="number"
+            hint="Экология (выброс CO2)"
+            persistent-hint
+            suffix="гCO2экв/кВт*час"
+            dense
+            :error-messages="carbonErrors"
+            @input="$v.data.carbon.$touch()"
+            @blur="$v.data.carbon.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Задается положительным числом и определяет уровень выброса загрязнения окружающей среды
+            (<span class="green--text text--accent-3"><i>Углеродный след</i></span>).
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model="data.highload"
+            class="right-input"
+            type="number"
+            hint="Порог высокой нагрузки"
+            persistent-hint
+            dense
+            :error-messages="highloadErrors"
+            @input="$v.data.highload.$touch()"
+            @blur="$v.data.highload.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Задается положительным числом и определяет порог значения мощности высокой нагрузки.
+            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model="data.criticalload"
+            class="right-input"
+            type="number"
+            hint="Порог критической нагрузки"
+            persistent-hint
+            dense
+            :error-messages="criticalloadErrors"
+            @input="$v.data.criticalload.$touch()"
+            @blur="$v.data.criticalload.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Задается положительным числом и определяет порог значения мощности критической нагрузки (перегрузка генератора).
+            Превышение заданного порога критической нагрузки в течении некоторого времени,
+            приведет к отключению генератора.
+            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model="data.blackouttime"
+            class="right-input"
+            type="number"
+            hint="Время действия критической нагрузки до блэкаута"
+            persistent-hint
+            suffix="сек."
+            dense
+            :error-messages="blackouttimeErrors"
+            @input="$v.data.blackouttime.$touch()"
+            @blur="$v.data.blackouttime.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Задается положительным числом и определяет максимально допустимое время действия критической нагрузки,
+            после которого произойдет блэкаут.
+            Авария в энергосистеме — нарушение нормального режима всей или значительной части энергетической системы,
+            связанное с повреждением оборудования, временным недопустимым ухудшением качества электрической энергии или
+            перерывом в электроснабжении потребителей.
+            Аварии в энергосистемах часто называют словом <span class="light-blue--text text--lighten-3"><b>блэкаут</b></span>
+            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model="data.tariff"
+            class="right-input"
+            type="number"
+            hint="Стоимость одного коловатта генерации"
+            persistent-hint
+            suffix="руб."
+            dense
+            :error-messages="tariffErrors"
+            @input="$v.data.tariff.$touch()"
+            @blur="$v.data.tariff.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Задается положительным числом и определяет стоимость одного киловатта сгенерированной энергии
+            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
           <v-menu
             v-model="showMenu"
             bottom
@@ -144,38 +309,6 @@
             <span class="red--text text--lighten-1"><i>Для использования необходимо задать прогноз.</i></span>
           </v-tooltip>
         </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="data.carbon"
-            class="right-input"
-            type="number"
-            hint="Экология (выброс CO2)"
-            persistent-hint
-            suffix="гCO2экв/кВт*час"
-            dense
-            :error-messages="carbonErrors"
-            @input="$v.data.carbon.$touch()"
-            @blur="$v.data.carbon.$touch()"
-          />
-          <v-tooltip
-            right
-            max-width="400"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            Задается положительным числом и определяет уровень выброса загрязнения окружающей среды
-            (<span class="green--text text--accent-3"><i>Углеродный след</i></span>).
-          </v-tooltip>
-        </div>
       </v-col>
       <v-col>
         <div
@@ -195,22 +328,24 @@
 <script>
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
-import { required, decimal, integer } from 'vuelidate/lib/validators'
+import { required, decimal, integer, between } from 'vuelidate/lib/validators'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { CHART_OPTIONS } from '~/assets/charts'
 import {
   DELAY_BEFORE_SAVE_CHANGES,
   API_ENERGY_SERVICE_DATA,
   API_ENERGY_SERVICE_FORECAST,
-  API_ENERGY_SERVICE_INTERPOLATE,
-  PRICE_CATEGORIES,
-  VOLTAGE_LEVELS
+  API_ENERGY_SERVICE_INTERPOLATE
 } from '~/assets/helpers'
 
 Vue.use(Vuelidate)
 
 const powerValidate = value => value !== undefined && value !== null && value >= 0.0
 const carbonValidate = value => value !== undefined && value !== null && value >= 0
+
+function loadStateCheck (value) {
+  return this.data.criticalload >= this.data.highload
+}
 
 const notfoundForecasts = [{ key: '_EMPTY_FORECAST_', text: 'прогнозы не найдены', forecast: undefined }]
 
@@ -237,9 +372,13 @@ export default {
     useforecast_enabled: false,
     energy_enabled: false,
     carbon_enabled: false,
-    catprice_enabled: false,
-    voltage_enabled: false,
     forecast_enabled: false,
+
+    highload_endbled: false,
+    criticalload_enabled: false,
+    blackouttime_enabled: false,
+    tariff_enabled: false,
+
     forecastLoading: false,
     forecastItems: notfoundForecasts,
     showMenu: false,
@@ -251,7 +390,19 @@ export default {
   validations: {
     data: {
       energy: { required, decimal, powerValidate },
-      carbon: { required, integer, carbonValidate }
+      carbon: { required, integer, carbonValidate },
+      highload: {
+        required,
+        betweenValue: between(0.0, 1.0),
+        loadStateCheck
+      },
+      criticalload: {
+        required,
+        betweenValue: between(0.0, 1.0),
+        loadStateCheck
+      },
+      blackouttime: { required, integer, carbonValidate },
+      tariff: { required, decimal, powerValidate }
     }
   },
 
@@ -276,6 +427,46 @@ export default {
       !this.$v.data.carbon.required && errors.push('Необходимо определить')
       return errors
     },
+    highloadErrors () {
+      const errors = []
+      if (!this.$v.data.highload.$dirty) {
+        return errors
+      }
+      !this.$v.data.highload.betweenValue && errors.push('Только значения от 0,0 до 1,0')
+      !this.$v.data.highload.loadStateCheck && errors.push('Не должно превышать установленный порог критической перегрузки')
+      !this.$v.data.highload.required && errors.push('Необходимо определить')
+      return errors
+    },
+    criticalloadErrors () {
+      const errors = []
+      if (!this.$v.data.criticalload.$dirty) {
+        return errors
+      }
+      !this.$v.data.criticalload.betweenValue && errors.push('Только значения от 0,0 до 1,0')
+      !this.$v.data.criticalload.loadStateCheck && errors.push('Не должно быть меньше высокой нагрузки')
+      !this.$v.data.criticalload.required && errors.push('Необходимо определить')
+      return errors
+    },
+    blackouttimeErrors () {
+      const errors = []
+      if (!this.$v.data.blackouttime.$dirty) {
+        return errors
+      }
+      !this.$v.data.blackouttime.integer && errors.push('Задается целым числом')
+      !this.$v.data.blackouttime.carbonValidate && errors.push('Не должно быть меньше нуля')
+      !this.$v.data.blackouttime.required && errors.push('Необходимо определить')
+      return errors
+    },
+    tariffErrors () {
+      const errors = []
+      if (!this.$v.data.tariff.$dirty) {
+        return errors
+      }
+      !this.$v.data.tariff.decimal && errors.push('Задается вещественным числом: целая часть рубли, дробная часть копейки')
+      !this.$v.data.tariff.powerValidate && errors.push('Не должно быть меньше нуля')
+      !this.$v.data.tariff.required && errors.push('Необходимо определить')
+      return errors
+    },
 
     forecastName: {
       get () {
@@ -285,8 +476,6 @@ export default {
       },
       set: (newvalue) => { }
     },
-    catPrices: () => PRICE_CATEGORIES,
-    voltageLevels: () => VOLTAGE_LEVELS,
 
     chartOptions: () => CHART_OPTIONS,
     axesdata () {
@@ -335,17 +524,29 @@ export default {
       }
       this.carbon_enabled = true
     },
-    'data.catprice' (v) {
-      if (this.catprice_enabled) {
+    'data.highload' (v) {
+      if (this.highload_enabled) {
         this.saveChanges()
       }
-      this.catprice_enabled = true
+      this.highload_enabled = true
     },
-    'data.voltagelevel' (v) {
-      if (this.voltage_enabled) {
+    'data.criticalload' (v) {
+      if (this.criticalload_enabled) {
         this.saveChanges()
       }
-      this.voltage_enabled = true
+      this.criticalload_enabled = true
+    },
+    'data.blackouttime' (v) {
+      if (this.blackouttime_enabled) {
+        this.saveChanges()
+      }
+      this.blackouttime_enabled = true
+    },
+    'data.tariff' (v) {
+      if (this.tariff_enabled) {
+        this.saveChanges()
+      }
+      this.tariff_enabled = true
     },
     forecast (v) {
       this.data.forecast = v
@@ -383,14 +584,16 @@ export default {
         if (this.$v.data.$invalid) {
           return
         }
-        this.$axios.$put(API_ENERGY_SERVICE_DATA + '/2222' + this.element.identy,
+        this.$axios.$put(API_ENERGY_SERVICE_DATA + '/' + this.element.identy,
           {
             energy: this.data.energy,
             useforecast: this.data.useforecast,
             forecast: this.forecast,
             carbon: this.data.carbon,
-            catprice: this.data.catprice,
-            voltagelevel: this.data.voltagelevel
+            highload: this.data.highload,
+            criticalload: this.data.criticalload,
+            blackouttime: this.data.blackouttime,
+            tariff: this.data.tariff
           }, { progress: false })
           .then((v) => {
             this.doInterpolate()
