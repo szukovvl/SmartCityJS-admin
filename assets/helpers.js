@@ -26,6 +26,11 @@ export const VOLTAGE_LEVELS = [
   { text: 'Низкое напряжение (НН) 0,4 кВ', value: 'LOW_VOLTAGE' }
 ]
 
+export const GENERATION_USAGE_MODES = [
+  { text: 'Непрерывное использование', value: 'ALWAYS' },
+  { text: 'Резервная генерация', value: 'RESERVE' }
+]
+
 //
 const REST_API_URL = '/api'
 export const API_COMMON_INFO_SERVICE = REST_API_URL + '/common'

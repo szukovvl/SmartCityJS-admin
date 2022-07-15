@@ -243,6 +243,32 @@
           </v-tooltip>
         </div>
         <div class="d-flex">
+          <v-select
+            v-model="data.mode"
+            :items="generationMode"
+            hint="Режим использования"
+            persistent-hint
+            dense
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Определяет режим использования устройства хранения энергии.
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
           <v-menu
             v-model="showMenu"
             bottom
@@ -335,7 +361,8 @@ import {
   DELAY_BEFORE_SAVE_CHANGES,
   API_ENERGY_SERVICE_DATA,
   API_ENERGY_SERVICE_FORECAST,
-  API_ENERGY_SERVICE_INTERPOLATE
+  API_ENERGY_SERVICE_INTERPOLATE,
+  GENERATION_USAGE_MODES
 } from '~/assets/helpers'
 
 Vue.use(Vuelidate)
@@ -378,6 +405,7 @@ export default {
     criticalload_enabled: false,
     blackouttime_enabled: false,
     tariff_enabled: false,
+    mode_enabled: false,
 
     forecastLoading: false,
     forecastItems: notfoundForecasts,
@@ -468,6 +496,8 @@ export default {
       return errors
     },
 
+    generationMode: () => GENERATION_USAGE_MODES,
+
     forecastName: {
       get () {
         return this.forecast !== undefined
@@ -548,6 +578,12 @@ export default {
       }
       this.tariff_enabled = true
     },
+    'data.mode' (v) {
+      if (this.mode_enabled) {
+        this.saveChanges()
+      }
+      this.mode_enabled = true
+    },
     forecast (v) {
       this.data.forecast = v
       if (this.forecast_enabled) {
@@ -593,7 +629,8 @@ export default {
             highload: this.data.highload,
             criticalload: this.data.criticalload,
             blackouttime: this.data.blackouttime,
-            tariff: this.data.tariff
+            tariff: this.data.tariff,
+            mode: this.data.mode
           }, { progress: false })
           .then((v) => {
             this.doInterpolate()
