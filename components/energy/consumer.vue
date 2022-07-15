@@ -17,7 +17,10 @@
       <v-col>
         <v-card-title class="pa-0">
           &laquo;{{ einfoes[element.data.consumertype].title }}&raquo;
-          <v-tooltip right>
+          <v-tooltip
+            right
+            max-width="600"
+          >
             <template #activator="{ on, attrs }">
               <v-icon
                 class="align-self-start"
@@ -44,7 +47,7 @@
       >
         <div class="d-flex">
           <v-text-field
-            v-model="energyobj.data.energy"
+            v-model="data.energy"
             class="right-input"
             type="number"
             hint="Мощность потребления объекта в МВт"
@@ -52,8 +55,8 @@
             suffix="МВт"
             dense
             :error-messages="energyErrors"
-            @input="$v.energyobj.$touch()"
-            @blur="$v.energyobj.$touch()"
+            @input="$v.data.energy.$touch()"
+            @blur="$v.data.energy.$touch()"
           />
           <v-tooltip
             right
@@ -117,10 +120,10 @@
         </div>
         <div class="d-flex">
           <v-switch
-            v-model="energyobj.data.useforecast"
-            :label="energyobj.data.useforecast ? 'Прогнозирование' : 'Без прогнозирования'"
+            v-model="data.useforecast"
+            :label="data.useforecast ? 'Прогнозирование' : 'Без прогнозирования'"
             dense
-            :disabled="energyobj.data.forecast === undefined"
+            :disabled="forecast === undefined"
           />
           <v-tooltip
             right
@@ -141,10 +144,101 @@
             <span class="red--text text--lighten-1"><i>Для использования необходимо задать прогноз.</i></span>
           </v-tooltip>
         </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model="data.carbon"
+            class="right-input"
+            type="number"
+            hint="Экология (выброс CO2)"
+            persistent-hint
+            suffix="гCO2экв/кВт*час"
+            dense
+            :error-messages="carbonErrors"
+            @input="$v.data.carbon.$touch()"
+            @blur="$v.data.carbon.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Задается положительным числом и определяет уровень выброса загрязнения окружающей среды
+            (<span class="green--text text--accent-3"><i>Углеродный след</i></span>).
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-select
+            v-model="data.catprice"
+            :items="catPrices"
+            hint="Ценовая категория потребителя"
+            persistent-hint
+            dense
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Тариф на услугу снабжения электроэнергией для юридических лиц.
+            Ценовые категории различаются условиями применения тарифа на услуги по передаче
+            электроэнергии и принципами расчета стоимости электрической энергии.
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-select
+            v-model="data.voltagelevel"
+            :items="voltageLevels"
+            hint="Уровень напряжения"
+            persistent-hint
+            dense
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Уровни напряжения различают следующие:
+            низкое напряжение (НН) – 0,4 киловольта,
+            среднее напряжение втрое (СН2) – 3 киловольт,
+            среднее напряжение первое (СН1) – 35 киловольт,
+            высокое напряжение (ВН) – 110 киловольт.
+            Уровень напряжения влияет на тариф за электроэнергию.
+          </v-tooltip>
+        </div>
       </v-col>
       <v-col>
         <div
-          v-if="energyobj.data.forecast === undefined"
+          v-if="forecast === undefined"
           class="grey--text text--lighten-1 text-subtitle-2 d-flex justify-center font-weight-medium"
         >
           прогноз не задан
@@ -160,19 +254,22 @@
 <script>
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
-import { required, decimal } from 'vuelidate/lib/validators'
+import { required, decimal, integer } from 'vuelidate/lib/validators'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { CHART_OPTIONS } from '~/assets/charts'
 import {
   DELAY_BEFORE_SAVE_CHANGES,
   API_ENERGY_SERVICE_DATA,
   API_ENERGY_SERVICE_FORECAST,
-  API_ENERGY_SERVICE_INTERPOLATE
+  API_ENERGY_SERVICE_INTERPOLATE,
+  PRICE_CATEGORIES,
+  VOLTAGE_LEVELS
 } from '~/assets/helpers'
 
 Vue.use(Vuelidate)
 
 const powerValidate = value => value !== undefined && value !== null && value >= 0.0
+const carbonValidate = value => value !== undefined && value !== null && value >= 0
 
 const notfoundForecasts = [{ key: '_EMPTY_FORECAST_', text: 'прогнозы не найдены', forecast: undefined }]
 
@@ -219,57 +316,68 @@ export default {
           В Игре этот элемент называется <span class="light-blue--text text--lighten-3"><b>&laquo;Микрорайон&raquo;</b></span>.`
       }
     },
-    energyobj: undefined,
+    data: undefined,
     postdelay: undefined,
     useforecast_enabled: false,
     energy_enabled: false,
+    carbon_enabled: false,
+    catprice_enabled: false,
+    voltage_enabled: false,
     forecast_enabled: false,
     forecastLoading: false,
     forecastItems: notfoundForecasts,
     showMenu: false,
     interpolate: [],
-    chartPoints: [],
     selForecast: undefined,
-
-    aaa: undefined
+    forecast: undefined
   }),
 
   validations: {
-    energyobj: {
-      data: {
-        energy: { required, decimal, powerValidate }
-      }
-    },
-    energyval: { required, decimal, powerValidate }
+    data: {
+      energy: { required, decimal, powerValidate },
+      carbon: { required, integer, carbonValidate }
+    }
   },
 
   computed: {
     energyErrors () {
       const errors = []
-      if (!this.$v.energyobj.$dirty) {
+      if (!this.$v.data.energy.$dirty) {
         return errors
       }
-      !this.$v.energyobj.data.energy.decimal && errors.push('Мощность задается вещественным числом')
-      !this.$v.energyobj.data.energy.powerValidate && errors.push('Мощность не должна быть меньше нуля')
-      !this.$v.energyobj.data.energy.required && errors.push('Мощность необходимо определить')
+      !this.$v.data.energy.decimal && errors.push('Мощность задается вещественным числом')
+      !this.$v.data.energy.powerValidate && errors.push('Мощность не должна быть меньше нуля')
+      !this.$v.data.energy.required && errors.push('Мощность необходимо определить')
+      return errors
+    },
+    carbonErrors () {
+      const errors = []
+      if (!this.$v.data.carbon.$dirty) {
+        return errors
+      }
+      !this.$v.data.carbon.integer && errors.push('Задается целым числом')
+      !this.$v.data.carbon.carbonValidate && errors.push('Не должно быть меньше нуля')
+      !this.$v.data.carbon.required && errors.push('Необходимо определить')
       return errors
     },
 
     forecastName: {
       get () {
-        return this.energyobj.data.forecast !== undefined
-          ? this.energyobj.data.forecast.name
+        return this.forecast !== undefined
+          ? this.forecast.name
           : undefined
       },
       set: (newvalue) => { }
     },
+    catPrices: () => PRICE_CATEGORIES,
+    voltageLevels: () => VOLTAGE_LEVELS,
 
     chartOptions: () => CHART_OPTIONS,
     axesdata () {
       return {
         datasets: [
           {
-            data: this.energyobj.data.forecast.data.map(e => ({ point: e.point, value: e.value * this.energyobj.data.energy })),
+            data: this.forecast.data.map(e => ({ point: e.point, value: e.value * this.data.energy })),
             borderColor: '#B0BEC5',
             borderWidth: 2,
             stepped: true,
@@ -293,77 +401,56 @@ export default {
   },
 
   watch: {
-    /* 'energyobj.data.useforecast' (v) {
+    'data.useforecast' (v) {
       if (this.useforecast_enabled) {
         this.saveChanges()
       }
       this.useforecast_enabled = true
     },
-    'energyobj.data.energy' (v) {
-      / * eslint-disable no-console * /
-      console.log('energyobj.data.energy')
-      / * eslint-enable no-console * /
+    'data.energy' (v) {
       if (this.energy_enabled) {
         this.saveChanges()
       }
       this.energy_enabled = true
-    }, */
-    'energyobj.data.forecast' (v) {
-      /* eslint-disable no-console */
-      console.log('energyobj.data.forecast')
-      /* eslint-enable no-console */
+    },
+    'data.carbon' (v) {
+      if (this.carbon_enabled) {
+        this.saveChanges()
+      }
+      this.carbon_enabled = true
+    },
+    'data.catprice' (v) {
+      if (this.catprice_enabled) {
+        this.saveChanges()
+      }
+      this.catprice_enabled = true
+    },
+    'data.voltagelevel' (v) {
+      if (this.voltage_enabled) {
+        this.saveChanges()
+      }
+      this.voltage_enabled = true
+    },
+    forecast (v) {
+      this.data.forecast = v
       if (this.forecast_enabled) {
         this.saveChanges()
       }
       this.forecast_enabled = true
-      /* eslint-disable no-console */
-      console.log('-> energyobj.data.forecast')
-      /* eslint-enable no-console */
-    },
-    'energyobj.data': {
-      handler (newval, oldval) {
-        /* eslint-disable no-console */
-        console.log('-> energyobj.data:')
-        console.log('-> новые:', newval)
-        console.log('-> старые:', oldval)
-        if (oldval === undefined || newval === undefined) {
-          return
-        }
-        console.log('===')
-        /* eslint-enable no-console */
-        // this.saveChanges()
-      },
-      deep: true
-    },
-    aaa: {
-      handler (v) {
-        /* eslint-disable no-console */
-        console.log('-> watch(aaa)', v)
-        console.log('+++')
-        /* eslint-enable no-console */
-      },
-      deep: true
     },
 
     selForecast (idx) {
       if (this.selForecast !== undefined) {
-        this.energyobj.data.forecast = this.forecastItems[idx].forecast
-        this.aaa = this.energyobj.data.forecast
-        /* eslint-disable no-console */
-        console.log('-> selForecast', this.energyobj)
-        /* eslint-enable no-console */
+        this.forecast = this.forecastItems[idx].forecast
       }
     }
   },
 
   created () {
-    this.energyobj = this.element
-    this.aaa = this.element.data.forecast
-    /* eslint-disable no-console */
-    console.log('==> created', this.energyobj)
-    /* eslint-enable no-console */
-    this.forecast_enabled = this.energyobj.data.forecast === undefined
-    if (this.energyobj.data.forecast !== undefined) {
+    this.data = this.element.data
+    this.forecast = this.data.forecast
+    this.forecast_enabled = this.forecast === undefined
+    if (this.forecast !== undefined) {
       this.doInterpolate()
     }
   },
@@ -371,23 +458,23 @@ export default {
   methods: {
     saveChanges () {
       clearTimeout(this.postdelay)
-      /* eslint-disable no-console */
-      console.log('-> saveChanges')
-      /* eslint-enable no-console */
-      if (this.$v.energyobj.$invalid) {
+      if (this.$v.data.$invalid) {
         return
       }
       this.postdelay = setTimeout(() => {
         this.postdelay = undefined
-        this.$v.energyobj.$touch()
-        if (this.$v.energyobj.$invalid) {
+        this.$v.data.$touch()
+        if (this.$v.data.$invalid) {
           return
         }
-        this.$axios.$put(API_ENERGY_SERVICE_DATA + '/' + this.energyobj.identy,
+        this.$axios.$put(API_ENERGY_SERVICE_DATA + '/' + this.element.identy,
           {
-            energy: this.energyobj.data.energy,
-            useforecast: this.energyobj.data.useforecast,
-            forecast: this.energyobj.data.forecast
+            energy: this.data.energy,
+            useforecast: this.data.useforecast,
+            forecast: this.forecast,
+            carbon: this.data.carbon,
+            catprice: this.data.catprice,
+            voltagelevel: this.data.voltagelevel
           }, { progress: false })
           .then((v) => {
             this.doInterpolate()
@@ -403,7 +490,8 @@ export default {
     },
 
     forecastClear () {
-      this.energyobj.data.forecast = undefined
+      this.data.useforecast = false
+      this.forecast = undefined
       this.interpolate = []
     },
     doLoadForecasts () {
@@ -414,7 +502,7 @@ export default {
       this.forecastItems = notfoundForecasts
       this.selForecast = undefined
 
-      this.$axios.$get(API_ENERGY_SERVICE_FORECAST + '/' + this.energyobj.componentType, { progress: false })
+      this.$axios.$get(API_ENERGY_SERVICE_FORECAST + '/' + this.element.componentType, { progress: false })
         .then((v) => {
           if (v !== undefined && v.length !== 0) {
             this.forecastItems = v.map((item) => {
@@ -434,14 +522,11 @@ export default {
         })
     },
     doInterpolate () {
-      /* eslint-disable no-console */
-      console.log('-> doInterpolate')
-      /* eslint-enable no-console */
       this.interpolate = []
-      if (this.energyobj.data.forecast === undefined) {
+      if (this.forecast === undefined) {
         return
       }
-      this.$axios.$get(API_ENERGY_SERVICE_INTERPOLATE + '/' + this.energyobj.identy, { progress: false })
+      this.$axios.$get(API_ENERGY_SERVICE_INTERPOLATE + '/' + this.element.identy, { progress: false })
         .then((v) => {
           if (v !== undefined) {
             this.interpolate = v.items
