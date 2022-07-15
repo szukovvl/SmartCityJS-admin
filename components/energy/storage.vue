@@ -42,17 +42,15 @@
     </v-row>
 
     <v-row>
-      <v-col
-        cols="4"
-      >
+      <v-col>
         <div class="d-flex">
           <v-text-field
             v-model="data.energy"
             class="right-input"
             type="number"
-            hint="Мощность генерации в МВт"
+            hint="Емкость хранилища, МВт*час"
             persistent-hint
-            suffix="МВт"
+            suffix="МВт*час"
             dense
             :error-messages="energyErrors"
             @input="$v.data.energy.$touch()"
@@ -73,7 +71,7 @@
                 mdi-help-circle-outline
               </v-icon>
             </template>
-            Задается положительным числом и определяет статическую генерацию или используется как базовая величина при прогнозировании.
+            Задается положительным числом и определяет емкость устройства хранения энергии.
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
@@ -111,15 +109,16 @@
         </div>
         <div class="d-flex">
           <v-text-field
-            v-model="data.highload"
+            v-model="data.performance"
             class="right-input"
             type="number"
-            hint="Порог высокой нагрузки"
+            hint="Показатель эффективности системы хранения"
             persistent-hint
+            suffix="гCO2экв/кВт*час"
             dense
-            :error-messages="highloadErrors"
-            @input="$v.data.highload.$touch()"
-            @blur="$v.data.highload.$touch()"
+            :error-messages="performanceErrors"
+            @input="$v.data.performance.$touch()"
+            @blur="$v.data.performance.$touch()"
           />
           <v-tooltip
             right
@@ -136,7 +135,168 @@
                 mdi-help-circle-outline
               </v-icon>
             </template>
-            Задается положительным числом и определяет порог значения мощности высокой нагрузки.
+            Задается положительным числом и определяет потери аккумулятора.
+            (<span class="green--text text--accent-3"><i>Углеродный след</i></span>).
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model="data.peckertexponent"
+            class="right-input"
+            type="number"
+            hint="Экспонента Пекерта"
+            persistent-hint
+            dense
+            :error-messages="peckertexponentErrors"
+            @input="$v.data.peckertexponent.$touch()"
+            @blur="$v.data.peckertexponent.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Количество электроэнергии, которое можно извлечь из аккумулятора,
+            зависит от тока разряда аккумулятора.
+            То есть при слишком большом токе разряда аккумулятор разряжается очень быстро и отдает меньше электроэнергии.
+            Эффект этот был замечен довольно давно, но первым, кто попробовал учесть его количественно,
+            был <span class="light-blue--text text--lighten-3"><b>Пекерт (Peukert)</b></span>, который модифицировал формулу, внеся показатель,
+            который теперь называют <span class="light-blue--text text--lighten-3"><b>экспонента Пекерта (Peukert's exponent)</b></span>.
+            Обычно экспонента Пекерта принимает значения от 1,1 до 1,3.
+            Задается положительным числом.
+            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model="data.outpower"
+            class="right-input"
+            type="number"
+            hint="Нормалььно значение отдаваемой мощности"
+            persistent-hint
+            dense
+            :error-messages="outpowerErrors"
+            @input="$v.data.outpower.$touch()"
+            @blur="$v.data.outpower.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Определяет границу нормального значения отдаваемой мощности потребителю.
+            Задается положительным числом.
+            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-switch
+            v-model="data.overload_enabled"
+            :label="data.overload_enabled ? 'Разрешено превышать границу нормального значения мощности' : 'Запрещено превышать границу нормального значения мощности'"
+            dense
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start mt-3"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Превышении границы нормального значения мощности приводит к более быстрой разрядки аккумулятора и
+            ухудшает показатель эффективности устройства хранения.
+          </v-tooltip>
+        </div>
+      </v-col>
+      <v-col>
+        <div class="d-flex">
+          <v-text-field
+            v-model="data.maxdischarge"
+            class="right-input"
+            type="number"
+            hint="Максимальная разрядка хранилища"
+            persistent-hint
+            dense
+            :error-messages="maxdischargeErrors"
+            @input="$v.data.maxdischarge.$touch()"
+            @blur="$v.data.maxdischarge.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Определяет границу максимально допустимой разрядки аккумулятора от его начальной емкости.
+            Задается положительным числом.
+            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-text-field
+            v-model="data.undercharging"
+            class="right-input"
+            type="number"
+            hint="Недозарядка при повторном использовании"
+            persistent-hint
+            dense
+            :error-messages="underchargingErrors"
+            @input="$v.data.undercharging.$touch()"
+            @blur="$v.data.undercharging.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Определяет границу недозарядки аккумулятора от его начальной емкости перед повторным использованием.
+            Задается положительным числом.
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
@@ -242,84 +402,6 @@
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
-        <div class="d-flex">
-          <v-menu
-            v-model="showMenu"
-            bottom
-            offset-y
-          >
-            <template #activator="{}">
-              <v-text-field
-                v-model="forecastName"
-                hint="Шаблон прогноза"
-                persistent-hint
-                placeholder="выберите прогноз"
-                dense
-                clearable
-                readonly
-                append-icon="mdi-menu-down"
-                :loading="forecastLoading"
-                @click:clear="forecastClear"
-                @click:append="doLoadForecasts"
-                @focus="doLoadForecasts"
-              />
-            </template>
-            <v-list
-              :disabled="forecastItems[0].forecast === undefined"
-            >
-              <v-list-item-group
-                v-model="selForecast"
-                color="primary"
-              >
-                <v-list-item
-                  v-for="item in forecastItems"
-                  :key="item.key"
-                >
-                  <v-list-item-content>
-                    <v-list-item-title>{{ item.text }}</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
-          </v-menu>
-        </div>
-        <div class="d-flex">
-          <v-switch
-            v-model="data.useforecast"
-            :label="data.useforecast ? 'Прогнозирование' : 'Без прогнозирования'"
-            dense
-            :disabled="forecast === undefined"
-          />
-          <v-tooltip
-            right
-            max-width="400"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start mt-3"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            Определяет использование прогнозирования в игровом сценарии.
-            <span class="red--text text--lighten-1"><i>Для использования необходимо задать прогноз.</i></span>
-          </v-tooltip>
-        </div>
-      </v-col>
-      <v-col>
-        <div
-          v-if="forecast === undefined"
-          class="grey--text text--lighten-1 text-subtitle-2 d-flex justify-center font-weight-medium"
-        >
-          прогноз не задан
-        </div>
-        <div v-else>
-          <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :height="200" />
-        </div>
       </v-col>
     </v-row>
   </v-card>
@@ -329,13 +411,9 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import { required, decimal, integer, between } from 'vuelidate/lib/validators'
-import ForecastChart from '~/components/forecast/forecast-chart.vue'
-import { CHART_OPTIONS } from '~/assets/charts'
 import {
   DELAY_BEFORE_SAVE_CHANGES,
-  API_ENERGY_SERVICE_DATA,
-  API_ENERGY_SERVICE_FORECAST,
-  API_ENERGY_SERVICE_INTERPOLATE
+  API_ENERGY_SERVICE_DATA
 } from '~/assets/helpers'
 
 Vue.use(Vuelidate)
@@ -347,12 +425,8 @@ function loadStateCheck (value) {
   return this.data.criticalload >= this.data.highload
 }
 
-const notfoundForecasts = [{ key: '_EMPTY_FORECAST_', text: 'прогнозы не найдены', forecast: undefined }]
-
 export default {
   name: 'StorageObjet',
-
-  components: { ForecastChart },
 
   props: {
     element: {
@@ -375,22 +449,13 @@ export default {
     },
     data: undefined,
     postdelay: undefined,
-    useforecast_enabled: false,
+
     energy_enabled: false,
     carbon_enabled: false,
-    forecast_enabled: false,
-
     highload_endbled: false,
     criticalload_enabled: false,
     blackouttime_enabled: false,
-    tariff_enabled: false,
-
-    forecastLoading: false,
-    forecastItems: notfoundForecasts,
-    showMenu: false,
-    interpolate: [],
-    selForecast: undefined,
-    forecast: undefined
+    tariff_enabled: false
   }),
 
   validations: {
@@ -472,52 +537,10 @@ export default {
       !this.$v.data.tariff.powerValidate && errors.push('Не должно быть меньше нуля')
       !this.$v.data.tariff.required && errors.push('Необходимо определить')
       return errors
-    },
-
-    forecastName: {
-      get () {
-        return this.forecast !== undefined
-          ? this.forecast.name
-          : undefined
-      },
-      set: (newvalue) => { }
-    },
-
-    chartOptions: () => CHART_OPTIONS,
-    axesdata () {
-      return {
-        datasets: [
-          {
-            data: this.forecast.data.map(e => ({ point: e.point, value: e.value * this.data.energy })),
-            borderColor: '#B0BEC5',
-            borderWidth: 2,
-            stepped: true,
-            radius: 0,
-            hoverRadius: 0,
-            hitRadius: 0,
-            borderDash: [2, 2]
-          },
-          {
-            data: this.interpolate,
-            backgroundColor: 'rgba(20, 0, 255, 0.3)',
-            borderColor: '#03A9F4',
-            borderWidth: 2,
-            radius: 0,
-            hoverRadius: 0,
-            hitRadius: 0
-          }
-        ]
-      }
     }
   },
 
   watch: {
-    'data.useforecast' (v) {
-      if (this.useforecast_enabled) {
-        this.saveChanges()
-      }
-      this.useforecast_enabled = true
-    },
     'data.energy' (v) {
       if (this.energy_enabled) {
         this.saveChanges()
@@ -553,29 +576,11 @@ export default {
         this.saveChanges()
       }
       this.tariff_enabled = true
-    },
-    forecast (v) {
-      this.data.forecast = v
-      if (this.forecast_enabled) {
-        this.saveChanges()
-      }
-      this.forecast_enabled = true
-    },
-
-    selForecast (idx) {
-      if (this.selForecast !== undefined) {
-        this.forecast = this.forecastItems[idx].forecast
-      }
     }
   },
 
   created () {
     this.data = this.element.data
-    this.forecast = this.data.forecast
-    this.forecast_enabled = this.forecast === undefined
-    if (this.forecast !== undefined) {
-      this.doInterpolate()
-    }
   },
 
   methods: {
@@ -590,7 +595,7 @@ export default {
         if (this.$v.data.$invalid) {
           return
         }
-        this.$axios.$put(API_ENERGY_SERVICE_DATA + '/' + this.element.identy,
+        this.$axios.$put(API_ENERGY_SERVICE_DATA + '/111' + this.element.identy,
           {
             energy: this.data.energy,
             useforecast: this.data.useforecast,
@@ -612,58 +617,6 @@ export default {
             /* eslint-enable no-console */
           })
       }, DELAY_BEFORE_SAVE_CHANGES)
-    },
-
-    forecastClear () {
-      this.data.useforecast = false
-      this.forecast = undefined
-      this.interpolate = []
-    },
-    doLoadForecasts () {
-      if (this.forecastLoading) {
-        return
-      }
-      this.forecastLoading = true
-      this.forecastItems = notfoundForecasts
-      this.selForecast = undefined
-
-      this.$axios.$get(API_ENERGY_SERVICE_FORECAST + '/' + this.element.componentType, { progress: false })
-        .then((v) => {
-          if (v !== undefined && v.length !== 0) {
-            this.forecastItems = v.map((item) => {
-              return {
-                key: 'FORECAST_' + item.fc_type + '_' + item.id,
-                text: item.name,
-                forecast: item
-              }
-            })
-          }
-          this.forecastLoading = false
-          this.showMenu = true
-        })
-        .catch(() => {
-          this.forecastLoading = false
-          this.showMenu = true
-        })
-    },
-    doInterpolate () {
-      this.interpolate = []
-      if (this.forecast === undefined) {
-        return
-      }
-      this.$axios.$get(API_ENERGY_SERVICE_INTERPOLATE + '/' + this.element.identy, { progress: false })
-        .then((v) => {
-          if (v !== undefined) {
-            this.interpolate = v.items
-          }
-        })
-        .catch((error) => {
-          /* eslint-disable no-console */
-          if (error.response) {
-            console.error('ошибка %d: %s', error.response.status, error.response.data)
-          }
-          /* eslint-enable no-console */
-        })
     }
   }
 }
