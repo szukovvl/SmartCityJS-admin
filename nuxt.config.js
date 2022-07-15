@@ -16,9 +16,9 @@ export default {
     ]
   },
 
-  server: {
-    port: 3001 // default: 3000
-  },
+  // server: {
+  //  port: 3001 // default: 3000
+  // },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
@@ -56,8 +56,8 @@ export default {
 
   proxy: {
     '/api': {
-      target: 'http://localhost:3000/api/1_0',
-      // target: 'http://192.168.5.243:3000/api/1_0',
+      // target: 'http://localhost:3000/api/1_0',
+      target: 'http://192.168.5.243:3000/api/1_0',
       // changeOrigin: false,
       pathRewrite: { '^/api': '' }
     }

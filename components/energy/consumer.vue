@@ -78,6 +78,98 @@
           </v-tooltip>
         </div>
         <div class="d-flex">
+          <v-text-field
+            v-model="data.carbon"
+            class="right-input"
+            type="number"
+            hint="Экология (выброс CO2)"
+            persistent-hint
+            suffix="гCO2экв/кВт*час"
+            dense
+            :error-messages="carbonErrors"
+            @input="$v.data.carbon.$touch()"
+            @blur="$v.data.carbon.$touch()"
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Задается положительным числом и определяет уровень выброса загрязнения окружающей среды
+            (<span class="green--text text--accent-3"><i>Углеродный след</i></span>).
+            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-select
+            v-model="data.catprice"
+            :items="catPrices"
+            hint="Ценовая категория потребителя"
+            persistent-hint
+            dense
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Тариф на услугу снабжения электроэнергией для юридических лиц.
+            Ценовые категории различаются условиями применения тарифа на услуги по передаче
+            электроэнергии и принципами расчета стоимости электрической энергии.
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
+          <v-select
+            v-model="data.voltagelevel"
+            :items="voltageLevels"
+            hint="Уровень напряжения"
+            persistent-hint
+            dense
+          />
+          <v-tooltip
+            right
+            max-width="400"
+          >
+            <template #activator="{ on, attrs }">
+              <v-icon
+                class="align-self-start"
+                color="blue"
+                small
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-help-circle-outline
+              </v-icon>
+            </template>
+            Уровни напряжения различают следующие:
+            низкое напряжение (НН) – 0,4 киловольта,
+            среднее напряжение втрое (СН2) – 3 киловольт,
+            среднее напряжение первое (СН1) – 35 киловольт,
+            высокое напряжение (ВН) – 110 киловольт.
+            Уровень напряжения влияет на тариф за электроэнергию.
+          </v-tooltip>
+        </div>
+        <div class="d-flex">
           <v-menu
             v-model="showMenu"
             bottom
@@ -142,97 +234,6 @@
             </template>
             Определяет использование прогнозирования в игровом сценарии.
             <span class="red--text text--lighten-1"><i>Для использования необходимо задать прогноз.</i></span>
-          </v-tooltip>
-        </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="data.carbon"
-            class="right-input"
-            type="number"
-            hint="Экология (выброс CO2)"
-            persistent-hint
-            suffix="гCO2экв/кВт*час"
-            dense
-            :error-messages="carbonErrors"
-            @input="$v.data.carbon.$touch()"
-            @blur="$v.data.carbon.$touch()"
-          />
-          <v-tooltip
-            right
-            max-width="400"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            Задается положительным числом и определяет уровень выброса загрязнения окружающей среды
-            (<span class="green--text text--accent-3"><i>Углеродный след</i></span>).
-          </v-tooltip>
-        </div>
-        <div class="d-flex">
-          <v-select
-            v-model="data.catprice"
-            :items="catPrices"
-            hint="Ценовая категория потребителя"
-            persistent-hint
-            dense
-          />
-          <v-tooltip
-            right
-            max-width="400"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            Тариф на услугу снабжения электроэнергией для юридических лиц.
-            Ценовые категории различаются условиями применения тарифа на услуги по передаче
-            электроэнергии и принципами расчета стоимости электрической энергии.
-          </v-tooltip>
-        </div>
-        <div class="d-flex">
-          <v-select
-            v-model="data.voltagelevel"
-            :items="voltageLevels"
-            hint="Уровень напряжения"
-            persistent-hint
-            dense
-          />
-          <v-tooltip
-            right
-            max-width="400"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            Уровни напряжения различают следующие:
-            низкое напряжение (НН) – 0,4 киловольта,
-            среднее напряжение втрое (СН2) – 3 киловольт,
-            среднее напряжение первое (СН1) – 35 киловольт,
-            высокое напряжение (ВН) – 110 киловольт.
-            Уровень напряжения влияет на тариф за электроэнергию.
           </v-tooltip>
         </div>
       </v-col>
