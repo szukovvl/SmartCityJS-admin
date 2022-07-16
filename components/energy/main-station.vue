@@ -75,6 +75,8 @@
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
+      </v-col>
+      <v-col>
         <div class="d-flex">
           <v-text-field
             v-model="data.carbon"
@@ -145,33 +147,36 @@
     </v-row>
 
     <v-card-text class="ps-0">
-      <div class="indigo darken-3 white--text text-h6 text-center font-weight-medium py-1 mb-2">
-        Энерговвод
-      </div>
-      <div
-        v-for="(item, index) in element.data.inputs"
-        :key="item.identy"
-      >
-        <div v-if="index !== 0">
-          &nbsp;
-        </div>
-        <SubnetObjet :subnet="item" :snidx="index + 1" @onSaveChanges="onSaveChanges" />
-      </div>
-    </v-card-text>
-
-    <v-card-text class="ps-0">
-      <div class="indigo darken-3 white--text text-h6 text-center font-weight-medium py-1 mb-2">
-        Подсети потребителей
-      </div>
-      <div
-        v-for="(item, index) in element.data.outputs"
-        :key="item.identy"
-      >
-        <div v-if="index !== 0">
-          &nbsp;
-        </div>
-        <SubnetObjet :subnet="item" :snidx="index + 1" @onSaveChanges="onSaveChanges" />
-      </div>
+      <v-row>
+        <v-col>
+          <div class="indigo darken-3 white--text text-h6 text-center font-weight-medium py-1 mb-2">
+            Энерговвод
+          </div>
+          <div
+            v-for="(item, index) in element.data.inputs"
+            :key="item.identy"
+          >
+            <div v-if="index !== 0">
+              &nbsp;
+            </div>
+            <SubnetObjet :subnet="item" :snidx="index + 1" @onSaveChanges="onSaveChanges" />
+          </div>
+        </v-col>
+        <v-col>
+          <div class="indigo darken-3 white--text text-h6 text-center font-weight-medium py-1 mb-2">
+            Подсети потребителей
+          </div>
+          <div
+            v-for="(item, index) in element.data.outputs"
+            :key="item.identy"
+          >
+            <div v-if="index !== 0">
+              &nbsp;
+            </div>
+            <SubnetObjet :subnet="item" :snidx="index + 1" @onSaveChanges="onSaveChanges" />
+          </div>
+        </v-col>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
@@ -306,9 +311,6 @@ export default {
             tariff: e.data.tariff
           }))
         }
-        /* eslint-disable no-console */
-        console.log('-> onSaveChanges', transmitted)
-        /* eslint-enable no-console */
         this.$axios.$put(API_ENERGY_SERVICE_DATA + '/' + this.element.identy, transmitted, { progress: false })
           // .then((v) => {})
           .catch((error) => {
