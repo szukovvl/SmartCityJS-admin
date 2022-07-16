@@ -500,11 +500,17 @@ import {
 
 Vue.use(Vuelidate)
 
-const powerValidate = value => value !== undefined && value !== null && value >= 0.0
-const carbonValidate = value => value !== undefined && value !== null && value >= 0
+const checkGreatZero_decimal = value => value !== undefined && value !== null && value >= 0.0
+const checkGreatZero_int = value => value !== undefined && value !== null && value >= 0
 
 function loadStateCheck (value) {
-  return this.data.criticalload >= this.data.highload
+  return this.data.criticalload > this.data.outpower
+}
+function outPowerCheck (value) {
+  return this.data.outpower > this.data.maxdischarge
+}
+function underchargingCheck (value) {
+  return this.data.undercharging > this.data.maxdischarge
 }
 
 export default {
@@ -536,20 +542,55 @@ export default {
     carbon_enabled: false,
     criticalload_enabled: false,
     blackouttime_enabled: false,
-    tariff_enabled: false
+    tariff_enabled: false,
+
+    performance_enabled: false,
+    peckertexponent_enabled: false,
+    outpower_enabled: false,
+    overload_enabled_enabled: false,
+    maxdischarge_enabled: false,
+    undercharging_enabled: false,
+    mode_enabled: false,
+    chargebehavior_enabled: false,
+    initstate_enabled: false
   }),
 
   validations: {
     data: {
-      energy: { required, decimal, powerValidate },
-      carbon: { required, decimal, carbonValidate },
+      energy: { required, decimal, checkGreatZero_decimal },
+      carbon: { required, decimal, checkGreatZero_decimal },
       criticalload: {
         required,
         betweenValue: between(0.5, 1.0),
         loadStateCheck
       },
-      blackouttime: { required, integer, carbonValidate },
-      tariff: { required, decimal, powerValidate }
+      blackouttime: { required, integer, checkGreatZero_int },
+      tariff: { required, decimal, checkGreatZero_decimal },
+
+      performance: {
+        required,
+        betweenValue: between(0.5, 1.0)
+      },
+      peckertexponent: {
+        required,
+        betweenValue: between(0.8, 1.8),
+      },
+      outpower: {
+        required,
+        betweenValue: between(0.35, 1.0),
+        outPowerCheck,
+        loadStateCheck
+      },
+      maxdischarge: {
+        required,
+        betweenValue: between(0.02, 0.35),
+        outPowerCheck
+      },
+      undercharging: {
+        required,
+        betweenValue: between(0.4, 1.0),
+        underchargingCheck
+      }
     }
   },
 
@@ -559,9 +600,9 @@ export default {
       if (!this.$v.data.energy.$dirty) {
         return errors
       }
-      !this.$v.data.energy.decimal && errors.push('Мощность задается вещественным числом')
-      !this.$v.data.energy.powerValidate && errors.push('Мощность не должна быть меньше нуля')
-      !this.$v.data.energy.required && errors.push('Мощность необходимо определить')
+      !this.$v.data.energy.decimal && errors.push('Задается вещественным числом')
+      !this.$v.data.energy.checkGreatZero_decimal && errors.push('Не может быть отрицательным')
+      !this.$v.data.energy.required && errors.push('Необходимо определить')
       return errors
     },
     carbonErrors () {
@@ -569,8 +610,8 @@ export default {
       if (!this.$v.data.carbon.$dirty) {
         return errors
       }
-      !this.$v.data.carbon.integer && errors.push('Задается целым числом')
-      !this.$v.data.carbon.carbonValidate && errors.push('Не должно быть меньше нуля')
+      !this.$v.data.carbon.decimal && errors.push('Задается вещественным числом')
+      !this.$v.data.carbon.checkGreatZero_decimal && errors.push('Не может быть отрицательным')
       !this.$v.data.carbon.required && errors.push('Необходимо определить')
       return errors
     },
@@ -580,7 +621,7 @@ export default {
         return errors
       }
       !this.$v.data.criticalload.betweenValue && errors.push('Только значения от 0,5 до 1,0')
-      !this.$v.data.criticalload.loadStateCheck && errors.push('Не должно быть меньше высокой нагрузки')
+      !this.$v.data.criticalload.loadStateCheck && errors.push('Не должно быть меньше нормального значения мощности')
       !this.$v.data.criticalload.required && errors.push('Необходимо определить')
       return errors
     },
@@ -590,7 +631,7 @@ export default {
         return errors
       }
       !this.$v.data.blackouttime.integer && errors.push('Задается целым числом')
-      !this.$v.data.blackouttime.carbonValidate && errors.push('Не должно быть меньше нуля')
+      !this.$v.data.blackouttime.checkGreatZero_int && errors.push('Не может быть отрицательным')
       !this.$v.data.blackouttime.required && errors.push('Необходимо определить')
       return errors
     },
@@ -600,8 +641,58 @@ export default {
         return errors
       }
       !this.$v.data.tariff.decimal && errors.push('Задается вещественным числом: целая часть рубли, дробная часть копейки')
-      !this.$v.data.tariff.powerValidate && errors.push('Не должно быть меньше нуля')
+      !this.$v.data.tariff.checkGreatZero_decimal && errors.push('Не может быть отрицательным')
       !this.$v.data.tariff.required && errors.push('Необходимо определить')
+      return errors
+    },
+
+    performanceErrors () {
+      const errors = []
+      if (!this.$v.data.performance.$dirty) {
+        return errors
+      }
+      !this.$v.data.performance.betweenValue && errors.push('Только значения от 0,5 до 1,0')
+      !this.$v.data.performance.required && errors.push('Необходимо определить')
+      return errors
+    },
+    peckertexponentErrors () {
+      const errors = []
+      if (!this.$v.data.peckertexponent.$dirty) {
+        return errors
+      }
+      !this.$v.data.peckertexponent.betweenValue && errors.push('Только значения от 0,8 до 1,8')
+      !this.$v.data.peckertexponent.required && errors.push('Необходимо определить')
+      return errors
+    },
+    outpowerErrors () {
+      const errors = []
+      if (!this.$v.data.outpower.$dirty) {
+        return errors
+      }
+      !this.$v.data.outpower.betweenValue && errors.push('Только значения от 0,35 до 1,0')
+      !this.$v.data.outpower.outPowerCheck && errors.push('Должно быть больше допустимой разрядки')
+      !this.$v.data.outpower.loadStateCheck && errors.push('Не должно превышать значения перегрузки')
+      !this.$v.data.outpower.required && errors.push('Необходимо определить')
+      return errors
+    },
+    maxdischargeErrors () {
+      const errors = []
+      if (!this.$v.data.maxdischarge.$dirty) {
+        return errors
+      }
+      !this.$v.data.maxdischarge.betweenValue && errors.push('Только значения от 0,02 до 0,35')
+      !this.$v.data.maxdischarge.outPowerCheck && errors.push('Не должно быть больше нормального значения мощности')
+      !this.$v.data.maxdischarge.required && errors.push('Необходимо определить')
+      return errors
+    },
+    underchargingErrors () {
+      const errors = []
+      if (!this.$v.data.undercharging.$dirty) {
+        return errors
+      }
+      !this.$v.data.undercharging.betweenValue && errors.push('Только значения от 0,4 до 1,0')
+      !this.$v.data.undercharging.underchargingCheck && errors.push('Должно быть больше допустимой разрядки')
+      !this.$v.data.undercharging.required && errors.push('Необходимо определить')
       return errors
     },
 
@@ -640,6 +731,61 @@ export default {
         this.saveChanges()
       }
       this.tariff_enabled = true
+    },
+
+    'data.performance' (v) {
+      if (this.performance_enabled) {
+        this.saveChanges()
+      }
+      this.performance_enabled = true
+    },
+    'data.peckertexponent' (v) {
+      if (this.peckertexponent_enabled) {
+        this.saveChanges()
+      }
+      this.peckertexponent_enabled = true
+    },
+    'data.outpower' (v) {
+      if (this.outpower_enabled) {
+        this.saveChanges()
+      }
+      this.outpower_enabled = true
+    },
+    'data.overload_enabled' (v) {
+      if (this.overload_enabled_enabled) {
+        this.saveChanges()
+      }
+      this.overload_enabled_enabled = true
+    },
+    'data.maxdischarge' (v) {
+      if (this.maxdischarge_enabled) {
+        this.saveChanges()
+      }
+      this.maxdischarge_enabled = true
+    },
+    'data.undercharging' (v) {
+      if (this.undercharging_enabled) {
+        this.saveChanges()
+      }
+      this.undercharging_enabled = true
+    },
+    'data.mode' (v) {
+      if (this.mode_enabled) {
+        this.saveChanges()
+      }
+      this.mode_enabled = true
+    },
+    'data.chargebehavior' (v) {
+      if (this.chargebehavior_enabled) {
+        this.saveChanges()
+      }
+      this.chargebehavior_enabled = true
+    },
+    'data.initstate' (v) {
+      if (this.initstate_enabled) {
+        this.saveChanges()
+      }
+      this.initstate_enabled = true
     }
   },
 
@@ -659,16 +805,23 @@ export default {
         if (this.$v.data.$invalid) {
           return
         }
-        this.$axios.$put(API_ENERGY_SERVICE_DATA + '/111' + this.element.identy,
+        this.$axios.$put(API_ENERGY_SERVICE_DATA + '/' + this.element.identy,
           {
             energy: this.data.energy,
-            useforecast: this.data.useforecast,
-            forecast: this.forecast,
             carbon: this.data.carbon,
-            highload: this.data.highload,
             criticalload: this.data.criticalload,
             blackouttime: this.data.blackouttime,
-            tariff: this.data.tariff
+            tariff: this.data.tariff,
+
+            performance: this.data.performance,
+            peckertexponent: this.data.peckertexponent,
+            outpower: this.data.outpower,
+            overload_enabled: this.data.overload_enabled,
+            maxdischarge: this.data.maxdischarge,
+            undercharging: this.data.undercharging,
+            mode: this.data.mode,
+            chargebehavior: this.data.chargebehavior,
+            initstate: this.data.initstate
           }, { progress: false })
           .then((v) => {
             this.doInterpolate()

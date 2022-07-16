@@ -451,7 +451,7 @@ export default {
         return errors
       }
       !this.$v.data.carbon.decimal && errors.push('Задается вещественным числом')
-      !this.$v.data.carbon.carbonValidate && errors.push('Не должно быть меньше нуля')
+      !this.$v.data.carbon.powerValidate && errors.push('Не должно быть меньше нуля')
       !this.$v.data.carbon.required && errors.push('Необходимо определить')
       return errors
     },
