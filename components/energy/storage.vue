@@ -500,8 +500,8 @@ import {
 
 Vue.use(Vuelidate)
 
-const checkGreatZero_decimal = value => value !== undefined && value !== null && value >= 0.0
-const checkGreatZero_int = value => value !== undefined && value !== null && value >= 0
+const checkGreatZeroDecimal = value => value !== undefined && value !== null && value >= 0.0
+const checkGreatZeroInt = value => value !== undefined && value !== null && value >= 0
 
 function loadStateCheck (value) {
   return this.data.criticalload > this.data.outpower
@@ -538,34 +538,20 @@ export default {
     data: undefined,
     postdelay: undefined,
 
-    energy_enabled: false,
-    carbon_enabled: false,
-    criticalload_enabled: false,
-    blackouttime_enabled: false,
-    tariff_enabled: false,
-
-    performance_enabled: false,
-    peckertexponent_enabled: false,
-    outpower_enabled: false,
-    overload_enabled_enabled: false,
-    maxdischarge_enabled: false,
-    undercharging_enabled: false,
-    mode_enabled: false,
-    chargebehavior_enabled: false,
-    initstate_enabled: false
+    data_enabled: false
   }),
 
   validations: {
     data: {
-      energy: { required, decimal, checkGreatZero_decimal },
-      carbon: { required, decimal, checkGreatZero_decimal },
+      energy: { required, decimal, checkGreatZeroDecimal },
+      carbon: { required, decimal, checkGreatZeroDecimal },
       criticalload: {
         required,
         betweenValue: between(0.5, 1.0),
         loadStateCheck
       },
-      blackouttime: { required, integer, checkGreatZero_int },
-      tariff: { required, decimal, checkGreatZero_decimal },
+      blackouttime: { required, integer, checkGreatZeroInt },
+      tariff: { required, decimal, checkGreatZeroDecimal },
 
       performance: {
         required,
@@ -573,7 +559,7 @@ export default {
       },
       peckertexponent: {
         required,
-        betweenValue: between(0.8, 1.8),
+        betweenValue: between(0.8, 1.8)
       },
       outpower: {
         required,
@@ -601,7 +587,7 @@ export default {
         return errors
       }
       !this.$v.data.energy.decimal && errors.push('Задается вещественным числом')
-      !this.$v.data.energy.checkGreatZero_decimal && errors.push('Не может быть отрицательным')
+      !this.$v.data.energy.checkGreatZeroDecimal && errors.push('Не может быть отрицательным')
       !this.$v.data.energy.required && errors.push('Необходимо определить')
       return errors
     },
@@ -611,7 +597,7 @@ export default {
         return errors
       }
       !this.$v.data.carbon.decimal && errors.push('Задается вещественным числом')
-      !this.$v.data.carbon.checkGreatZero_decimal && errors.push('Не может быть отрицательным')
+      !this.$v.data.carbon.checkGreatZeroDecimal && errors.push('Не может быть отрицательным')
       !this.$v.data.carbon.required && errors.push('Необходимо определить')
       return errors
     },
@@ -631,7 +617,7 @@ export default {
         return errors
       }
       !this.$v.data.blackouttime.integer && errors.push('Задается целым числом')
-      !this.$v.data.blackouttime.checkGreatZero_int && errors.push('Не может быть отрицательным')
+      !this.$v.data.blackouttime.checkGreatZeroInt && errors.push('Не может быть отрицательным')
       !this.$v.data.blackouttime.required && errors.push('Необходимо определить')
       return errors
     },
@@ -641,7 +627,7 @@ export default {
         return errors
       }
       !this.$v.data.tariff.decimal && errors.push('Задается вещественным числом: целая часть рубли, дробная часть копейки')
-      !this.$v.data.tariff.checkGreatZero_decimal && errors.push('Не может быть отрицательным')
+      !this.$v.data.tariff.checkGreatZeroDecimal && errors.push('Не может быть отрицательным')
       !this.$v.data.tariff.required && errors.push('Необходимо определить')
       return errors
     },
@@ -702,90 +688,14 @@ export default {
   },
 
   watch: {
-    'data.energy' (v) {
-      if (this.energy_enabled) {
-        this.saveChanges()
-      }
-      this.energy_enabled = true
-    },
-    'data.carbon' (v) {
-      if (this.carbon_enabled) {
-        this.saveChanges()
-      }
-      this.carbon_enabled = true
-    },
-    'data.criticalload' (v) {
-      if (this.criticalload_enabled) {
-        this.saveChanges()
-      }
-      this.criticalload_enabled = true
-    },
-    'data.blackouttime' (v) {
-      if (this.blackouttime_enabled) {
-        this.saveChanges()
-      }
-      this.blackouttime_enabled = true
-    },
-    'data.tariff' (v) {
-      if (this.tariff_enabled) {
-        this.saveChanges()
-      }
-      this.tariff_enabled = true
-    },
-
-    'data.performance' (v) {
-      if (this.performance_enabled) {
-        this.saveChanges()
-      }
-      this.performance_enabled = true
-    },
-    'data.peckertexponent' (v) {
-      if (this.peckertexponent_enabled) {
-        this.saveChanges()
-      }
-      this.peckertexponent_enabled = true
-    },
-    'data.outpower' (v) {
-      if (this.outpower_enabled) {
-        this.saveChanges()
-      }
-      this.outpower_enabled = true
-    },
-    'data.overload_enabled' (v) {
-      if (this.overload_enabled_enabled) {
-        this.saveChanges()
-      }
-      this.overload_enabled_enabled = true
-    },
-    'data.maxdischarge' (v) {
-      if (this.maxdischarge_enabled) {
-        this.saveChanges()
-      }
-      this.maxdischarge_enabled = true
-    },
-    'data.undercharging' (v) {
-      if (this.undercharging_enabled) {
-        this.saveChanges()
-      }
-      this.undercharging_enabled = true
-    },
-    'data.mode' (v) {
-      if (this.mode_enabled) {
-        this.saveChanges()
-      }
-      this.mode_enabled = true
-    },
-    'data.chargebehavior' (v) {
-      if (this.chargebehavior_enabled) {
-        this.saveChanges()
-      }
-      this.chargebehavior_enabled = true
-    },
-    'data.initstate' (v) {
-      if (this.initstate_enabled) {
-        this.saveChanges()
-      }
-      this.initstate_enabled = true
+    data: {
+      handler (v) {
+        if (this.data_enabled) {
+          this.saveChanges()
+        }
+        this.data_enabled = true
+      },
+      deep: true
     }
   },
 
