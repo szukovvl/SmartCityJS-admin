@@ -1,45 +1,11 @@
 <template>
-  <v-card flat>
-    <v-row
-      class="d-flex align-center"
-      no-gutters
-    >
-      <v-col cols="1">
-        <v-avatar
-          tile
-          color="#008000"
-        >
-          <v-icon dark>
-            {{ avatars[element.data.generation_type] }}
-          </v-icon>
-        </v-avatar>
-      </v-col>
-      <v-col>
-        <v-card-title class="pa-0">
-          &laquo;{{ einfoes[element.data.generation_type].title }}&raquo;
-          <v-tooltip
-            right
-            max-width="600"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            <!-- eslint-disable vue/no-v-html -->
-            <p class="px-0 ma-0 py-2" v-html="einfoes[element.data.generation_type].info" />
-            <!--eslint-enable-->
-          </v-tooltip>
-          &nbsp;{{ element.identy }}
-        </v-card-title>
-      </v-col>
-    </v-row>
+  <v-card
+    flat
+    tile
+  >
+    <div class="text-subtitle-2 blue-grey lighten-4 py-1">
+      {{ snidx }}: Подсеть {{ subnet.identy }}
+    </div>
 
     <v-row>
       <v-col>
@@ -48,7 +14,7 @@
             v-model="data.energy"
             class="right-input"
             type="number"
-            hint="Мощность генерации в МВт"
+            hint="Мощность подсети в МВт"
             persistent-hint
             suffix="МВт"
             dense
@@ -71,24 +37,21 @@
                 mdi-help-circle-outline
               </v-icon>
             </template>
-            Задается положительным числом и определяет статическую генерацию или используется как базовая величина.
-            В данной реализации,
-            фактическая мощность определяется произведением действующего значения устройства регистрации и статической мощности.
+            Задается положительным числом и определяет максимально возможную нагрузку на данную подсеть.
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
         <div class="d-flex">
           <v-text-field
-            v-model="data.carbon"
+            v-model="data.lossfactor"
             class="right-input"
             type="number"
-            hint="Экология (выброс CO2)"
+            hint="Потери в сети"
             persistent-hint
-            suffix="гCO2экв/кВт*час"
             dense
-            :error-messages="carbonErrors"
-            @input="$v.data.carbon.$touch()"
-            @blur="$v.data.carbon.$touch()"
+            :error-messages="lossfactorErrors"
+            @input="$v.data.lossfactor.$touch()"
+            @blur="$v.data.lossfactor.$touch()"
           />
           <v-tooltip
             right
@@ -105,8 +68,8 @@
                 mdi-help-circle-outline
               </v-icon>
             </template>
-            Задается положительным числом и определяет уровень выброса загрязнения окружающей среды
-            (<span class="green--text text--accent-3"><i>Углеродный след</i></span>).
+            Задается положительным числом и определяет потери в данной подсети.
+            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
         <div class="d-flex">
@@ -140,6 +103,8 @@
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
+      </v-col>
+      <v-col>
         <div class="d-flex">
           <v-text-field
             v-model="data.criticalload"
@@ -167,15 +132,12 @@
                 mdi-help-circle-outline
               </v-icon>
             </template>
-            Задается положительным числом и определяет порог значения мощности критической нагрузки (перегрузка генератора).
+            Задается положительным числом и определяет порог значения мощности критической нагрузки (перегрузка подсети).
             Превышение заданного порога критической нагрузки в течении некоторого времени,
-            приведет к отключению генератора.
-            Используется в случае активного переключателя превышения порога нормального значения мощности.
+            приведет к отключению подсети.
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
-      </v-col>
-      <v-col>
         <div class="d-flex">
           <v-text-field
             v-model="data.blackouttime"
@@ -218,7 +180,7 @@
             v-model="data.tariff"
             class="right-input"
             type="number"
-            hint="Стоимость одного коловатта генерации"
+            hint="Стоимость одного коловатта транспортируемой энергии"
             persistent-hint
             suffix="руб."
             dense
@@ -241,34 +203,8 @@
                 mdi-help-circle-outline
               </v-icon>
             </template>
-            Задается положительным числом и определяет стоимость одного киловатта сгенерированной энергии
+            Задается положительным числом и определяет стоимость одного киловатта транспортированной энергии в данной подсети
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
-          </v-tooltip>
-        </div>
-        <div class="d-flex">
-          <v-select
-            v-model="data.mode"
-            :items="generationMode"
-            hint="Режим использования"
-            persistent-hint
-            dense
-          />
-          <v-tooltip
-            right
-            max-width="400"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            Определяет режим использования устройства хранения энергии.
           </v-tooltip>
         </div>
       </v-col>
@@ -280,11 +216,6 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import { required, decimal, integer, between } from 'vuelidate/lib/validators'
-import {
-  DELAY_BEFORE_SAVE_CHANGES,
-  API_ENERGY_SERVICE_DATA,
-  GENERATION_USAGE_MODES
-} from '~/assets/helpers'
 
 Vue.use(Vuelidate)
 
@@ -296,45 +227,31 @@ function loadStateCheck (value) {
 }
 
 export default {
-  name: 'AlternateObjet',
+  name: 'SubnetObjet',
 
   props: {
-    element: {
+    subnet: {
       type: Object,
       required: true
+    },
+    snidx: {
+      type: Number,
+      default: 0
     }
   },
 
   data: () => ({
-    avatars: {
-      SOLAR: 'mdi-solar-power-variant-outline',
-      WIND: 'mdi-wind-power-outline'
-    },
-    einfoes: {
-      SOLAR: {
-        title: 'Солнечная электростанция',
-        info: `<span class="light-blue--text text--lighten-3"><b>Солнечная электростанция (СЭС)</b></span> – инженерное сооружение,
-        преобразующее солнечную радиацию в электрическую энергию.
-        Способы преобразования солнечной энергии различны и зависят от конструкции электростанции.`
-      },
-      WIND: {
-        title: 'Ветряная электростанция',
-        info: `<span class="light-blue--text text--lighten-3"><b>Ветряная электростанция (ВЭС)</b></span> – несколько ветроэлектрических установок,
-        собранных в одном или нескольких местах и объединённых в единую сеть.
-        Крупные ветровые электростанции могут состоять из 100 и более ветрогенераторов.
-        Иногда ветровые электростанции называют ветряными парками (ветропарками).`
-      }
-    },
     data: undefined,
-    postdelay: undefined,
-
     data_enabled: false
   }),
 
   validations: {
     data: {
       energy: { required, decimal, checkGreatZeroDecimal },
-      carbon: { required, decimal, checkGreatZeroDecimal },
+      lossfactor: {
+        required,
+        betweenValue: between(0.7, 1.0)
+      },
       highload: {
         required,
         betweenValue: between(0.5, 1.0),
@@ -361,14 +278,13 @@ export default {
       !this.$v.data.energy.required && errors.push('Необходимо определить')
       return errors
     },
-    carbonErrors () {
+    lossfactorErrors () {
       const errors = []
-      if (!this.$v.data.carbon.$dirty) {
+      if (!this.$v.data.lossfactor.$dirty) {
         return errors
       }
-      !this.$v.data.carbon.decimal && errors.push('Задается вещественным числом')
-      !this.$v.data.carbon.checkGreatZeroDecimal && errors.push('Не может быть отрицательным')
-      !this.$v.data.carbon.required && errors.push('Необходимо определить')
+      !this.$v.data.lossfactor.betweenValue && errors.push('Только значения от 0,7 до 1,0')
+      !this.$v.data.lossfactor.required && errors.push('Необходимо определить')
       return errors
     },
     highloadErrors () {
@@ -410,16 +326,14 @@ export default {
       !this.$v.data.tariff.checkGreatZeroDecimal && errors.push('Не может быть отрицательным')
       !this.$v.data.tariff.required && errors.push('Необходимо определить')
       return errors
-    },
-
-    generationMode: () => GENERATION_USAGE_MODES
+    }
   },
 
   watch: {
     data: {
       handler (v) {
         if (this.data_enabled) {
-          this.saveChanges()
+          this.doSaveChanges()
         }
         this.data_enabled = true
       },
@@ -428,40 +342,16 @@ export default {
   },
 
   created () {
-    this.data = this.element.data
+    this.data = this.subnet.data
   },
 
   methods: {
-    saveChanges () {
-      clearTimeout(this.postdelay)
+    doSaveChanges () {
+      this.$v.data.$touch()
       if (this.$v.data.$invalid) {
         return
       }
-      this.postdelay = setTimeout(() => {
-        this.postdelay = undefined
-        this.$v.data.$touch()
-        if (this.$v.data.$invalid) {
-          return
-        }
-        this.$axios.$put(API_ENERGY_SERVICE_DATA + '/' + this.element.identy,
-          {
-            energy: this.data.energy,
-            carbon: this.data.carbon,
-            highload: this.data.highload,
-            criticalload: this.data.criticalload,
-            blackouttime: this.data.blackouttime,
-            tariff: this.data.tariff,
-            mode: this.data.mode
-          }, { progress: false })
-          // .then((v) => {})
-          .catch((error) => {
-            /* eslint-disable no-console */
-            if (error.response) {
-              console.error('ошибка %d: %s', error.response.status, error.response.data)
-            }
-            /* eslint-enable no-console */
-          })
-      }, DELAY_BEFORE_SAVE_CHANGES)
+      this.$emit('onSaveChanges', this.subnet)
     }
   }
 }

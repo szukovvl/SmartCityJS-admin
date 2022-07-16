@@ -733,9 +733,7 @@ export default {
             chargebehavior: this.data.chargebehavior,
             initstate: this.data.initstate
           }, { progress: false })
-          .then((v) => {
-            this.doInterpolate()
-          })
+          // .then((v) => {})
           .catch((error) => {
             /* eslint-disable no-console */
             if (error.response) {
