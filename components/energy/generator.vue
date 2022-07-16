@@ -371,7 +371,7 @@ const powerValidate = value => value !== undefined && value !== null && value >=
 const carbonValidate = value => value !== undefined && value !== null && value >= 0
 
 function loadStateCheck (value) {
-  return this.data.criticalload >= this.data.highload
+  return this.data.criticalload > this.data.highload
 }
 
 const notfoundForecasts = [{ key: '_EMPTY_FORECAST_', text: 'прогнозы не найдены', forecast: undefined }]
