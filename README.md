@@ -104,6 +104,7 @@ yarn add moment chartjs-adapter-moment
 
 ======================================================================================
 
-## проверка массивов
+## для докера
 
--- yarn add vuelidate/components
+docker build -t jikovvv430/smartcityjs-admin .
+docker run -p 3005:3000 jikovvv430/smartcityjs-admin
