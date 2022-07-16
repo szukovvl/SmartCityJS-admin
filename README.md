@@ -107,4 +107,4 @@ yarn add moment chartjs-adapter-moment
 ## для докера
 
 docker build -t jikovvv430/smartcityjs-admin .
-docker run --name smartcityjs-admin -d -t -i -p 3000:3005 smartcityjs-admin
+docker run --name smartcityjs-admin -d -t -i -p 3000:3005 jikovvv430/smartcityjs-admin
