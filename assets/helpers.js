@@ -52,5 +52,15 @@ export const API_FORECAST_SERVICE = REST_API_URL + '/forecast'
 export const API_FORECAST_SERVICE_INTERPOLATION = REST_API_URL + '/forecast/interpolate'
 export const API_FORECAST_SERVICE_RANDOMIZE = REST_API_URL + '/forecast/random'
 
+export const API_SUN_SERVICE_ON = REST_API_URL + '/sun/on'
+export const API_SUN_SERVICE_OFF = REST_API_URL + '/sun/off'
+export const API_SUN_SERVICE_START = REST_API_URL + '/sun/service/start'
+export const API_SUN_SERVICE_STOP = REST_API_URL + '/sun/service/stop'
+export const API_SUN_SERVICE_RESTART = REST_API_URL + '/sun/service/restart'
+export const API_SUN_SERVICE_SETPOWER = REST_API_URL + '/sun'
+
 //
 export const DELAY_BEFORE_SAVE_CHANGES = 500
+
+//
+export const DELAY_BEFORE_CHECK_VALUE = 2500

@@ -52,6 +52,7 @@
             persistent-hint
             suffix="МВт"
             dense
+            step="0.1"
             :error-messages="energyErrors"
             @input="$v.data.energy.$touch()"
             @blur="$v.data.energy.$touch()"
@@ -86,6 +87,7 @@
             persistent-hint
             suffix="гCO2экв/кВт*час"
             dense
+            step="10"
             :error-messages="carbonErrors"
             @input="$v.data.carbon.$touch()"
             @blur="$v.data.carbon.$touch()"
@@ -117,6 +119,7 @@
             hint="Порог высокой нагрузки"
             persistent-hint
             dense
+            step="0.01"
             :error-messages="highloadErrors"
             @input="$v.data.highload.$touch()"
             @blur="$v.data.highload.$touch()"
@@ -148,6 +151,7 @@
             hint="Порог критической нагрузки"
             persistent-hint
             dense
+            step="0.01"
             :error-messages="criticalloadErrors"
             @input="$v.data.criticalload.$touch()"
             @blur="$v.data.criticalload.$touch()"
@@ -185,6 +189,7 @@
             persistent-hint
             suffix="сек."
             dense
+            step="10"
             :error-messages="blackouttimeErrors"
             @input="$v.data.blackouttime.$touch()"
             @blur="$v.data.blackouttime.$touch()"
@@ -222,6 +227,7 @@
             persistent-hint
             suffix="руб."
             dense
+            step="0.1"
             :error-messages="tariffErrors"
             @input="$v.data.tariff.$touch()"
             @blur="$v.data.tariff.$touch()"

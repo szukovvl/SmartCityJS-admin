@@ -54,6 +54,7 @@
             persistent-hint
             suffix="МВт"
             dense
+            step="0.1"
             :error-messages="energyErrors"
             @input="$v.data.energy.$touch()"
             @blur="$v.data.energy.$touch()"
@@ -86,6 +87,7 @@
             persistent-hint
             suffix="гCO2экв/кВт*час"
             dense
+            step="10"
             :error-messages="carbonErrors"
             @input="$v.data.carbon.$touch()"
             @blur="$v.data.carbon.$touch()"

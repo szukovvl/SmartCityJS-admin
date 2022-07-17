@@ -52,6 +52,7 @@
             persistent-hint
             suffix="МВт*час"
             dense
+            step="0.1"
             :error-messages="energyErrors"
             @input="$v.data.energy.$touch()"
             @blur="$v.data.energy.$touch()"
@@ -84,6 +85,7 @@
             persistent-hint
             suffix="гCO2экв/кВт*час"
             dense
+            step="10"
             :error-messages="carbonErrors"
             @input="$v.data.carbon.$touch()"
             @blur="$v.data.carbon.$touch()"
@@ -116,6 +118,7 @@
             persistent-hint
             suffix="гCO2экв/кВт*час"
             dense
+            step="0.01"
             :error-messages="performanceErrors"
             @input="$v.data.performance.$touch()"
             @blur="$v.data.performance.$touch()"
@@ -147,6 +150,7 @@
             hint="Экспонента Пекерта"
             persistent-hint
             dense
+            step="0.01"
             :error-messages="peckertexponentErrors"
             @input="$v.data.peckertexponent.$touch()"
             @blur="$v.data.peckertexponent.$touch()"
@@ -185,6 +189,7 @@
             hint="Нормалььно значение отдаваемой мощности"
             persistent-hint
             dense
+            step="0.01"
             :error-messages="outpowerErrors"
             @input="$v.data.outpower.$touch()"
             @blur="$v.data.outpower.$touch()"
@@ -244,6 +249,7 @@
             hint="Максимальная разрядка хранилища"
             persistent-hint
             dense
+            step="0.01"
             :error-messages="maxdischargeErrors"
             @input="$v.data.maxdischarge.$touch()"
             @blur="$v.data.maxdischarge.$touch()"
@@ -276,6 +282,7 @@
             hint="Недозарядка при повторном использовании"
             persistent-hint
             dense
+            step="0.01"
             :error-messages="underchargingErrors"
             @input="$v.data.undercharging.$touch()"
             @blur="$v.data.undercharging.$touch()"
@@ -308,6 +315,7 @@
             hint="Порог критической нагрузки"
             persistent-hint
             dense
+            step="0.01"
             :error-messages="criticalloadErrors"
             @input="$v.data.criticalload.$touch()"
             @blur="$v.data.criticalload.$touch()"
@@ -343,6 +351,7 @@
             persistent-hint
             suffix="сек."
             dense
+            step="10"
             :error-messages="blackouttimeErrors"
             @input="$v.data.blackouttime.$touch()"
             @blur="$v.data.blackouttime.$touch()"
@@ -380,6 +389,7 @@
             persistent-hint
             suffix="руб."
             dense
+            step="0.1"
             :error-messages="tariffErrors"
             @input="$v.data.tariff.$touch()"
             @blur="$v.data.tariff.$touch()"
