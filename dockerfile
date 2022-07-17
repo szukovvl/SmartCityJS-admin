@@ -6,7 +6,7 @@ FROM node:lts-alpine
 
 ENV HOST 0.0.0.0
 WORKDIR /usr/app
-EXPOSE 3000
+EXPOSE 3005
 
 COPY ./ ./
 

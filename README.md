@@ -68,13 +68,13 @@ This directory contains your Vuex store files. Creating a file in this directory
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
 
-======================================================================================
+***
 
 ## Необходимо добавить Vuelidate
 
 -- yarn add @vuelidate/core @vuelidate/validators
 
---- (см. файл package.json)
+-- (см. файл package.json)
 -- npm uninstall @vuelidate/core --save
 -- npm install @vuelidate/core --save
 
@@ -86,7 +86,7 @@ More information about the usage of this directory in [the documentation](https:
 
 -- заработало...
 
-======================================================================================
+***
 
 ## vue-chartjs
 
@@ -94,7 +94,7 @@ More information about the usage of this directory in [the documentation](https:
 
 -- yarn remove vue-chartjs chart.js
 
-======================================================================================
+***
 
 ## установка moment для chart.js обслуживание врменной обслуживание
 
@@ -102,9 +102,36 @@ More information about the usage of this directory in [the documentation](https:
 
 yarn add moment chartjs-adapter-moment
 
-======================================================================================
+***
 
 ## для докера
 
 docker build -t jikovvv430/smartcityjs-admin .
 docker run --name smartcityjs-admin -d -t -i -p 3005:3000 jikovvv430/smartcityjs-admin
+
+docker run --name smartcityjs-admin --network=mysql-net -d -t -i -p 3005:3000 jikovvv430/smartcityjs-admin
+
+
+---
+
+
+docker network create -d bridge smartcity-net
+
+docker network rm smartcity-net
+
+docker network ls
+
+docker network inspect smartcity-net
+
+docker network inspect mysql-net
+
+docker network connect smartcity-net smartcity
+docker network connect smartcity-net smartcityjs-admin
+
+docker network disconnect smartcity-net smartcity
+docker network disconnect smartcity-net smartcityjs-admin
+
+docker run -it -d --network=smartcity-net smart...
+
+docker images
+
