@@ -33,6 +33,9 @@
             suffix="руб"
             dense
             step="0.01"
+            :error-messages="trade_priceErrors"
+            @input="$v.trade_price.$touch()"
+            @blur="$v.trade_price.$touch()"
           />
         </v-col>
       </v-row>
@@ -48,19 +51,64 @@
         suffix="руб"
         dense
         step="0.01"
+        :error-messages="tech_priceErrors"
+        @input="$v.tech_price.$touch()"
+        @blur="$v.tech_price.$touch()"
       />
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+import { required, decimal } from 'vuelidate/lib/validators'
+
+Vue.use(Vuelidate)
+
+const checkGtZeroDec = value => value !== undefined && value !== null && value >= 0.0
+
 export default {
   name: 'TariffsComponent',
 
   data: () => ({
     trade_price: undefined,
     tech_price: undefined
-  })
+  }),
+
+  validations: {
+    trade_price: { required, decimal, checkGtZeroDec },
+    tech_price: { required, decimal, checkGtZeroDec }
+  },
+
+  computed: {
+    trade_priceErrors () {
+      const errors = []
+      if (!this.$v.trade_price.$dirty) {
+        return errors
+      }
+      !this.$v.trade_price.decimal && errors.push('Задается вещественным числом')
+      !this.$v.trade_price.checkGtZeroDec && errors.push('Не может быть отрицательным')
+      !this.$v.trade_price.required && errors.push('Необходимо определить')
+      return errors
+    },
+    tech_priceErrors () {
+      const errors = []
+      if (!this.$v.tech_price.$dirty) {
+        return errors
+      }
+      !this.$v.tech_price.decimal && errors.push('Задается вещественным числом')
+      !this.$v.tech_price.checkGtZeroDec && errors.push('Не может быть отрицательным')
+      !this.$v.tech_price.required && errors.push('Необходимо определить')
+      return errors
+    }
+  },
+
+  created () {
+    /* eslint-disable no-console */
+    console.info('tariff: created')
+    /* eslint-enable no-console */
+  }
 }
 </script>
 

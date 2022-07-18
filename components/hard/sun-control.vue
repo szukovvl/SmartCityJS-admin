@@ -41,43 +41,81 @@
         {{ launched ? 'mdi-rocket-launch-outline' : 'mdi-power-standby' }}
       </v-icon>
     </v-card-title>
-    <v-card-text class="d-flex justify-start amber lighten-3">
-      <v-text-field
-        v-model="plcTime"
-        class="right-input"
-        type="number"
-        hint="длительность цикла опроса"
-        persistent-hint
-        suffix="мс"
-        dense
-        step="50"
-        @input="onPlcTimeChange"
-      />
-      <v-tooltip
-        right
-        max-width="400"
-      >
-        <template #activator="{ on, attrs }">
-          <v-icon
-            class="align-self-start"
-            color="blue"
-            small
-            v-bind="attrs"
-            v-on="on"
-          >
-            mdi-help-circle-outline
-          </v-icon>
-        </template>
-        <p class="px-0 ma-0 py-2">
-          <span class="red--text text--lighten-1"><b>ВНИМАНИЕ !</b></span>
-          Данный параметр управляет временем опроса ПЛК.
-          Малые значения времени опроса увеличивают интерактивность.
-          Тем не менее, не следует прибегать к чрезмерно малым значением времени опроса,
-          что может увеличить количество ошибок взаимодействия с ПЛК.
-          Устанавливаемое значение должно соотносится со скоростью реакции пользовательского интерфейса и
-          быть достаточным, чтобы модуль связи ПЛК успел приготовится к обслуживанию следующих запросов.
-        </p>
-      </v-tooltip>
+    <v-card-text class="amber lighten-3">
+      <div class="d-inline-flex">
+        <v-text-field
+          v-model="plcTime"
+          class="right-input"
+          type="number"
+          hint="длительность цикла опроса"
+          persistent-hint
+          suffix="мс"
+          dense
+          step="50"
+          :error-messages="plcTimeErrors"
+          @input="onPlcTimeChange"
+          @blur="$v.plcTime.$touch()"
+        />
+        <v-tooltip
+          right
+          max-width="400"
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              class="align-self-start mr-4"
+              color="blue"
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
+              mdi-help-circle-outline
+            </v-icon>
+          </template>
+          <p class="px-0 ma-0 py-2">
+            <span class="red--text text--lighten-1"><b>ВНИМАНИЕ !</b></span>
+            Данный параметр управляет временем опроса ПЛК.
+            Малые значения времени опроса увеличивают интерактивность.
+            Тем не менее, не следует прибегать к чрезмерно малым значением времени опроса,
+            что может увеличить количество ошибок взаимодействия с ПЛК.
+            Устанавливаемое значение должно соотносится со скоростью реакции пользовательского интерфейса и
+            быть достаточным, чтобы модуль связи ПЛК успел приготовится к обслуживанию следующих запросов.
+          </p>
+        </v-tooltip>
+        <v-text-field
+          v-model="restartTime"
+          class="right-input"
+          type="number"
+          hint="задержка при перезапуске сервиса"
+          persistent-hint
+          suffix="мс"
+          dense
+          step="100"
+          :error-messages="restartTimeErrors"
+          @input="$v.restartTime.$touch()"
+          @blur="$v.restartTime.$touch()"
+        />
+        <v-tooltip
+          right
+          max-width="400"
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              class="align-self-start"
+              color="blue"
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
+              mdi-help-circle-outline
+            </v-icon>
+          </template>
+          <p class="px-0 ma-0 py-2">
+            <span class="red--text text--lighten-1"><b>ВНИМАНИЕ !</b></span>
+            Данный параметр определяет временную задержку перед запускам сервиса, после его останова
+            во время обработки команды API "перезапустить".
+          </p>
+        </v-tooltip>
+      </div>
     </v-card-text>
     <v-card-text>
       <div class="d-inline-flex">
@@ -220,6 +258,8 @@ import {
 
 Vue.use(Vuelidate)
 
+const checkGtZero = value => value !== undefined && value !== null && value >= 0
+
 export default {
   name: 'SunControl',
 
@@ -246,6 +286,7 @@ export default {
     plcTime: undefined,
     powerTimeHandle: undefined,
     delayHandle: undefined,
+    restartTime: undefined,
     forecastItems: [
       { key: '_not_found_', text: 'ветровые модели не найдены' }
     ]
@@ -256,7 +297,9 @@ export default {
       required,
       integer,
       betweenValue: between(0, 100)
-    }
+    },
+    plcTime: { required, integer, checkGtZero },
+    restartTime: { required, integer, checkGtZero }
   },
 
   computed: {
@@ -268,6 +311,26 @@ export default {
       !this.$v.power.integer && errors.push('Задается целым числом')
       !this.$v.power.betweenValue && errors.push('Только значения от 0 до 100')
       !this.$v.power.required && errors.push('Необходимо определить')
+      return errors
+    },
+    plcTimeErrors () {
+      const errors = []
+      if (!this.$v.plcTime.$dirty) {
+        return errors
+      }
+      !this.$v.plcTime.integer && errors.push('Задается целым числом')
+      !this.$v.plcTime.checkGtZero && errors.push('Не может быть отрицательным')
+      !this.$v.plcTime.required && errors.push('Необходимо определить')
+      return errors
+    },
+    restartTimeErrors () {
+      const errors = []
+      if (!this.$v.restartTime.$dirty) {
+        return errors
+      }
+      !this.$v.restartTime.integer && errors.push('Задается целым числом')
+      !this.$v.restartTime.checkGtZero && errors.push('Не может быть отрицательным')
+      !this.$v.restartTime.required && errors.push('Необходимо определить')
       return errors
     },
 
@@ -332,6 +395,7 @@ export default {
     },
 
     onPlcTimeChange () {
+      this.$v.plcTime.$touch()
       /* eslint-disable no-console */
       console.log('onPlcTimeChange:', this.plcTime)
       /* eslint-enable no-console */
