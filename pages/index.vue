@@ -49,12 +49,12 @@ import Forecast from '~/components/forecast.vue'
 import PowerSystemComponent from '~/components/power-system.vue'
 import ExchangeComponent from '~/components/exchange.vue'
 import TechnologyComponent from '~/components/technology.vue'
-import AuctionComponent from '~/components/auction.vue'
+import TariffsComponent from '~/components/tariffs.vue'
 
 export default {
   name: 'IndexPage',
 
-  components: { Forecast, PowerSystemComponent, ExchangeComponent, TechnologyComponent, AuctionComponent },
+  components: { Forecast, PowerSystemComponent, ExchangeComponent, TechnologyComponent, TariffsComponent },
 
   data: () => ({
     currenttab: null,
@@ -63,7 +63,7 @@ export default {
       { name: 'forecast', icon: 'weather-partly-cloudy', component: Forecast },
       { name: 'trademark', icon: 'trademark', component: ExchangeComponent },
       { name: 'technology', icon: 'paperclip', component: TechnologyComponent },
-      { name: 'auction', icon: 'currency-rub', component: AuctionComponent }
+      { name: 'auction', icon: 'currency-rub', component: TariffsComponent }
     ]
   }),
 

@@ -247,7 +247,7 @@
           прогноз не задан
         </div>
         <div v-else>
-          <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :height="200" />
+          <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :width="400" />
         </div>
       </v-col>
     </v-row>

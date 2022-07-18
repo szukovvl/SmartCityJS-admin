@@ -81,6 +81,7 @@
                     dense
                     class="right-input"
                     type="number"
+                    step="0.02"
                     :error-messages="geterrors_forvalue($v.forecast.data.$each[index].value)"
                     @input="$v.forecast.data.$each[index].value.$touch()"
                     @blur="$v.forecast.data.$each[index].value.$touch()"
@@ -123,6 +124,7 @@
                     class="right-input"
                     type="number"
                     dense
+                    step="0.02"
                     :error-messages="newrowErrors"
                     @input="$v.newrow.value.$touch()"
                     @blur="$v.newrow.value.$touch()"
