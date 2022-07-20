@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>Тарифы на электрическую энергию</v-card-title>
-    <v-card-text>
+    <v-card-text class="py-2 px-4">
       <p>
         Оптовый рынок электрической энергии и мощности (ОРЭМ) – сфера обращения особых товаров (электрической энергии и мощности)
         в рамках Единой энергетической системы России в границах единого экономического пространства Российской Федерации.
@@ -63,7 +63,7 @@
       </v-row>
       <div class="d-inline-flex">
         <v-card
-          class="ma-1"
+          class="mx-1"
           outlined
         >
           <v-card-subtitle class="font-weight-bold">
@@ -85,13 +85,13 @@
               </li>
               <li>
                 усредненная Сбытовая надбавка продавца ЭЭ,
-                <span class="blue--text text--accent-4"><b>Т<sup>СН</sup><sub>средний</sub>: {{ sales_allowance.tch_mid }}</b></span> руб./МВт*ч;
+                <span class="blue--text text--accent-4"><b>Т<sup>СН</sup><sub>средний</sub>: {{ sales_allowance.tch_mid }}</b></span> руб./МВт*ч.
               </li>
             </ul>
           </v-card-text>
         </v-card>
         <v-card
-          class="ma-1"
+          class="mx-1"
           outlined
         >
           <v-card-subtitle class="font-weight-bold">
@@ -117,7 +117,110 @@
               </li>
               <li>
                 Усредненный Тариф (котловой) услуги передачи  ЭЭ,
-                <span class="blue--text text--accent-4"><b>Т<sup>К</sup><sub>средний</sub>: {{ tariff.tk_mid }}</b></span> руб./МВт*ч;
+                <span class="blue--text text--accent-4"><b>Т<sup>К</sup><sub>средний</sub>: {{ tariff.tk_mid }}</b></span> руб./МВт*ч.
+              </li>
+            </ul>
+          </v-card-text>
+        </v-card>
+      </div>
+    </v-card-text>
+    <v-card-text class="pa-0 px-4">
+      <v-card
+        class="mx-1"
+        outlined
+      >
+        <v-card-subtitle class="font-weight-bold">
+          Инфраструктурный платеж за услуги
+          <span class="blue--text text--accent-4"><b>Т<sup>УСЛ</sup>: {{ t_service }}</b></span>  руб./МВт*ч.
+        </v-card-subtitle>
+      </v-card>
+    </v-card-text>
+    <v-card-subtitle class="font-weight-bold">
+      Итого Конечная Средняя стоимость ЭЭ на розничном рынке,
+      <span class="blue--text text--accent-4">Т<sup>Розница</sup><sub>средний</sub> {{ t_total }}</span>  руб./МВт*ч.
+    </v-card-subtitle>
+    <v-card-title>
+      Тарифы дифференцированные по времени (зонам) суток
+    </v-card-title>
+    <v-card-text>
+      <p>
+        Дифференцированные по зонам суток тарифы на электроэнергию на потребительском рынке устанавливаются
+        с целью регулирования суточного графика нагрузки энергосистемы.
+        Потребность в таком регулировании возникает либо в связи с недостатком пиковых мощностей,
+        либо вследствие трудностей прохождения ночного провала графика электрической нагрузки.
+        Дифференцированные по зонам суток тарифы должны соответственно стимулировать потребителей к
+        снижению нагрузки в пиковой зоне графика и заполнению зоны ночного провала.
+      </p>
+      <p>
+        При ценообразовании дифференцированного по зонам суток тарифа на электроэнергию необходимо исходить из следующих положений:
+      </p>
+      <p>
+      <body>
+        <ul>
+          <li>
+            суммарная плата за потребляемую энергию при исходном режиме ее использования не
+            должна изменяться при переходе от действующих (планируемых) одно-
+            или двухставочный тарифов к дифференцированным по зонам времени (суток);
+          </li>
+          <li>
+            дифференциация тарифов может осуществляться как по трем, так и по двум зонам суток
+            с расчетом тарифных ставок для каждого конкретного промышленного потребителя;
+          </li>
+          <li>
+            для непромышленных потребителей и населения могут устанавливаться дифференцированные по
+            зонам суток тарифные ставки для соответствующей группы в целом;
+          </li>
+          <li>
+            для промышленных и приравненных к ним потребителей с присоединенной мощностью 750 кВА
+            и выше может устанавливаться дифференцированная плата за 1 кВт*ч потребленной электроэнергии в пиковой,
+            полупиковой и ночной зонах как с сохранением платы за 1 кВт заявленной мощности, так и без нее.
+          </li>
+        </ul>
+      </body>
+      </p>
+    </v-card-text>
+    <v-card-text>
+      <div class="d-inline-flex">
+        <v-card
+          class="mx-1"
+          outlined
+        >
+          <v-card-subtitle class="font-weight-bold">
+            Тариф дифференцированный по трем зонам суток (Т<sup>Д3</sup>):
+          </v-card-subtitle>
+          <v-card-text>
+            <ul>
+              <li>
+                Тариф пиковой зоны суток,
+                <span class="blue--text text--accent-4"><b>Т<sup>Д3</sup><sub>пик</sub>: {{ t_zone_3.peak }}</b></span> руб./кВт*ч;
+              </li>
+              <li>
+                Тариф полупиковой зоны суток,
+                <span class="blue--text text--accent-4"><b>Т<sup>Д3</sup><sub>пп</sub>: {{ t_zone_3.pp }}</b></span> руб./кВт*ч;
+              </li>
+              <li>
+                Тариф ночной зоны суток,
+                <span class="blue--text text--accent-4"><b>Т<sup>Д3</sup><sub>ночь</sub>: {{ t_zone_3.night }}</b></span> руб./кВт*ч;
+              </li>
+            </ul>
+          </v-card-text>
+        </v-card>
+        <v-card
+          class="mx-1"
+          outlined
+        >
+          <v-card-subtitle class="font-weight-bold">
+            Тариф дифференцированный по двум зонам суток (Т<sup>Д2</sup>):
+          </v-card-subtitle>
+          <v-card-text>
+            <ul>
+              <li>
+                Тариф дневной зоны суток,
+                <span class="blue--text text--accent-4"><b>Т<sup>Д2</sup><sub>день</sub>: {{ t_zone_2.day }}</b></span> руб./кВт*ч;
+              </li>
+              <li>
+                Тариф ночной зоны суток,
+                <span class="blue--text text--accent-4"><b>Т<sup>Д2</sup><sub>ночь</sub>: {{ t_zone_2.night }}</b></span> руб./кВт*ч;
               </li>
             </ul>
           </v-card-text>
@@ -172,6 +275,17 @@ export default {
       tch_avg: undefined,
       tch_large: undefined,
       tch_mid: undefined
+    },
+    t_service: undefined,
+    t_total: undefined,
+    t_zone_3: {
+      peak: undefined,
+      pp: undefined,
+      night: undefined
+    },
+    t_zone_2: {
+      day: undefined,
+      night: undefined
     }
   }),
 
@@ -230,6 +344,17 @@ export default {
         this.sales_allowance.tch_avg = this.tariff.tk_high
         this.sales_allowance.tch_large = this.tariff.tk_high
         this.sales_allowance.tch_mid = this.tariff.tk_high
+        //
+        this.t_service = this.tariff.tk_high
+        //
+        this.t_total = this.tariff.tk_high
+        //
+        this.t_zone_3.peak = this.tariff.tk_high
+        this.t_zone_3.pp = this.tariff.tk_high
+        this.t_zone_3.night = this.tariff.tk_high
+        //
+        this.t_zone_2.day = this.tariff.tk_high
+        this.t_zone_2.night = this.tariff.tk_high
       } else {
         this.tariff.tk_high = val * 0.55
         this.tariff.tk_avg_1 = this.tariff.tk_high * 1.55
@@ -241,6 +366,17 @@ export default {
         this.sales_allowance.tch_avg = (val * 0.049) * 1.12
         this.sales_allowance.tch_large = val * 0.049
         this.sales_allowance.tch_mid = (this.sales_allowance.tch_small + this.sales_allowance.tch_avg + this.sales_allowance.tch_large) / 3.0
+        //
+        this.t_service = val * 0.001
+        //
+        this.t_total = this.tariff.tk_mid + this.sales_allowance.tch_mid + this.t_service + val
+        //
+        this.t_zone_3.peak = this.t_total / 1000.0 * 1.25
+        this.t_zone_3.pp = this.t_total / 1000.0
+        this.t_zone_3.night = this.t_total / 1000.0 * 0.7
+        //
+        this.t_zone_2.day = this.t_total / 1000.0 * 1.15
+        this.t_zone_2.night = this.t_total / 1000.0 * 0.7
       }
       //
       this.tariff.tk_high = roundToTwoAsStr(this.tariff.tk_high)
@@ -253,6 +389,17 @@ export default {
       this.sales_allowance.tch_avg = roundToTwoAsStr(this.sales_allowance.tch_avg)
       this.sales_allowance.tch_large = roundToTwoAsStr(this.sales_allowance.tch_large)
       this.sales_allowance.tch_mid = roundToTwoAsStr(this.sales_allowance.tch_mid)
+      //
+      this.t_service = roundToTwoAsStr(this.t_service)
+      //
+      this.t_total = roundToTwoAsStr(this.t_total)
+      //
+      this.t_zone_3.peak = roundToTwoAsStr(this.t_zone_3.peak)
+      this.t_zone_3.pp = roundToTwoAsStr(this.t_zone_3.pp)
+      this.t_zone_3.night = roundToTwoAsStr(this.t_zone_3.night)
+      //
+      this.t_zone_2.day = roundToTwoAsStr(this.t_zone_2.day)
+      this.t_zone_2.night = roundToTwoAsStr(this.t_zone_2.night)
     }
   }
 }
