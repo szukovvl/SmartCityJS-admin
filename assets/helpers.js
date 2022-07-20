@@ -64,3 +64,6 @@ export const DELAY_BEFORE_SAVE_CHANGES = 500
 
 //
 export const DELAY_BEFORE_CHECK_VALUE = 2500
+
+//
+export const roundToTwoAsStr = val => (Math.round(val * 100.0) / 100.0).toFixed(2).replace('.', ',')
