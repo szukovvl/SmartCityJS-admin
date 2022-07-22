@@ -57,7 +57,7 @@ export default {
   proxy: {
     '/api': {
       // target: 'http://localhost:3000/api/1_0',
-      target: 'http://192.168.5.243:3000/api/1_0',
+      target: 'http://192.168.5.241:3000/api/1_0',
       // target: 'http://smartcity:3000/api/1_0',
       // changeOrigin: false,
       pathRewrite: { '^/api': '' }
