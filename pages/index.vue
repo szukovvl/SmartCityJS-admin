@@ -47,21 +47,21 @@
 <script>
 import Forecast from '~/components/forecast.vue'
 import PowerSystemComponent from '~/components/power-system.vue'
-import ExchangeComponent from '~/components/exchange.vue'
+import CriteriaComponent from '~/components/criteria.vue'
 import TechnologyComponent from '~/components/technology.vue'
 import TariffsComponent from '~/components/tariffs.vue'
 
 export default {
   name: 'IndexPage',
 
-  components: { Forecast, PowerSystemComponent, ExchangeComponent, TechnologyComponent, TariffsComponent },
+  components: { Forecast, PowerSystemComponent, CriteriaComponent, TechnologyComponent, TariffsComponent },
 
   data: () => ({
     currenttab: null,
     tabitems: [
       { name: 'powersystem', icon: 'lan', component: PowerSystemComponent },
       { name: 'forecast', icon: 'weather-partly-cloudy', component: Forecast },
-      { name: 'trademark', icon: 'trademark', component: ExchangeComponent },
+      { name: 'trademark', icon: 'scale-unbalanced', component: CriteriaComponent },
       { name: 'technology', icon: 'paperclip', component: TechnologyComponent },
       { name: 'auction', icon: 'currency-rub', component: TariffsComponent }
     ]
