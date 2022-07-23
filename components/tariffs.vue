@@ -55,7 +55,7 @@
             suffix="руб./МВт*ч"
             dense
             step="0.01"
-            :error-messages="trade_priceErrors"
+            :error-messages="check_for_errors($v.trade_price)"
             @input="$v.trade_price.$touch()"
             @blur="$v.trade_price.$touch()"
           />
@@ -308,6 +308,7 @@
       <v-row>
         <v-col>
           <v-text-field
+            v-model="t_alternative.resource"
             class="right-input"
             type="number"
             hint="Стоимость ЭЭ выработанной Дизель-Генератором при 100% загрузке (ТДГ)"
@@ -315,10 +316,14 @@
             suffix="руб/кВт"
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.t_alternative.resource)"
+            @input="$v.t_alternative.resource.$touch()"
+            @blur="$v.t_alternative.resource.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="t_alternative.sun"
             class="right-input"
             type="number"
             hint="Стоимость ЭЭ выработанной Солнечным-Генератором (ТСГ)"
@@ -326,10 +331,14 @@
             suffix="руб/кВт"
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.t_alternative.sun)"
+            @input="$v.t_alternative.sun.$touch()"
+            @blur="$v.t_alternative.sun.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="t_alternative.wind"
             class="right-input"
             type="number"
             hint="Стоимость ЭЭ выработанной Ветро-Генератором (ТВГ)"
@@ -337,10 +346,14 @@
             suffix="руб/кВт"
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.t_alternative.wind)"
+            @input="$v.t_alternative.wind.$touch()"
+            @blur="$v.t_alternative.wind.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="t_alternative.storage"
             class="right-input"
             type="number"
             hint="Стоимость ЭЭ запасенной в Хранилище (ТХР)"
@@ -348,6 +361,9 @@
             suffix="руб/кВт"
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.t_alternative.storage)"
+            @input="$v.t_alternative.storage.$touch()"
+            @blur="$v.t_alternative.storage.$touch()"
           />
         </v-col>
       </v-row>
@@ -381,7 +397,7 @@
             suffix="руб/кВт"
             dense
             step="0.01"
-            :error-messages="tech_priceErrors"
+            :error-messages="check_for_errors($v.tech_price)"
             @input="$v.tech_price.$touch()"
             @blur="$v.tech_price.$touch()"
           />
@@ -431,40 +447,39 @@ export default {
     t_zone_2: {
       day: undefined,
       night: undefined
+    },
+    t_alternative: {
+      resource: undefined,
+      sun: undefined,
+      wind: undefined,
+      storage: undefined
     }
   }),
 
   validations: {
     trade_price: { required, decimal, checkGtZeroDec },
-    tech_price: { required, decimal, checkGtZeroDec }
-  },
-
-  computed: {
-    trade_priceErrors () {
-      const errors = []
-      if (!this.$v.trade_price.$dirty) {
-        return errors
-      }
-      !this.$v.trade_price.decimal && errors.push('Задается вещественным числом')
-      !this.$v.trade_price.checkGtZeroDec && errors.push('Не может быть отрицательным')
-      !this.$v.trade_price.required && errors.push('Необходимо определить')
-      return errors
-    },
-    tech_priceErrors () {
-      const errors = []
-      if (!this.$v.tech_price.$dirty) {
-        return errors
-      }
-      !this.$v.tech_price.decimal && errors.push('Задается вещественным числом')
-      !this.$v.tech_price.checkGtZeroDec && errors.push('Не может быть отрицательным')
-      !this.$v.tech_price.required && errors.push('Необходимо определить')
-      return errors
+    tech_price: { required, decimal, checkGtZeroDec },
+    t_alternative: {
+      resource: { required, decimal, checkGtZeroDec },
+      sun: { required, decimal, checkGtZeroDec },
+      wind: { required, decimal, checkGtZeroDec },
+      storage: { required, decimal, checkGtZeroDec }
     }
   },
 
   watch: {
     trade_price (v) {
       this.doCalcTariffs(v)
+      this.saveChanges()
+    },
+    tech_price (v) {
+      this.saveChanges()
+    },
+    t_alternative: {
+      handler (v) {
+        this.saveChanges()
+      },
+      deep: true
     }
   },
 
@@ -545,6 +560,35 @@ export default {
       //
       this.t_zone_2.day = roundToTwoAsStr(this.t_zone_2.day)
       this.t_zone_2.night = roundToTwoAsStr(this.t_zone_2.night)
+    },
+
+    check_for_errors (field) {
+      const errors = []
+      if (!field.$dirty) {
+        return errors
+      }
+      !field.decimal && errors.push('Задается вещественным числом')
+      !field.required && errors.push('Необходимо определить')
+      !field.checkGtZeroDec && errors.push('Не может быть отрицательным')
+      return errors
+    },
+
+    saveChanges () {
+      /* eslint-disable no-console */
+      console.info('saveChanges')
+      /* eslint-enable no-console */
+      this.$v.tech_price.$touch()
+      this.$v.trade_price.$touch()
+      this.$v.t_alternative.$touch()
+      if (this.$v.tech_price.$invalid || this.$v.trade_price.$invalid || this.$v.t_alternative.$invalid) {
+        /* eslint-disable no-console */
+        console.warn('не все данные подготовлены...')
+        /* eslint-enable no-console */
+        return
+      }
+      /* eslint-disable no-console */
+      console.info('saveChanges: commit...')
+      /* eslint-enable no-console */
     }
   }
 }
