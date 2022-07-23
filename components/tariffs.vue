@@ -411,7 +411,11 @@
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
 import { required, decimal } from 'vuelidate/lib/validators'
-import { roundToTwoAsStr } from '~/assets/helpers'
+import {
+  roundToTwoAsStr,
+  DELAY_BEFORE_SAVE_CHANGES,
+  API_TARIFFS_SERVICE
+} from '~/assets/helpers'
 
 Vue.use(Vuelidate)
 
@@ -453,7 +457,13 @@ export default {
       sun: undefined,
       wind: undefined,
       storage: undefined
-    }
+    },
+
+    trade_price_enabled: false,
+    tech_price_enabled: false,
+    t_alternative_enabled: false,
+
+    taimerHandler: undefined
   }),
 
   validations: {
@@ -470,24 +480,30 @@ export default {
   watch: {
     trade_price (v) {
       this.doCalcTariffs(v)
-      this.saveChanges()
+      if (this.trade_price_enabled) {
+        this.saveChanges()
+      }
+      this.trade_price_enabled = true
     },
     tech_price (v) {
-      this.saveChanges()
+      if (this.tech_price_enabled) {
+        this.saveChanges()
+      }
+      this.tech_price_enabled = true
     },
     t_alternative: {
       handler (v) {
-        this.saveChanges()
+        if (this.t_alternative_enabled) {
+          this.saveChanges()
+        }
+        this.t_alternative_enabled = true
       },
       deep: true
     }
   },
 
   created () {
-    /* eslint-disable no-console */
-    console.info('tariff: created')
-    /* eslint-enable no-console */
-    this.doCalcTariffs(undefined)
+    this.loadTariffs()
   },
 
   methods: {
@@ -573,22 +589,95 @@ export default {
       return errors
     },
 
+    buildData () {
+      return {
+        trade_price: this.trade_price,
+        tech_price: this.tech_price,
+        t_service: this.t_service.replace(',', '.'),
+        t_total: this.t_total.replace(',', '.'),
+
+        tariff: {
+          tk_high: this.tariff.tk_high.replace(',', '.'),
+          tk_avg_1: this.tariff.tk_avg_1.replace(',', '.'),
+          tk_avg_2: this.tariff.tk_avg_2.replace(',', '.'),
+          tk_low: this.tariff.tk_low.replace(',', '.'),
+          tk_mid: this.tariff.tk_mid.replace(',', '.')
+        },
+
+        sales_allowance: {
+          tch_small: this.sales_allowance.tch_small.replace(',', '.'),
+          tch_avg: this.sales_allowance.tch_avg.replace(',', '.'),
+          tch_large: this.sales_allowance.tch_large.replace(',', '.'),
+          tch_mid: this.sales_allowance.tch_mid.replace(',', '.')
+        },
+
+        t_zone_3: {
+          peak: this.t_zone_3.peak.replace(',', '.'),
+          pp: this.t_zone_3.pp.replace(',', '.'),
+          night: this.t_zone_3.night.replace(',', '.')
+        },
+        t_zone_2: {
+          day: this.t_zone_2.day.replace(',', '.'),
+          night: this.t_zone_2.night.replace(',', '.')
+        },
+
+        t_alternative: {
+          resource: this.t_alternative.resource,
+          sun: this.t_alternative.sun,
+          wind: this.t_alternative.wind,
+          storage: this.t_alternative.storage
+        }
+      }
+    },
+
     saveChanges () {
-      /* eslint-disable no-console */
-      console.info('saveChanges')
-      /* eslint-enable no-console */
+      clearTimeout(this.taimerHandler)
+      this.taimerHandler = undefined
+
       this.$v.tech_price.$touch()
       this.$v.trade_price.$touch()
       this.$v.t_alternative.$touch()
       if (this.$v.tech_price.$invalid || this.$v.trade_price.$invalid || this.$v.t_alternative.$invalid) {
-        /* eslint-disable no-console */
-        console.warn('не все данные подготовлены...')
-        /* eslint-enable no-console */
         return
       }
-      /* eslint-disable no-console */
-      console.info('saveChanges: commit...')
-      /* eslint-enable no-console */
+
+      this.taimerHandler = setTimeout(() => {
+        this.taimerHandler = undefined
+        this.$v.tech_price.$touch()
+        this.$v.trade_price.$touch()
+        this.$v.t_alternative.$touch()
+        if (this.$v.tech_price.$invalid || this.$v.trade_price.$invalid || this.$v.t_alternative.$invalid) {
+          return
+        }
+        this.$axios.$put(API_TARIFFS_SERVICE, this.buildData(), { progress: false })
+          // .then((v) => {})
+          .catch((error) => {
+            /* eslint-disable no-console */
+            if (error.response) {
+              console.error('ошибка %d: %s', error.response.status, error.response.data)
+            }
+            /* eslint-enable no-console */
+          })
+      }, DELAY_BEFORE_SAVE_CHANGES)
+    },
+    loadTariffs () {
+      this.$axios.$get(API_TARIFFS_SERVICE, { progress: false })
+        .then((v) => {
+          this.trade_price = v.trade_price
+          this.tech_price = v.tech_price
+
+          this.t_alternative = v.t_alternative
+
+          this.doCalcTariffs(this.trade_price)
+        })
+        .catch((error) => {
+          /* eslint-disable no-console */
+          if (error.response) {
+            console.error('ошибка %d: %s', error.response.status, error.response.data)
+          }
+          /* eslint-enable no-console */
+          this.doCalcTariffs(undefined)
+        })
     }
   }
 }

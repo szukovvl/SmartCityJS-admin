@@ -440,6 +440,7 @@ export default {
   methods: {
     saveChanges () {
       clearTimeout(this.postdelay)
+      this.postdelay = undefined
       if (this.$v.data.$invalid) {
         return
       }
