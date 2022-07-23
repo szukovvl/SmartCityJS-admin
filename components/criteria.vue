@@ -47,10 +47,14 @@
         </v-col>
         <v-col cols="2">
           <v-text-field
+            v-model="data.power_balance"
             class="right-input"
             type="number"
             suffix="%"
             dense
+            :error-messages="check_for_errors($v.data.power_balance)"
+            @input="$v.data.power_balance.$touch()"
+            @blur="$v.data.power_balance.$touch()"
           />
         </v-col>
       </v-row>
@@ -60,42 +64,58 @@
       <v-row class="d-inline-flex">
         <v-col>
           <v-text-field
+            v-model="data.coef_power_balance.k1"
             class="right-input"
             type="number"
             hint="мощность потребления равна мошности генерации баланс (Рпр/Рист = 0)"
             persistent-hint
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.data.coef_power_balance.k1)"
+            @input="$v.data.coef_power_balance.k1.$touch()"
+            @blur="$v.data.coef_power_balance.k1.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="data.coef_power_balance.k2"
             class="right-input"
             type="number"
             hint="мощность потребления больше мощности генерации баланс отрицательный (Рпр/Рист < 0)"
             persistent-hint
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.data.coef_power_balance.k2)"
+            @input="$v.data.coef_power_balance.k2.$touch()"
+            @blur="$v.data.coef_power_balance.k2.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="data.coef_power_balance.k3"
             class="right-input"
             type="number"
             hint="мощность потребления меньше мошности генерации баланс положительный (Рпр/Рист ≦ 0) (17%)"
             persistent-hint
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.data.coef_power_balance.k3)"
+            @input="$v.data.coef_power_balance.k3.$touch()"
+            @blur="$v.data.coef_power_balance.k3.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="data.coef_power_balance.k4"
             class="right-input"
             type="number"
             hint="баланс положительный (Рпр/Рист < 0) (потребления меньше генерации 12%)"
             persistent-hint
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.data.coef_power_balance.k4)"
+            @input="$v.data.coef_power_balance.k4.$touch()"
+            @blur="$v.data.coef_power_balance.k4.$touch()"
           />
         </v-col>
       </v-row>
@@ -119,10 +139,14 @@
         </v-col>
         <v-col cols="2">
           <v-text-field
+            v-model="data.economic"
             class="right-input"
             type="number"
             suffix="%"
             dense
+            :error-messages="check_for_errors($v.data.economic)"
+            @input="$v.data.economic.$touch()"
+            @blur="$v.data.economic.$touch()"
           />
         </v-col>
       </v-row>
@@ -132,32 +156,44 @@
       <v-row class="d-inline-flex">
         <v-col>
           <v-text-field
+            v-model="data.coef_economic.k1"
             class="right-input"
             type="number"
             hint="приходная часть равна расходной части баланс (Пприход/Зрасход = 0)"
             persistent-hint
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.data.coef_economic.k1)"
+            @input="$v.data.coef_economic.k1.$touch()"
+            @blur="$v.data.coef_economic.k1.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="data.coef_economic.k2"
             class="right-input"
             type="number"
             hint="приходная часть меньше расходной части баланс (Пприход/Зрасход < 0)"
             persistent-hint
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.data.coef_economic.k2)"
+            @input="$v.data.coef_economic.k2.$touch()"
+            @blur="$v.data.coef_economic.k2.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="data.coef_economic.k3"
             class="right-input"
             type="number"
             hint="приходная часть больше расходной части баланс (Пприход/Зрасход > 0)"
             persistent-hint
             dense
             step="0.01"
+            :error-messages="check_for_errors($v.data.coef_economic.k3)"
+            @input="$v.data.coef_economic.k3.$touch()"
+            @blur="$v.data.coef_economic.k3.$touch()"
           />
         </v-col>
       </v-row>
@@ -185,10 +221,14 @@
         </v-col>
         <v-col cols="2">
           <v-text-field
+            v-model="data.ecology"
             class="right-input"
             type="number"
             suffix="%"
             dense
+            :error-messages="check_for_errors($v.data.ecology)"
+            @input="$v.data.ecology.$touch()"
+            @blur="$v.data.ecology.$touch()"
           />
         </v-col>
       </v-row>
@@ -198,52 +238,72 @@
       <v-row class="d-inline-flex">
         <v-col>
           <v-text-field
+            v-model="data.coef_ecology.k1"
             class="right-input"
             type="number"
             hint="выброс гСО2-экв на 1 кВт*ч для ТЭС на уголь/газ/нефть - 684,75"
             persistent-hint
             dense
             step="0.001"
+            :error-messages="check_for_errors($v.data.coef_ecology.k1)"
+            @input="$v.data.coef_ecology.k1.$touch()"
+            @blur="$v.data.coef_ecology.k1.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="data.coef_ecology.k2"
             class="right-input"
             type="number"
             hint="выброс гСО2-экв на 1 кВт*ч для ЭЭ на Солнце - 18"
             persistent-hint
             dense
             step="0.001"
+            :error-messages="check_for_errors($v.data.coef_ecology.k2)"
+            @input="$v.data.coef_ecology.k2.$touch()"
+            @blur="$v.data.coef_ecology.k2.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="data.coef_ecology.k3"
             class="right-input"
             type="number"
             hint="выброс гСО2-экв на 1 кВт*ч для ЭЭ на Ветер - 6,9"
             persistent-hint
             dense
             step="0.001"
+            :error-messages="check_for_errors($v.data.coef_ecology.k3)"
+            @input="$v.data.coef_ecology.k3.$touch()"
+            @blur="$v.data.coef_ecology.k3.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="data.coef_ecology.k4"
             class="right-input"
             type="number"
             hint="выброс гСО2-экв на 1 кВт*ч для ЭЭ на Дизель Генерация - 930"
             persistent-hint
             dense
             step="0.001"
+            :error-messages="check_for_errors($v.data.coef_ecology.k4)"
+            @input="$v.data.coef_ecology.k4.$touch()"
+            @blur="$v.data.coef_ecology.k4.$touch()"
           />
         </v-col>
         <v-col>
           <v-text-field
+            v-model="data.coef_ecology.k5"
             class="right-input"
             type="number"
             hint="выброс гСО2-экв на 1 кВт*ч для ЭЭ на Хранилище - 798,9"
             persistent-hint
             dense
             step="0.001"
+            :error-messages="check_for_errors($v.data.coef_ecology.k5)"
+            @input="$v.data.coef_ecology.k5.$touch()"
+            @blur="$v.data.coef_ecology.k5.$touch()"
           />
         </v-col>
       </v-row>
@@ -252,11 +312,141 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import Vuelidate from 'vuelidate'
+import { required, decimal } from 'vuelidate/lib/validators'
+import { API_CRITERIA_SERVICE, DELAY_BEFORE_SAVE_CHANGES } from '~/assets/helpers'
+
+Vue.use(Vuelidate)
+
+const checkGtZeroDec = value => value !== undefined && value !== null && value >= 0.0
+
 export default {
   name: 'CriteriaComponent',
 
   data: () => ({
-  })
+    data: {
+      power_balance: undefined,
+      coef_power_balance: {
+        k1: undefined,
+        k2: undefined,
+        k3: undefined,
+        k4: undefined
+      },
+      economic: undefined,
+      coef_economic: {
+        k1: undefined,
+        k2: undefined,
+        k3: undefined
+      },
+      ecology: undefined,
+      coef_ecology: {
+        k1: undefined,
+        k2: undefined,
+        k3: undefined,
+        k4: undefined,
+        k5: undefined
+      }
+    },
+    data_enabled: false,
+    taimerHandler: undefined
+  }),
+
+  validations: {
+    data: {
+      power_balance: { required, decimal, checkGtZeroDec },
+      coef_power_balance: {
+        k1: { required, decimal, checkGtZeroDec },
+        k2: { required, decimal, checkGtZeroDec },
+        k3: { required, decimal, checkGtZeroDec },
+        k4: { required, decimal, checkGtZeroDec }
+      },
+      economic: { required, decimal, checkGtZeroDec },
+      coef_economic: {
+        k1: { required, decimal, checkGtZeroDec },
+        k2: { required, decimal, checkGtZeroDec },
+        k3: { required, decimal, checkGtZeroDec }
+      },
+      ecology: { required, decimal, checkGtZeroDec },
+      coef_ecology: {
+        k1: { required, decimal, checkGtZeroDec },
+        k2: { required, decimal, checkGtZeroDec },
+        k3: { required, decimal, checkGtZeroDec },
+        k4: { required, decimal, checkGtZeroDec },
+        k5: { required, decimal, checkGtZeroDec }
+      }
+    }
+  },
+
+  watch: {
+    data: {
+      handler (v) {
+        if (this.data_enabled) {
+          this.saveChanges()
+        }
+        this.data_enabled = true
+      },
+      deep: true
+    }
+  },
+
+  created () {
+    this.loadCriteria()
+  },
+
+  methods: {
+    check_for_errors (field) {
+      const errors = []
+      if (!field.$dirty) {
+        return errors
+      }
+      !field.decimal && errors.push('Задается вещественным числом')
+      !field.required && errors.push('Необходимо определить')
+      !field.checkGtZeroDec && errors.push('Не может быть отрицательным')
+      return errors
+    },
+
+    saveChanges () {
+      clearTimeout(this.taimerHandler)
+      this.taimerHandler = undefined
+
+      this.$v.data.$touch()
+      if (this.$v.data.$invalid) {
+        return
+      }
+
+      this.taimerHandler = setTimeout(() => {
+        this.taimerHandler = undefined
+        this.$v.data.$touch()
+        if (this.$v.data.$invalid) {
+          return
+        }
+        this.$axios.$put(API_CRITERIA_SERVICE, this.data, { progress: false })
+          // .then((v) => {})
+          .catch((error) => {
+            /* eslint-disable no-console */
+            if (error.response) {
+              console.error('ошибка %d: %s', error.response.status, error.response.data)
+            }
+            /* eslint-enable no-console */
+          })
+      }, DELAY_BEFORE_SAVE_CHANGES)
+    },
+    loadCriteria () {
+      this.$axios.$get(API_CRITERIA_SERVICE, { progress: false })
+        .then((v) => {
+          this.data = v
+        })
+        .catch((error) => {
+          /* eslint-disable no-console */
+          if (error.response) {
+            console.error('ошибка %d: %s', error.response.status, error.response.data)
+          }
+          /* eslint-enable no-console */
+          this.data_enabled = true
+        })
+    }
+  }
 }
 </script>
 

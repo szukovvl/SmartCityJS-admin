@@ -60,6 +60,7 @@ export const API_SUN_SERVICE_RESTART = REST_API_URL + '/sun/service/restart'
 export const API_SUN_SERVICE_SETPOWER = REST_API_URL + '/sun'
 
 export const API_TARIFFS_SERVICE = API_COMMON_INFO_SERVICE + '/tariffs'
+export const API_CRITERIA_SERVICE = API_COMMON_INFO_SERVICE + '/criteria'
 
 //
 export const DELAY_BEFORE_SAVE_CHANGES = 500
