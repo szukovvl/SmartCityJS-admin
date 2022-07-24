@@ -47,11 +47,18 @@
       <v-btn
         icon
         color="primary"
+        @click="doUploadDile()"
       >
         <v-icon>
           mdi-file-upload-outline
         </v-icon>
       </v-btn>
+      <input
+        id="file_points"
+        ref="file_points"
+        type="file"
+        @change="handleFileUpload()"
+      >
     </v-toolbar>
 
     <v-card-text>
@@ -169,7 +176,8 @@ import {
   API_ENERGY_SERVICE_FORECAST,
   API_FORECAST_SERVICE,
   API_FORECAST_SERVICE_INTERPOLATION,
-  API_FORECAST_SERVICE_RANDOMIZE
+  API_FORECAST_SERVICE_RANDOMIZE,
+  API_FORECAST_UPLOAD_SERVICE
 } from '~/assets/helpers'
 
 moment.locale('ru')
@@ -248,7 +256,8 @@ export default {
           }
         }
       }
-    }
+    },
+    file_points: undefined
   },
 
   computed: {
@@ -469,6 +478,35 @@ export default {
           }
           /* eslint-enable no-console */
         })
+    },
+
+    handleFileUpload () {
+      this.file_points = this.$refs.file_points.files[0]
+
+      const formData = new FormData()
+      formData.append('points_file', this.file_points)
+      this.$axios.$post(API_FORECAST_UPLOAD_SERVICE + '/' + this.forecast.id, formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+          progress: false
+        })
+        .then((v) => {
+          /* eslint-disable no-console */
+          console.log(v)
+          /* eslint-enable no-console */
+        })
+        .catch((error) => {
+          /* eslint-disable no-console */
+          if (error.response) {
+            console.error('ошибка %d: %s', error.response.status, error.response.data)
+          }
+          /* eslint-enable no-console */
+        })
+
+      this.file_points = undefined
+    },
+    doUploadDile () {
+      this.$refs.file_points.click()
     }
   }
 }
@@ -477,5 +515,10 @@ export default {
 <style scoped>
 ::v-deep(.right-input) input {
   text-align: right
+}
+
+input[type="file"] {
+  position: absolute;
+  top: -500px;
 }
 </style>

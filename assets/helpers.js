@@ -51,6 +51,7 @@ export const API_ENERGY_SERVICE_INTERPOLATE = REST_API_URL + '/energy/interpolat
 export const API_FORECAST_SERVICE = REST_API_URL + '/forecast'
 export const API_FORECAST_SERVICE_INTERPOLATION = REST_API_URL + '/forecast/interpolate'
 export const API_FORECAST_SERVICE_RANDOMIZE = REST_API_URL + '/forecast/random'
+export const API_FORECAST_UPLOAD_SERVICE = API_FORECAST_SERVICE + '/upload'
 
 export const API_SUN_SERVICE_ON = REST_API_URL + '/sun/on'
 export const API_SUN_SERVICE_OFF = REST_API_URL + '/sun/off'
