@@ -38,6 +38,7 @@
       <v-btn
         icon
         color="primary"
+        :href="exportService"
         :disabled="!downloadEnabled"
       >
         <v-icon>
@@ -57,6 +58,7 @@
         id="file_points"
         ref="file_points"
         type="file"
+        visibility="hidden"
         @change="handleFileUpload()"
       >
     </v-toolbar>
@@ -158,6 +160,23 @@
         </v-col>
       </v-row>
     </v-card-text>
+    <div class="text-center">
+      <v-bottom-sheet
+        v-model="error_sheet"
+      >
+        <v-sheet
+          class="text-center pa-2"
+        >
+          <v-alert
+            dense
+            outlined
+            type="error"
+          >
+            {{ upload_error }}
+          </v-alert>
+        </v-sheet>
+      </v-bottom-sheet>
+    </div>
   </v-card>
 </template>
 
@@ -177,7 +196,8 @@ import {
   API_FORECAST_SERVICE,
   API_FORECAST_SERVICE_INTERPOLATION,
   API_FORECAST_SERVICE_RANDOMIZE,
-  API_FORECAST_UPLOAD_SERVICE
+  API_FORECAST_UPLOAD_SERVICE,
+  API_FORECAST_EXPORT_SERVICE
 } from '~/assets/helpers'
 
 moment.locale('ru')
@@ -224,7 +244,10 @@ export default {
     },
     scrolltarget: Number(9999),
     postdelay: undefined,
-    interpolate: []
+    interpolate: [],
+    file_points: undefined,
+    error_sheet: false,
+    upload_error: undefined
   }),
 
   validations: {
@@ -256,8 +279,7 @@ export default {
           }
         }
       }
-    },
-    file_points: undefined
+    }
   },
 
   computed: {
@@ -322,7 +344,11 @@ export default {
       }
     },
 
-    chartOptions: () => CHART_OPTIONS
+    chartOptions: () => CHART_OPTIONS,
+
+    exportService () {
+      return API_FORECAST_EXPORT_SERVICE + '/' + this.forecast.id
+    }
   },
 
   watch: {
@@ -482,6 +508,7 @@ export default {
 
     handleFileUpload () {
       this.file_points = this.$refs.file_points.files[0]
+      this.$refs.file_points.value = ''
 
       const formData = new FormData()
       formData.append('points_file', this.file_points)
@@ -491,16 +518,24 @@ export default {
           progress: false
         })
         .then((v) => {
-          /* eslint-disable no-console */
-          console.log(v)
-          /* eslint-enable no-console */
+          if (v.points.length !== 0) {
+            this.forecastWatch = false
+            this.forecast.data = v.points
+            this.interpolate = v.interpolation.items
+          }
+          if (v.errormsg !== undefined) {
+            this.upload_error = v.errormsg
+            this.error_sheet = true
+          }
         })
         .catch((error) => {
-          /* eslint-disable no-console */
           if (error.response) {
+            this.upload_error = 'Сервер вернул ошибку ' + error.response.status + ': ' + error.response.data
+            /* eslint-disable no-console */
             console.error('ошибка %d: %s', error.response.status, error.response.data)
+            /* eslint-enable no-console */
           }
-          /* eslint-enable no-console */
+          this.error_sheet = true
         })
 
       this.file_points = undefined
@@ -517,8 +552,12 @@ export default {
   text-align: right
 }
 
-input[type="file"] {
+#file_points {
+  display: none;
+}
+
+/* input[type="file"] {
   position: absolute;
   top: -500px;
-}
+} */
 </style>
