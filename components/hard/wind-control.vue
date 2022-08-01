@@ -331,7 +331,9 @@ export default {
         if (this.$v.url.$invalid) {
           return
         }
-        this.$axios.$put(API_WIND_SERVICE_SETURL + '/' + this.url, undefined, { progress: false })
+        this.$axios.$put(API_WIND_SERVICE_SETURL,
+          { url: this.url },
+          { progress: false })
           .then((v) => {
             this.urlTimeHandle = setTimeout(() => {
               if (this.urlDelayHandle === undefined) {
