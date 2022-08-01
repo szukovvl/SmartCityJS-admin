@@ -201,14 +201,14 @@
           color="red"
         >
           <v-icon
-            :class="stateWindEmulator.stopped ? 'blink mr-2' : 'mr-2'"
+            class="mr-2"
             size="28"
             :color="stateWindEmulator.isOn ? 'lime darken-3' : 'blue-grey lighten-2'"
           >
             mdi-weather-windy
           </v-icon>
         </v-badge>
-        <p>{{ stateWindEmulator.power }} м/с</p>
+        <p>{{ stateWindEmulator.power }}</p>
       </v-card>
       <v-card
         class="d-inline-flex pt-2 ml-12"
@@ -303,23 +303,13 @@ export default {
       commands: [
         {
           name: 'objectsettings',
-          icon: 'gamepad-variant-outline',
+          icon: 'gamepad-circle-down',
           url: '/'
-        },
-        {
-          name: 'reports',
-          icon: 'poll',
-          url: '/report'
         },
         {
           name: 'hardsettings',
           icon: 'cog-outline',
           url: '/hard'
-        },
-        {
-          name: 'profile',
-          icon: 'account-edit-outline',
-          url: '/profile'
         }
       ]
     }

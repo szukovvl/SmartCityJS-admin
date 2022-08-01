@@ -13,7 +13,7 @@
           mdi-white-balance-sunny
         </v-icon>
       </v-avatar>
-      &laquo;Эмитатор солнца&raquo;
+      &laquo;Имитатор солнца&raquo;
       <v-tooltip
         right
         max-width="600"
@@ -30,7 +30,7 @@
           </v-icon>
         </template>
         <p class="px-0 ma-0 py-2">
-          <span class="light-blue--text text--lighten-3"><b>Эмитатор солнца</b></span> – программируемый ПЛК,
+          <span class="light-blue--text text--lighten-3"><b>Имитатор солнца</b></span> – программируемый ПЛК,
           управляющий осветителями стэнда.
         </p>
       </v-tooltip>
@@ -255,10 +255,9 @@ import {
   DELAY_BEFORE_CHECK_VALUE,
   DELAY_BEFORE_SAVE_CHANGES
 } from '~/assets/helpers'
+import { vCheckGtZero } from '~/assets/validations'
 
 Vue.use(Vuelidate)
-
-const checkGtZero = value => value !== undefined && value !== null && value >= 0
 
 export default {
   name: 'SunControl',
@@ -298,8 +297,8 @@ export default {
       integer,
       betweenValue: between(0, 100)
     },
-    plcTime: { required, integer, checkGtZero },
-    restartTime: { required, integer, checkGtZero }
+    plcTime: { required, integer, vCheckGtZero },
+    restartTime: { required, integer, vCheckGtZero }
   },
 
   computed: {
@@ -319,7 +318,7 @@ export default {
         return errors
       }
       !this.$v.plcTime.integer && errors.push('Задается целым числом')
-      !this.$v.plcTime.checkGtZero && errors.push('Не может быть отрицательным')
+      !this.$v.plcTime.vCheckGtZero && errors.push('Не может быть отрицательным')
       !this.$v.plcTime.required && errors.push('Необходимо определить')
       return errors
     },
@@ -329,7 +328,7 @@ export default {
         return errors
       }
       !this.$v.restartTime.integer && errors.push('Задается целым числом')
-      !this.$v.restartTime.checkGtZero && errors.push('Не может быть отрицательным')
+      !this.$v.restartTime.vCheckGtZero && errors.push('Не может быть отрицательным')
       !this.$v.restartTime.required && errors.push('Необходимо определить')
       return errors
     },
