@@ -82,7 +82,7 @@
         >
           <v-divider
             v-if="index !== 0"
-             class="my-3"
+            class="my-3"
           />
           <div>
             {{ item }}
