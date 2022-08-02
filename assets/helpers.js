@@ -61,6 +61,12 @@ export const API_SUN_SERVICE_STOP = REST_API_URL + '/sun/service/stop'
 export const API_SUN_SERVICE_RESTART = REST_API_URL + '/sun/service/restart'
 export const API_SUN_SERVICE_SETPOWER = REST_API_URL + '/sun'
 
+export const API_WIND_SERVICE = REST_API_URL + '/wind'
+export const API_WIND_SERVICE_ON = API_WIND_SERVICE + '/on'
+export const API_WIND_SERVICE_OFF = API_WIND_SERVICE + '/off'
+export const API_WIND_SERVICE_SETPOWER = API_WIND_SERVICE + '/power'
+export const API_WIND_SERVICE_SETURL = API_WIND_SERVICE + '/url'
+
 export const API_TARIFFS_SERVICE = API_COMMON_INFO_SERVICE + '/tariffs'
 export const API_CRITERIA_SERVICE = API_COMMON_INFO_SERVICE + '/criteria'
 
