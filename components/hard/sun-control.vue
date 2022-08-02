@@ -390,7 +390,6 @@ export default {
       /* eslint-disable no-console */
       console.warn('состояние:', this.state)
       /* eslint-enable no-console */
-      this.power = 0
     },
 
     onPlcTimeChange () {

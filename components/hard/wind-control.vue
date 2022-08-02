@@ -66,6 +66,30 @@
         </p>
       </v-tooltip>
     </v-card-text>
+    <v-card-text
+      v-if="errorsMsg.length !== 0"
+      class="ma-0 pa-0"
+    >
+      <v-alert
+        type="error"
+        dense
+        prominent
+        max-width="600"
+      >
+        <div
+          v-for="(item, index) in errorsMsg"
+          :key="'_net_error_' + index"
+        >
+          <v-divider
+            v-if="index !== 0"
+             class="my-3"
+          />
+          <div>
+            {{ item }}
+          </div>
+        </div>
+      </v-alert>
+    </v-card-text>
     <v-card-text>
       <div class="d-inline-flex">
         <v-text-field
@@ -224,6 +248,13 @@ export default {
       return errors
     },
 
+    errorsMsg () {
+      const errors = []
+      this.axioError !== undefined && errors.push(this.axioError)
+      this.state.errorMsg !== undefined && errors.push(this.state.errorMsg)
+      return errors
+    },
+
     chartOptions: () => CHART_OPTIONS,
     axesdata () {
       return {
@@ -281,7 +312,6 @@ export default {
       /* eslint-disable no-console */
       console.warn('состояние:', this.state)
       /* eslint-enable no-console */
-      this.power = 0
     },
 
     doSetPowerChanged () {
@@ -300,6 +330,7 @@ export default {
         }
         this.$axios.$put(API_WIND_SERVICE_SETPOWER + '/' + this.power, undefined, { progress: false })
           .then((v) => {
+            this.axioError = undefined
             this.powerTimeHandle = setTimeout(() => {
               if (this.delayHandle === undefined) {
                 this.power = this.state.power
@@ -335,6 +366,7 @@ export default {
           { url: this.url },
           { progress: false })
           .then((v) => {
+            this.axioError = undefined
             this.urlTimeHandle = setTimeout(() => {
               if (this.urlDelayHandle === undefined) {
                 this.url = this.state.url
@@ -357,6 +389,7 @@ export default {
       this.timeHandle = undefined
       this.$axios.$post(this.setOn ? API_WIND_SERVICE_ON : API_WIND_SERVICE_OFF, undefined, { progress: false })
         .then((v) => {
+          this.axioError = undefined
           this.timeHandle = setTimeout(() => {
             this.setOn = this.state.on
             this.timeHandle = undefined
