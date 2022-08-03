@@ -66,6 +66,7 @@ export const API_WIND_SERVICE_ON = API_WIND_SERVICE + '/on'
 export const API_WIND_SERVICE_OFF = API_WIND_SERVICE + '/off'
 export const API_WIND_SERVICE_SETPOWER = API_WIND_SERVICE + '/power'
 export const API_WIND_SERVICE_SETURL = API_WIND_SERVICE + '/url'
+export const API_WIND_SERVICE_RECONNECT = API_WIND_SERVICE + '/reconnect'
 
 export const API_TARIFFS_SERVICE = API_COMMON_INFO_SERVICE + '/tariffs'
 export const API_CRITERIA_SERVICE = API_COMMON_INFO_SERVICE + '/criteria'
@@ -74,7 +75,7 @@ export const API_CRITERIA_SERVICE = API_COMMON_INFO_SERVICE + '/criteria'
 export const DELAY_BEFORE_SAVE_CHANGES = 500
 
 //
-export const DELAY_BEFORE_CHECK_VALUE = 2500
+export const DELAY_BEFORE_CHECK_VALUE = 3000
 
 //
 export const roundToTwoAsStr = val => (Math.round(val * 100.0) / 100.0).toFixed(2).replace('.', ',')

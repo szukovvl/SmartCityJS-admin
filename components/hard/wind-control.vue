@@ -65,6 +65,16 @@
           Адрес сетевого ресурса блока управления вентилятором.
         </p>
       </v-tooltip>
+      <v-btn
+        class="align-self-center"
+        icon
+        small
+        @click="doRefresh"
+      >
+        <v-icon>
+          mdi-refresh
+        </v-icon>
+      </v-btn>
     </v-card-text>
     <v-card-text
       v-if="errorsMsg.length !== 0"
@@ -181,6 +191,7 @@ import {
   API_WIND_SERVICE_OFF,
   API_WIND_SERVICE_SETPOWER,
   API_WIND_SERVICE_SETURL,
+  API_WIND_SERVICE_RECONNECT,
   DELAY_BEFORE_CHECK_VALUE,
   DELAY_BEFORE_SAVE_CHANGES
 } from '~/assets/helpers'
@@ -212,6 +223,7 @@ export default {
     axioError: undefined,
     timeHandle: undefined,
     powerTimeHandle: undefined,
+    delayHandle: undefined,
     urlDelayHandle: undefined,
     urlTimeHandle: undefined,
     forecastItems: [
@@ -285,18 +297,23 @@ export default {
 
   watch: {
     'state.on' (v) {
-      this.setOn = v
+      if (this.timeHandle === undefined) {
+        this.setOn = v
+      }
     },
     'state.power' (v) {
-      this.power = v
+      if (this.delayHandle === undefined && this.powerTimeHandle === undefined) {
+        if (this.power !== v) {
+          this.power = v
+        }
+      }
     },
     'state.url' (v) {
-      this.url = v
-    },
-    axioError (v) {
-      /* eslint-disable no-console */
-      console.error('ошибка:', v)
-      /* eslint-enable no-console */
+      if (this.urlDelayHandle === undefined && this.urlTimeHandle === undefined) {
+        if (v !== this.url) {
+          this.url = v
+        }
+      }
     }
   },
 
@@ -400,6 +417,25 @@ export default {
             this.axioError = `ошибка ${error.response.status}: ${error.response.data}`
           } else {
             this.axioError = 'ошибка выполнения API - включить/отключить осветители'
+          }
+        })
+    },
+
+    doRefresh () {
+      this.$v.url.$touch()
+      if (this.$v.url.$invalid) {
+        return
+      }
+
+      this.$axios.$post(API_WIND_SERVICE_RECONNECT, undefined, { progress: false })
+        .then((v) => {
+          this.axioError = undefined
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.axioError = `ошибка ${error.response.status}: ${error.response.data}`
+          } else {
+            this.axioError = 'ошибка выполнения API - переподключить'
           }
         })
     }
