@@ -34,150 +34,30 @@
           управляющий осветителями стэнда.
         </p>
       </v-tooltip>
-      <v-icon
-        class="ml-4"
-        :color="launched ? 'indigo accent-4' : 'amber darken-3'"
-      >
-        {{ launched ? 'mdi-rocket-launch-outline' : 'mdi-power-standby' }}
-      </v-icon>
     </v-card-title>
-    <v-card-text class="amber lighten-3">
-      <div class="d-inline-flex">
-        <v-text-field
-          v-model="plcTime"
-          class="right-input"
-          type="number"
-          hint="длительность цикла опроса"
-          persistent-hint
-          suffix="мс"
-          dense
-          step="50"
-          :error-messages="plcTimeErrors"
-          @input="onPlcTimeChange"
-          @blur="$v.plcTime.$touch()"
-        />
-        <v-tooltip
-          right
-          max-width="400"
+    <v-card-text
+      v-if="errorsMsg.length !== 0"
+      class="ma-0 pa-0"
+    >
+      <v-alert
+        type="error"
+        dense
+        prominent
+        max-width="600"
+      >
+        <div
+          v-for="(item, index) in errorsMsg"
+          :key="'_net_error_' + index"
         >
-          <template #activator="{ on, attrs }">
-            <v-icon
-              class="align-self-start mr-4"
-              color="blue"
-              small
-              v-bind="attrs"
-              v-on="on"
-            >
-              mdi-help-circle-outline
-            </v-icon>
-          </template>
-          <p class="px-0 ma-0 py-2">
-            <span class="red--text text--lighten-1"><b>ВНИМАНИЕ !</b></span>
-            Данный параметр управляет временем опроса ПЛК.
-            Малые значения времени опроса увеличивают интерактивность.
-            Тем не менее, не следует прибегать к чрезмерно малым значением времени опроса,
-            что может увеличить количество ошибок взаимодействия с ПЛК.
-            Устанавливаемое значение должно соотносится со скоростью реакции пользовательского интерфейса и
-            быть достаточным, чтобы модуль связи ПЛК успел приготовится к обслуживанию следующих запросов.
-          </p>
-        </v-tooltip>
-        <v-text-field
-          v-model="restartTime"
-          class="right-input"
-          type="number"
-          hint="задержка при перезапуске сервиса"
-          persistent-hint
-          suffix="мс"
-          dense
-          step="100"
-          :error-messages="restartTimeErrors"
-          @input="$v.restartTime.$touch()"
-          @blur="$v.restartTime.$touch()"
-        />
-        <v-tooltip
-          right
-          max-width="400"
-        >
-          <template #activator="{ on, attrs }">
-            <v-icon
-              class="align-self-start"
-              color="blue"
-              small
-              v-bind="attrs"
-              v-on="on"
-            >
-              mdi-help-circle-outline
-            </v-icon>
-          </template>
-          <p class="px-0 ma-0 py-2">
-            <span class="red--text text--lighten-1"><b>ВНИМАНИЕ !</b></span>
-            Данный параметр определяет временную задержку перед запускам сервиса, после его останова
-            во время обработки команды API "перезапустить".
-          </p>
-        </v-tooltip>
-      </div>
-    </v-card-text>
-    <v-card-text>
-      <div class="d-inline-flex">
-        <v-text-field
-          v-model="power"
-          class="right-input mr-4"
-          type="number"
-          hint="задание мощности"
-          persistent-hint
-          suffix="%"
-          dense
-          step="5"
-          :error-messages="powerErrors"
-          @input="doSetPowerChanged"
-          @blur="$v.power.$touch()"
-        />
-        <v-switch
-          v-model="setOn"
-          :label="setOn ? 'Включен' : 'Отключен'"
-          @change="doSetOnChange"
-        />
-      </div>
-    </v-card-text>
-    <v-card-subtitle>
-      Управление сервисом
-    </v-card-subtitle>
-    <v-card-text>
-      <div class="d-flex justify-center">
-        <v-btn
-          class="mx-2"
-          outlined
-          fab
-          small
-          color="indigo accent-4"
-          :disabled="launched"
-          @click="onStart"
-        >
-          <v-icon>mdi-play</v-icon>
-        </v-btn>
-        <v-btn
-          class="mx-2"
-          outlined
-          fab
-          small
-          color="teal"
-          :disabled="!launched"
-          @click="onRestart"
-        >
-          <v-icon>mdi-replay</v-icon>
-        </v-btn>
-        <v-btn
-          class="mx-2"
-          outlined
-          fab
-          small
-          color="amber darken-3"
-          :disabled="!launched"
-          @click="onStop"
-        >
-          <v-icon>mdi-stop</v-icon>
-        </v-btn>
-      </div>
+          <v-divider
+            v-if="index !== 0"
+            class="my-3"
+          />
+          <div>
+            {{ item }}
+          </div>
+        </div>
+      </v-alert>
     </v-card-text>
     <v-card-subtitle>Ветровая модель</v-card-subtitle>
     <v-card-text>
@@ -246,16 +126,12 @@ import { required, integer, between } from 'vuelidate/lib/validators'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { CHART_OPTIONS } from '~/assets/charts'
 import {
+  API_SUN_SERVICE,
   API_SUN_SERVICE_ON,
   API_SUN_SERVICE_OFF,
-  API_SUN_SERVICE_START,
-  API_SUN_SERVICE_STOP,
-  API_SUN_SERVICE_RESTART,
-  API_SUN_SERVICE_SETPOWER,
   DELAY_BEFORE_CHECK_VALUE,
   DELAY_BEFORE_SAVE_CHANGES
 } from '~/assets/helpers'
-import { vCheckGtZero } from '~/assets/validations'
 
 Vue.use(Vuelidate)
 
@@ -282,10 +158,8 @@ export default {
     forecast: undefined,
     axioError: undefined,
     timeHandle: undefined,
-    plcTime: undefined,
     powerTimeHandle: undefined,
     delayHandle: undefined,
-    restartTime: undefined,
     forecastItems: [
       { key: '_not_found_', text: 'ветровые модели не найдены' }
     ]
@@ -296,9 +170,7 @@ export default {
       required,
       integer,
       betweenValue: between(0, 100)
-    },
-    plcTime: { required, integer, vCheckGtZero },
-    restartTime: { required, integer, vCheckGtZero }
+    }
   },
 
   computed: {
@@ -312,24 +184,10 @@ export default {
       !this.$v.power.required && errors.push('Необходимо определить')
       return errors
     },
-    plcTimeErrors () {
+    errorsMsg () {
       const errors = []
-      if (!this.$v.plcTime.$dirty) {
-        return errors
-      }
-      !this.$v.plcTime.integer && errors.push('Задается целым числом')
-      !this.$v.plcTime.vCheckGtZero && errors.push('Не может быть отрицательным')
-      !this.$v.plcTime.required && errors.push('Необходимо определить')
-      return errors
-    },
-    restartTimeErrors () {
-      const errors = []
-      if (!this.$v.restartTime.$dirty) {
-        return errors
-      }
-      !this.$v.restartTime.integer && errors.push('Задается целым числом')
-      !this.$v.restartTime.vCheckGtZero && errors.push('Не может быть отрицательным')
-      !this.$v.restartTime.required && errors.push('Необходимо определить')
+      this.axioError !== undefined && errors.push(this.axioError)
+      // this.state.errorMsg !== undefined && errors.push(this.state.errorMsg)
       return errors
     },
 
@@ -367,15 +225,16 @@ export default {
 
   watch: {
     'state.on' (v) {
-      this.setOn = v
+      if (this.timeHandle === undefined) {
+        this.setOn = v
+      }
     },
     'state.power' (v) {
-      this.power = v
-    },
-    axioError (v) {
-      /* eslint-disable no-console */
-      console.error('ошибка:', v)
-      /* eslint-enable no-console */
+      if (this.delayHandle === undefined && this.powerTimeHandle === undefined) {
+        if (this.power !== v) {
+          this.power = v
+        }
+      }
     }
   },
 
@@ -392,12 +251,6 @@ export default {
       /* eslint-enable no-console */
     },
 
-    onPlcTimeChange () {
-      this.$v.plcTime.$touch()
-      /* eslint-disable no-console */
-      console.log('onPlcTimeChange:', this.plcTime)
-      /* eslint-enable no-console */
-    },
     doSetPowerChanged () {
       clearTimeout(this.delayHandle)
       clearTimeout(this.powerTimeHandle)
@@ -412,8 +265,9 @@ export default {
         if (this.$v.power.$invalid) {
           return
         }
-        this.$axios.$put(API_SUN_SERVICE_SETPOWER + '/' + this.power, undefined, { progress: false })
+        this.$axios.$put(API_SUN_SERVICE + '/' + this.power, undefined, { progress: false })
           .then((v) => {
+            this.axioError = undefined
             this.powerTimeHandle = setTimeout(() => {
               if (this.delayHandle === undefined) {
                 this.power = this.state.power
@@ -430,12 +284,12 @@ export default {
           })
       }, DELAY_BEFORE_SAVE_CHANGES)
     },
-
     doSetOnChange () {
       clearTimeout(this.timeHandle)
       this.timeHandle = undefined
       this.$axios.$post(this.setOn ? API_SUN_SERVICE_ON : API_SUN_SERVICE_OFF, undefined, { progress: false })
         .then((v) => {
+          this.axioError = undefined
           this.timeHandle = setTimeout(() => {
             this.setOn = this.state.on
             this.timeHandle = undefined
@@ -448,27 +302,6 @@ export default {
             this.axioError = 'ошибка выполнения API - включить/отключить осветители'
           }
         })
-    },
-
-    executeServiceApi (url) {
-      this.$axios.$put(url, undefined, { progress: false })
-        // .then((v) => {})
-        .catch((error) => {
-          if (error.response) {
-            this.axioError = `ошибка ${error.response.status}: ${error.response.data}`
-          } else {
-            this.axioError = 'ошибка выполнения API - управление сервисом эмитатора ветра'
-          }
-        })
-    },
-    onStart () {
-      this.executeServiceApi(API_SUN_SERVICE_START)
-    },
-    onRestart () {
-      this.executeServiceApi(API_SUN_SERVICE_RESTART)
-    },
-    onStop () {
-      this.executeServiceApi(API_SUN_SERVICE_STOP)
     }
   }
 }

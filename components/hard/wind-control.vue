@@ -247,7 +247,7 @@ export default {
         return errors
       }
       !this.$v.power.integer && errors.push('Задается целым числом')
-      !this.$v.power.betweenValue && errors.push('Только значения от 0 до 100')
+      !this.$v.power.betweenValue && errors.push('Только значения от 0 до 80')
       !this.$v.power.required && errors.push('Необходимо определить')
       return errors
     },
