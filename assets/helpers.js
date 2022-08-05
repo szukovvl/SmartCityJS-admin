@@ -69,6 +69,8 @@ export const API_STAND_SERVICE = REST_API_URL + '/stand'
 export const API_STAND_SERVICE_START = API_STAND_SERVICE + '/service/start'
 export const API_STAND_SERVICE_STOP = API_STAND_SERVICE + '/service/stop'
 export const API_STAND_SERVICE_RESTART = API_STAND_SERVICE + '/service/restart'
+export const API_STAND_SERVICE_CONTROLDATA = API_STAND_SERVICE + '/control'
+export const API_STAND_SERVICE_PORTNAMES = API_STAND_SERVICE + '/ports'
 
 export const API_TARIFFS_SERVICE = API_COMMON_INFO_SERVICE + '/tariffs'
 export const API_CRITERIA_SERVICE = API_COMMON_INFO_SERVICE + '/criteria'

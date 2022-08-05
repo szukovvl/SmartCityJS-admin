@@ -59,11 +59,31 @@
         </div>
       </v-alert>
     </v-card-text>
-    <v-card-subtitle>Ветровая модель</v-card-subtitle>
+    <v-card-text>
+      <div class="d-inline-flex">
+        <v-text-field
+          v-model="power"
+          class="right-input mr-4"
+          type="number"
+          hint="задание мощности"
+          persistent-hint
+          dense
+          :error-messages="powerErrors"
+          @input="doSetPowerChanged"
+          @blur="$v.power.$touch()"
+        />
+        <v-switch
+          v-model="setOn"
+          :label="setOn ? 'Включен' : 'Отключен'"
+          @change="doSetOnChange"
+        />
+      </div>
+    </v-card-text>
+    <v-card-subtitle>Модель солнца</v-card-subtitle>
     <v-card-text>
       <v-switch
         v-model="setUseForecast"
-        :label="setUseForecast ? 'Использовать ветровую модель' : 'Использовать задание мощности' "
+        :label="setUseForecast ? 'Использовать модель солнца' : 'Использовать задание мощности' "
       />
       <v-menu
         v-model="showMenu"

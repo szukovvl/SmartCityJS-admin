@@ -44,11 +44,13 @@
     <v-card-text class="amber lighten-3">
       <div class="d-inline-flex">
         <v-menu
+          v-model="showMenu"
           bottom
           offset-y
         >
           <template #activator="{}">
             <v-text-field
+              v-model="selPort"
               class="mr-4"
               hint="Порт подключения блока управления"
               persistent-hint
@@ -57,65 +59,32 @@
               clearable
               readonly
               append-icon="mdi-menu-down"
+              :loading="portsLoading"
+              @click:clear="portClear"
+              @click:append="doLoadPorts"
+              @focus="doLoadPorts"
             />
           </template>
           <v-list
-            :disabled="true"
+            :disabled="portItems[0].port === undefined"
           >
             <v-list-item-group
+              v-model="selPortIndex"
               color="primary"
             >
               <v-list-item
-                v-for="port in portItems"
-                :key="port"
+                v-for="item in portItems"
+                :key="item.key"
               >
                 <v-list-item-content>
-                  <v-list-item-title>{{ port }}</v-list-item-title>
+                  <v-list-item-title>{{ item.text }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
           </v-list>
         </v-menu>
         <v-text-field
-          v-model="plcTime"
-          class="right-input"
-          type="number"
-          hint="длительность цикла опроса"
-          persistent-hint
-          suffix="мс"
-          dense
-          step="50"
-          :error-messages="check_for_errors($v.plcTime)"
-          @input="onPlcTimeChange"
-          @blur="$v.plcTime.$touch()"
-        />
-        <v-tooltip
-          right
-          max-width="400"
-        >
-          <template #activator="{ on, attrs }">
-            <v-icon
-              class="align-self-start mr-4"
-              color="blue"
-              small
-              v-bind="attrs"
-              v-on="on"
-            >
-              mdi-help-circle-outline
-            </v-icon>
-          </template>
-          <p class="px-0 ma-0 py-2">
-            <span class="red--text text--lighten-1"><b>ВНИМАНИЕ !</b></span>
-            Данный параметр управляет временем опроса ПЛК.
-            Малые значения времени опроса увеличивают интерактивность.
-            Тем не менее, не следует прибегать к чрезмерно малым значением времени опроса,
-            что может увеличить количество ошибок взаимодействия с ПЛК.
-            Устанавливаемое значение должно соотносится со скоростью реакции пользовательского интерфейса и
-            быть достаточным, чтобы модуль связи ПЛК успел приготовится к обслуживанию следующих запросов.
-          </p>
-        </v-tooltip>
-        <v-text-field
-          v-model="restartTime"
+          v-model="restartingWait"
           class="right-input"
           type="number"
           hint="задержка при перезапуске сервиса"
@@ -123,9 +92,9 @@
           suffix="мс"
           dense
           step="100"
-          :error-messages="check_for_errors($v.restartTime)"
-          @input="onRestartTimeChanged"
-          @blur="$v.restartTime.$touch()"
+          :error-messages="check_for_errors($v.restartingWait)"
+          @input="$v.restartingWait.$touch()"
+          @blur="$v.restartingWait.$touch()"
         />
         <v-tooltip
           right
@@ -220,15 +189,19 @@
 <script>
 import Vue from 'vue'
 import Vuelidate from 'vuelidate'
-import { required, integer } from 'vuelidate/lib/validators'
+import { required, integer, between } from 'vuelidate/lib/validators'
 import {
   API_STAND_SERVICE_START,
   API_STAND_SERVICE_STOP,
-  API_STAND_SERVICE_RESTART
+  API_STAND_SERVICE_RESTART,
+  API_STAND_SERVICE_CONTROLDATA,
+  API_STAND_SERVICE_PORTNAMES,
+  DELAY_BEFORE_SAVE_CHANGES
 } from '~/assets/helpers'
-import { vCheckGtZero } from '~/assets/validations'
 
 Vue.use(Vuelidate)
+
+const notfoundPorts = [{ key: '_EMPTY_PORT_', text: 'порты не найдены', port: undefined }]
 
 export default {
   name: 'StandControl',
@@ -242,14 +215,21 @@ export default {
 
   data: () => ({
     axioError: undefined,
-    plcTime: undefined,
-    restartTime: undefined,
-    portItems: []
+    portItems: notfoundPorts,
+    control: undefined,
+    enableChanges: false,
+    delayChanges: undefined,
+    showMenu: false,
+    portsLoading: false,
+    selPortIndex: undefined
   }),
 
   validations: {
-    plcTime: { required, integer, vCheckGtZero },
-    restartTime: { required, integer, vCheckGtZero }
+    restartingWait: {
+      required,
+      integer,
+      betweenValue: between(1000, 10000)
+    }
   },
 
   computed: {
@@ -261,10 +241,53 @@ export default {
       this.axioError !== undefined && errors.push(this.axioError)
       this.state.errorMsg !== undefined && errors.push(this.state.errorMsg)
       return errors
+    },
+
+    restartingWait: {
+      get () {
+        return this.control !== undefined
+          ? this.control.restartingWait
+          : undefined
+      },
+      set (newvalue) {
+        this.control !== undefined
+          ? this.control.restartingWait = newvalue
+          : this.control = { restartingWait: newvalue }
+      }
+    },
+    selPort: {
+      get () {
+        return this.control !== undefined
+          ? this.control.port
+          : undefined
+      },
+      set (newvalue) {
+        this.control !== undefined
+          ? this.control.port = newvalue
+          : this.control = { port: newvalue }
+      }
     }
   },
 
   watch: {
+    control: {
+      handler (v) {
+        if (this.enableChanges) {
+          this.doUpdateControl()
+        }
+        this.enableChanges = true
+      },
+      deep: true
+    },
+    selPortIndex (idx) {
+      if (idx !== undefined) {
+        this.selPort = this.portItems[idx].port
+      }
+    }
+  },
+
+  created () {
+    this.doLoadControlBlock()
   },
 
   methods: {
@@ -273,23 +296,54 @@ export default {
       if (!field.$dirty) {
         return errors
       }
-      !field.decimal && errors.push('Задается целым числом')
-      !field.checkGtZeroDec && errors.push('Не может быть отрицательным')
+      !field.integer && errors.push('Задается целым числом')
+      !field.betweenValue && errors.push('Может принимать значения от 1000 до 10000 мс')
       !field.required && errors.push('Необходимо определить')
       return errors
     },
 
-    onPlcTimeChange () {
-      this.$v.plcTime.$touch()
-      /* eslint-disable no-console */
-      console.log('onPlcTimeChange:', this.plcTime)
-      /* eslint-enable no-console */
+    doLoadControlBlock () {
+      this.$axios.$get(API_STAND_SERVICE_CONTROLDATA, undefined, { progress: false })
+        .then((v) => {
+          this.axioError = undefined
+          this.enableChanges = false
+          if (v.port === undefined) {
+            v.port = undefined
+          }
+          this.control = v
+        })
+        .catch((error) => {
+          if (error.response) {
+            this.axioError = `ошибка ${error.response.status}: ${error.response.data}`
+          } else {
+            this.axioError = 'ошибка выполнения API - управление сервисом стэнда'
+          }
+        })
     },
-    onRestartTimeChanged () {
-      this.$v.restartTime.$touch()
-      /* eslint-disable no-console */
-      console.log('onRestartTimeChanged:', this.restartTime)
-      /* eslint-enable no-console */
+    doUpdateControl () {
+      clearTimeout(this.delayChanges)
+      this.delayChanges = undefined
+      this.$v.restartingWait.$touch()
+      if (this.$v.restartingWait.$invalid) {
+        return
+      }
+
+      this.clearTimeout = setTimeout(() => {
+        this.delayChanges = undefined
+        const restdata = { restartingWait: this.control.restartingWait }
+        if (this.control.port !== undefined) {
+          restdata.port = this.control.port
+        }
+        this.$axios.$put(API_STAND_SERVICE_CONTROLDATA, restdata, { progress: false })
+          // .then((v) => { })
+          .catch((error) => {
+            if (error.response) {
+              this.axioError = `ошибка ${error.response.status}: ${error.response.data}`
+            } else {
+              this.axioError = 'ошибка выполнения API - управление сервисом стэнда'
+            }
+          })
+      }, DELAY_BEFORE_SAVE_CHANGES)
     },
 
     executeServiceApi (url) {
@@ -313,6 +367,43 @@ export default {
     },
     onStop () {
       this.executeServiceApi(API_STAND_SERVICE_STOP)
+    },
+
+    portClear () {
+      this.control.port = undefined
+    },
+    doLoadPorts () {
+      if (this.portsLoading) {
+        return
+      }
+      this.portsLoading = true
+      this.portItems = notfoundPorts
+      this.selPortIndex = undefined
+
+      this.$axios.$get(API_STAND_SERVICE_PORTNAMES, { progress: false })
+        .then((v) => {
+          if (v !== undefined && v.length !== 0) {
+            this.portItems = v.map((item) => {
+              return {
+                key: 'PORT_' + item,
+                text: item,
+                port: item
+              }
+            })
+          }
+          this.portsLoading = false
+          this.showMenu = true
+        })
+        .catch((error) => {
+          this.portsLoading = false
+          this.showMenu = true
+
+          if (error.response) {
+            this.axioError = `ошибка ${error.response.status}: ${error.response.data}`
+          } else {
+            this.axioError = 'ошибка выполнения API - сервисы стэнда'
+          }
+        })
     }
   }
 }
