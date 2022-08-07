@@ -7,6 +7,12 @@
     >
       <component :is="item.template" :state="item.data" />
     </div>
+    <div class="mt-4">
+      <SolarCellsControl />
+    </div>
+    <div class="mt-4">
+      <WindTurbinesControl />
+    </div>
   </v-container>
 </template>
 
@@ -14,11 +20,13 @@
 import StandControl from '~/components/hard/stand-control.vue'
 import WindControl from '~/components/hard/wind-control.vue'
 import SunControl from '~/components/hard/sun-control.vue'
+import SolarCellsControl from '~/components/hard/solar-cells.vue'
+import WindTurbinesControl from '~/components/hard/wind-turbines.vue'
 
 export default {
   name: 'HardPage',
 
-  components: { StandControl, WindControl, SunControl },
+  components: { StandControl, WindControl, SunControl, SolarCellsControl, WindTurbinesControl },
 
   data: () => ({}),
 

@@ -303,7 +303,7 @@ export default {
     },
 
     doLoadControlBlock () {
-      this.$axios.$get(API_STAND_SERVICE_CONTROLDATA, undefined, { progress: false })
+      this.$axios.$get(API_STAND_SERVICE_CONTROLDATA, { progress: false })
         .then((v) => {
           this.axioError = undefined
           this.enableChanges = false
