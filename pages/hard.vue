@@ -28,7 +28,9 @@ export default {
 
   components: { StandControl, WindControl, SunControl, SolarCellsControl, WindTurbinesControl },
 
-  data: () => ({}),
+  data: () => ({
+    connection: undefined
+  }),
 
   computed: {
     items () {
@@ -45,6 +47,33 @@ export default {
             { key: 'wind', data: { isOn: false, isError: false, power: 0, stopped: true }, template: WindControl }
           ]
     }
+  },
+
+  created () {
+    if (!this.$isServer) {
+      /* eslint-disable no-console */
+      this.connection = new WebSocket('ws://localhost:3000/api/ws/1_0/topics/common')
+      console.log(this.connection)
+      this.connection.onmessage = function (event) {
+        console.log(event)
+      }
+
+      this.connection.onopen = function (event) {
+        console.log(event)
+        console.log('Successfully connected to the echo websocket server...')
+      }
+
+      this.connection.onerror = function (event) {
+        console.error(event)
+      }
+
+      this.connection.onclose = function (event) {
+        console.log('connection close ...')
+      }
+      /* eslint-enable no-console */
+    }
+  },
+  beforeDestroy () {
   }
 }
 </script>

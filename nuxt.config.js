@@ -56,12 +56,17 @@ export default {
 
   proxy: {
     '/api': {
-      // target: 'http://localhost:3000/api/1_0',
+      target: 'http://localhost:3000/api/1_0',
       // target: 'http://192.168.5.241:3000/api/1_0',
-      target: 'http://smartcity:3000/api/1_0',
+      // target: 'http://smartcity:3000/api/1_0',
       // ws: true,
       // changeOrigin: false,
       pathRewrite: { '^/api': '' }
+    },
+    '/wsapi': {
+      target: 'ws://localhost:3000/api/ws/1_0/topics',
+      ws: true,
+      pathRewrite: { '^/wsapi': '' }
     }
   },
 

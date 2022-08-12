@@ -55,7 +55,7 @@ export default {
   }),
 
   created () {
-    if (process.client) {
+    if (!this.$isServer) {
       this.doLoadCells()
     }
   },
