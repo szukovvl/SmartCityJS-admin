@@ -16,21 +16,13 @@
     </v-card-title>
     <v-card-text
       v-if="cells.length !== 0"
-      class="d-inline-flex px-0"
+      class="d-flex flex-wrap justify-space-around px-0"
     >
-      <v-card
+      <SolarCellItemCmp
         v-for="item in cells"
         :key="item.identy"
-        class="ma-1"
-        outlined
-      >
-        <v-card-text class="text-h6">
-          {{ item.identy }}
-        </v-card-text>
-        <v-card-text>
-          текущее значение
-        </v-card-text>
-      </v-card>
+        :solar="item"
+      />
     </v-card-text>
     <v-card-text
       v-else
@@ -42,6 +34,7 @@
 </template>
 
 <script>
+import SolarCellItemCmp from '~/components/hard/solar-cell-item.vue'
 import { API_ENERGY_SERVICE_FIND } from '~/assets/helpers'
 
 const ELEMENT_TYPE = 'GREEGENERATOR'
@@ -49,6 +42,8 @@ const CELL_TYPE = 'SOLAR'
 
 export default {
   name: 'SolarCellsControl',
+
+  components: { SolarCellItemCmp },
 
   data: () => ({
     cells: []

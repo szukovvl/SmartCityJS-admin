@@ -42,6 +42,10 @@ export const ENERGYSTORAGE_STATES = [
 ]
 
 //
+const WS_API_BASE_URL = '/wsapi'
+export const WS_API_INFO_SERVICE = WS_API_BASE_URL + '/common'
+
+//
 const REST_API_URL = '/api'
 export const API_COMMON_INFO_SERVICE = REST_API_URL + '/common'
 export const API_ENERGY_SERVICE_FIND = REST_API_URL + '/energy/find'
@@ -83,3 +87,7 @@ export const DELAY_BEFORE_CHECK_VALUE = 3000
 
 //
 export const roundToTwoAsStr = val => (Math.round(val * 100.0) / 100.0).toFixed(2).replace('.', ',')
+
+export function round (value, decimals) {
+  return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals)
+}
