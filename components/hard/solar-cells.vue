@@ -8,6 +8,7 @@
       <v-spacer />
       <v-btn
         icon
+        @click="doCalibrate"
       >
         <v-icon color="amber darken-4">
           mdi-vanity-light
@@ -35,7 +36,10 @@
 
 <script>
 import SolarCellItemCmp from '~/components/hard/solar-cell-item.vue'
-import { API_ENERGY_SERVICE_FIND } from '~/assets/helpers'
+import {
+  API_ENERGY_SERVICE_FIND,
+  API_SUN_SERVICE_CALIBRATE
+} from '~/assets/helpers'
 
 const ELEMENT_TYPE = 'GREEGENERATOR'
 const CELL_TYPE = 'SOLAR'
@@ -61,6 +65,22 @@ export default {
         .then((v) => {
           this.cells = v.filter(e => e.data.generation_type === CELL_TYPE)
         })
+        .catch((error) => {
+          /* eslint-disable no-console */
+          if (error.response) {
+            console.error('ошибка %d: %s', error.response.status, error.response.data)
+          }
+          /* eslint-enable no-console */
+        })
+    },
+    doCalibrate () {
+      const items = this.cells.filter(e => this.$store.state.timeSlices[e.devaddr] !== undefined)
+      if (items.length === 0) {
+        return
+      }
+
+      this.$axios.$post(API_SUN_SERVICE_CALIBRATE, undefined, { progress: false })
+        // .then((v) => {})
         .catch((error) => {
           /* eslint-disable no-console */
           if (error.response) {

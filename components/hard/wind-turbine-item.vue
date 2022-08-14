@@ -8,6 +8,8 @@
       <v-spacer />
       <v-btn
         icon
+        :disabled="lastItem === undefined"
+        @click="doCalibrate"
       >
         <v-icon color="amber darken-4">
           mdi-vanity-light
@@ -28,7 +30,10 @@
 
 <script>
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
-import { round } from '~/assets/helpers'
+import {
+  API_WIND_SERVICE_CALIBRATE,
+  round
+} from '~/assets/helpers'
 import { CHART_SLICES_OPTIONS } from '~/assets/charts'
 
 export default {
@@ -109,6 +114,18 @@ export default {
 
     valueLocale (val) {
       return this.fmtLocale.format(round(val, 1))
+    },
+
+    doCalibrate () {
+      this.$axios.$put(API_WIND_SERVICE_CALIBRATE + '/' + this.wind.devaddr, undefined, { progress: false })
+        // .then((v) => {})
+        .catch((error) => {
+          /* eslint-disable no-console */
+          if (error.response) {
+            console.error('ошибка %d: %s', error.response.status, error.response.data)
+          }
+          /* eslint-enable no-console */
+        })
     }
   }
 }
