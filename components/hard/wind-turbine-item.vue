@@ -61,7 +61,7 @@ export default {
       return this.lastItem !== undefined ? this.valueLocale(this.lastItem.data.calibration) : undefined
     },
     actualFmtVal () {
-      return this.lastItem !== undefined ? this.lastItem.data.value : undefined
+      return this.lastItem !== undefined ? this.valueLocale(this.lastItem.data.value) : undefined
     },
 
     chartData () {
