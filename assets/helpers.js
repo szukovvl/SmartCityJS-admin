@@ -12,11 +12,8 @@ export const ALTERNATION_BY_TYPES = [
 
 export const PRICE_CATEGORIES = [
   { text: 'Первая Ценовая Категория ЦК 1', value: 'CATEGORY_1' },
-  { text: 'Вторая Ценовая Категория ЦК 2', value: 'CATEGORY_2' },
-  { text: 'Третья ценовая категория ЦК 3', value: 'CATEGORY_3' },
-  { text: 'Четвертая Ценовая Категория ЦК 4', value: 'CATEGORY_4' },
-  { text: 'Пятая Ценовая Категория ЦК 5', value: 'CATEGORY_5' },
-  { text: 'Шестая Ценовая Категория ЦК 6', value: 'CATEGORY_6' }
+  { text: 'Вторая Ценовая Категория ЦК 2 для двух зон суток', value: 'CATEGORY_2_2' },
+  { text: 'Вторая Ценовая Категория ЦК 2 для трех зон суток', value: 'CATEGORY_2_3' }
 ]
 
 export const VOLTAGE_LEVELS = [

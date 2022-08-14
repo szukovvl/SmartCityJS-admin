@@ -377,28 +377,92 @@ export default {
 
     chartOptions: () => CHART_OPTIONS,
     axesdata () {
+      const data = [
+        {
+          data: this.forecast.data.map(e => ({ point: e.point, value: e.value * this.data.energy })),
+          borderColor: '#B0BEC5',
+          borderWidth: 2,
+          stepped: true,
+          radius: 0,
+          hoverRadius: 0,
+          hitRadius: 0,
+          borderDash: [2, 2]
+        },
+        {
+          data: this.interpolate,
+          borderColor: '#03A9F4',
+          borderWidth: 2,
+          radius: 0,
+          hoverRadius: 0,
+          hitRadius: 0
+        }
+      ]
+
+      if (this.data.catprice === 'CATEGORY_2_2') {
+        data.push({
+          data: [
+            { point: '07:00', value: this.data.energy },
+            { point: '23:00', value: this.data.energy }
+          ],
+          backgroundColor: 'rgba(255, 152, 0, 0.3)',
+          borderWidth: 0,
+          radius: 0,
+          hoverRadius: 0,
+          hitRadius: 0,
+          fill: true
+        })
+      } else if (this.data.catprice === 'CATEGORY_2_3') {
+        data.push({
+          data: [
+            { point: '07:00', value: this.data.energy },
+            { point: '10:00', value: this.data.energy }
+          ],
+          backgroundColor: 'rgba(244, 67, 54, 0.3)',
+          borderWidth: 0,
+          radius: 0,
+          hoverRadius: 0,
+          hitRadius: 0,
+          fill: true
+        },
+        {
+          data: [
+            { point: '17:00', value: this.data.energy },
+            { point: '21:00', value: this.data.energy }
+          ],
+          backgroundColor: 'rgba(244, 67, 54, 0.3)',
+          borderWidth: 0,
+          radius: 0,
+          hoverRadius: 0,
+          hitRadius: 0,
+          fill: true
+        },
+        {
+          data: [
+            { point: '10:00', value: this.data.energy },
+            { point: '17:00', value: this.data.energy }
+          ],
+          backgroundColor: 'rgba(255, 152, 0, 0.3)',
+          borderWidth: 0,
+          radius: 0,
+          hoverRadius: 0,
+          hitRadius: 0,
+          fill: true
+        },
+        {
+          data: [
+            { point: '21:00', value: this.data.energy },
+            { point: '23:00', value: this.data.energy }
+          ],
+          backgroundColor: 'rgba(255, 152, 0, 0.3)',
+          borderWidth: 0,
+          radius: 0,
+          hoverRadius: 0,
+          hitRadius: 0,
+          fill: true
+        })
+      }
       return {
-        datasets: [
-          {
-            data: this.forecast.data.map(e => ({ point: e.point, value: e.value * this.data.energy })),
-            borderColor: '#B0BEC5',
-            borderWidth: 2,
-            stepped: true,
-            radius: 0,
-            hoverRadius: 0,
-            hitRadius: 0,
-            borderDash: [2, 2]
-          },
-          {
-            data: this.interpolate,
-            backgroundColor: 'rgba(20, 0, 255, 0.3)',
-            borderColor: '#03A9F4',
-            borderWidth: 2,
-            radius: 0,
-            hoverRadius: 0,
-            hitRadius: 0
-          }
-        ]
+        datasets: data
       }
     }
   },
