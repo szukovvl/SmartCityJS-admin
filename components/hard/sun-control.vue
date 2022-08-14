@@ -84,6 +84,7 @@
       <v-switch
         v-model="setUseForecast"
         :label="setUseForecast ? 'Использовать модель солнца' : 'Использовать задание мощности' "
+        :disabled="forecast === undefined"
       />
       <v-menu
         v-model="showMenu"
@@ -93,9 +94,9 @@
         <template #activator="{}">
           <v-text-field
             v-model="forecastName"
-            hint="Ветровая модель"
+            hint="модель"
             persistent-hint
-            placeholder="выберите ветровую модель"
+            placeholder="выберите модель"
             dense
             clearable
             readonly
@@ -107,7 +108,7 @@
           />
         </template>
         <v-list
-          :disabled="true"
+          :disabled="forecastItems[0].forecast === undefined"
         >
           <v-list-item-group
             v-model="selForecast"
@@ -133,7 +134,7 @@
         ветровая модель не выбрана
       </div>
       <div v-else>
-        <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :height="200" />
+        <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :width="400" />
       </div>
     </v-card-text>
   </v-card>
@@ -146,14 +147,19 @@ import { required, integer, between } from 'vuelidate/lib/validators'
 import ForecastChart from '~/components/forecast/forecast-chart.vue'
 import { CHART_OPTIONS } from '~/assets/charts'
 import {
-  API_SUN_SERVICE,
   API_SUN_SERVICE_ON,
   API_SUN_SERVICE_OFF,
+  API_SUN_SERVICE_FORECAST_ALL,
+  API_SUN_SERVICE_INTERPOLATE,
+  API_SUN_SERVICE_FORECAST,
+  API_SUN_SERVICE_POWER,
   DELAY_BEFORE_CHECK_VALUE,
   DELAY_BEFORE_SAVE_CHANGES
 } from '~/assets/helpers'
 
 Vue.use(Vuelidate)
+
+const notfoundForecasts = [{ key: '_EMPTY_FORECAST_', text: 'прогнозы не найдены', forecast: undefined }]
 
 export default {
   name: 'SunControl',
@@ -171,7 +177,6 @@ export default {
     setOn: false,
     power: 0,
     setUseForecast: false,
-    forecastName: undefined,
     forecastLoading: false,
     selForecast: undefined,
     showMenu: false,
@@ -180,9 +185,11 @@ export default {
     timeHandle: undefined,
     powerTimeHandle: undefined,
     delayHandle: undefined,
-    forecastItems: [
-      { key: '_not_found_', text: 'ветровые модели не найдены' }
-    ]
+    forecastItems: notfoundForecasts,
+    interpolate: [],
+    delayForecastSave: undefined,
+    enabledForecast: false,
+    enabledUseForecast: false
   }),
 
   validations: {
@@ -214,13 +221,21 @@ export default {
     launched () {
       return this.state.status === 'LAUNCHED'
     },
+    forecastName: {
+      get () {
+        return this.forecast !== undefined
+          ? this.forecast.name
+          : undefined
+      },
+      set: (newvalue) => { }
+    },
 
     chartOptions: () => CHART_OPTIONS,
     axesdata () {
       return {
         datasets: [
           {
-            data: [],
+            data: this.forecast.data.map(e => ({ point: e.point, value: e.value * 100.0 })),
             borderColor: '#B0BEC5',
             borderWidth: 2,
             stepped: true,
@@ -230,7 +245,7 @@ export default {
             borderDash: [2, 2]
           },
           {
-            data: [],
+            data: this.interpolate,
             backgroundColor: 'rgba(20, 0, 255, 0.3)',
             borderColor: '#03A9F4',
             borderWidth: 2,
@@ -255,20 +270,95 @@ export default {
           this.power = v
         }
       }
+    },
+
+    selForecast (idx) {
+      if (this.selForecast !== undefined) {
+        this.forecast = this.forecastItems[idx].forecast
+      }
+    },
+    setUseForecast () {
+      if (this.enabledUseForecast) {
+        this.doSaveForecast()
+      }
+      this.enabledUseForecast = true
+    },
+    forecast () {
+      if (this.enabledForecast) {
+        this.doSaveForecast()
+      }
+      this.enabledForecast = true
     }
   },
 
-  mounted () {
-    this.setOn = this.state.on
-    this.power = this.state.power
+  created () {
+    if (!this.$isServer) {
+      this.setOn = this.state.on
+      this.power = this.state.power
+
+      this.enabledUseForecast = this.setUseForecast === this.state.useforecast
+      this.enabledForecast = this.forecast === this.state.forecast
+
+      this.setUseForecast = this.state.useforecast
+      this.forecast = this.state.forecast
+      if (this.forecast !== undefined) {
+        this.doInterpolate()
+      }
+    }
   },
 
   methods: {
-    forecastClear () {},
+    forecastClear () {
+      this.setUseForecast = false
+      this.forecast = undefined
+      this.interpolate = []
+    },
     doLoadForecasts () {
-      /* eslint-disable no-console */
-      console.warn('состояние:', this.state)
-      /* eslint-enable no-console */
+      if (this.forecastLoading) {
+        return
+      }
+      this.forecastLoading = true
+      this.forecastItems = notfoundForecasts
+      this.selForecast = undefined
+
+      this.$axios.$get(API_SUN_SERVICE_FORECAST_ALL, { progress: false })
+        .then((v) => {
+          if (v !== undefined && v.length !== 0) {
+            this.forecastItems = v.map((item) => {
+              return {
+                key: 'FORECAST_' + item.fc_type + '_' + item.id,
+                text: item.name,
+                forecast: item
+              }
+            })
+          }
+          this.forecastLoading = false
+          this.showMenu = true
+        })
+        .catch(() => {
+          this.forecastLoading = false
+          this.showMenu = true
+        })
+    },
+    doInterpolate () {
+      if (this.forecast === undefined) {
+        this.interpolate = []
+        return
+      }
+      this.$axios.$get(API_SUN_SERVICE_INTERPOLATE, { progress: false })
+        .then((v) => {
+          if (v !== undefined) {
+            this.interpolate = v.items
+          }
+        })
+        .catch((error) => {
+          this.interpolate = []
+          if (error.response) {
+            this.axioError = `ошибка ${error.response.status}: ${error.response.data}`
+          } else {
+            this.axioError = 'ошибка выполнения API - интерполяция'
+          }
+        })
     },
 
     doSetPowerChanged () {
@@ -285,7 +375,7 @@ export default {
         if (this.$v.power.$invalid) {
           return
         }
-        this.$axios.$put(API_SUN_SERVICE + '/' + this.power, undefined, { progress: false })
+        this.$axios.$put(API_SUN_SERVICE_POWER + '/' + this.power, undefined, { progress: false })
           .then((v) => {
             this.axioError = undefined
             this.powerTimeHandle = setTimeout(() => {
@@ -322,6 +412,32 @@ export default {
             this.axioError = 'ошибка выполнения API - включить/отключить осветители'
           }
         })
+    },
+    doSaveForecast () {
+      if (this.delayForecastSave !== undefined) {
+        return
+      }
+
+      this.delayForecastSave = setTimeout(() => {
+        this.delayForecastSave = undefined
+        this.$axios.$put(API_SUN_SERVICE_FORECAST,
+          {
+            power: this.power,
+            useforecast: this.setUseForecast,
+            on: this.setOn,
+            forecast: this.forecast
+          }, { progress: false })
+          .then((v) => {
+            this.doInterpolate()
+          })
+          .catch((error) => {
+            if (error.response) {
+              this.axioError = `ошибка ${error.response.status}: ${error.response.data}`
+            } else {
+              this.axioError = 'ошибка выполнения API - интерполяция'
+            }
+          })
+      }, DELAY_BEFORE_SAVE_CHANGES)
     }
   }
 }

@@ -78,8 +78,8 @@ export default {
     objectTypes: [
       { text: 'генераторы', value: 'GENERATOR' },
       { text: 'потребители', value: 'CONSUMER' },
-      { text: 'эмитатор ветра', value: 'WIND' },
-      { text: 'эмитатор солнца', value: 'SUN' }
+      { text: 'имитатор ветра', value: 'WIND' },
+      { text: 'имитатор солнца', value: 'SUN' }
     ],
     selectedType: undefined,
     resultItems: undefined,
