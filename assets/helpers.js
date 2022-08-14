@@ -17,9 +17,7 @@ export const PRICE_CATEGORIES = [
 ]
 
 export const VOLTAGE_LEVELS = [
-  { text: 'Высокое напряжение (ВН) 110 кВ', value: 'HIGH_VOLTAGE' },
   { text: 'Среднее напряжение (СН1) 35 кВ', value: 'AVG_VOLTAGE_1' },
-  { text: 'Среднее напряжение (СН2) 3 кВ', value: 'AVG_VOLTAGE_2' },
   { text: 'Низкое напряжение (НН) 0,4 кВ', value: 'LOW_VOLTAGE' }
 ]
 
