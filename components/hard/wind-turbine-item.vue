@@ -17,7 +17,10 @@
       </v-btn>
     </v-card-text>
     <v-card-text v-if="lastItem !== undefined">
-      {{ currentFmtVal }}&nbsp;/&nbsp;{{ calibrationFmtVal }}&nbsp;/&nbsp;<b>{{ actualFmtVal }}</b>
+      {{ currentFmtVal }}&nbsp;/
+      &nbsp;<span class="orange--text text--darken-4">{{ calibrationFmtVal }}</span>&nbsp;/
+      &nbsp;<b>{{ actualFmtVal }}</b>&nbsp;/
+      &nbsp;<span class="light-blue--text text--darken-4">{{ percentFmtVal }}</span>%
     </v-card-text>
     <v-card-text v-else>
       нет данных
@@ -68,6 +71,9 @@ export default {
     actualFmtVal () {
       return this.lastItem !== undefined ? this.valueLocale(this.lastItem.data.value) : undefined
     },
+    percentFmtVal () {
+      return this.lastItem !== undefined ? this.valueLocale(this.lastItem.data.percent) : undefined
+    },
 
     chartData () {
       return {
@@ -80,7 +86,6 @@ export default {
             radius: 0,
             hoverRadius: 0,
             hitRadius: 0
-            // borderDash: [2, 2]
           }
         ]
       }
@@ -106,7 +111,7 @@ export default {
       this.lastItem = this.items !== undefined ? this.items[this.items.length - 1] : undefined
 
       if (this.items !== undefined && this.items.length > 2) {
-        this.chartPoints = this.items.map(e => ({ point: e.timestamp, value: e.data.value }))
+        this.chartPoints = this.items.map(e => ({ point: e.timestamp, value: e.data.percent }))
       } else {
         this.chartPoints = []
       }

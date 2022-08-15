@@ -17,7 +17,10 @@
       </v-btn>
     </v-card-text>
     <v-card-text v-if="lastItem !== undefined">
-      {{ currentFmtVal }}&nbsp;/&nbsp;{{ calibrationFmtVal }}&nbsp;/&nbsp;<b>{{ actualFmtVal }}</b>
+      {{ currentFmtVal }}&nbsp;/
+      &nbsp;<span class="orange--text text--darken-4">{{ calibrationFmtVal }}</span>&nbsp;/
+      &nbsp;<b>{{ actualFmtVal }}</b>&nbsp;/
+      &nbsp;<span class="light-blue--text text--darken-4">{{ percentFmtVal }}</span>%
     </v-card-text>
     <v-card-text v-else>
       нет данных
@@ -60,17 +63,16 @@ export default {
       return this.$store.state.lastSlice
     },
     currentFmtVal () {
-      return this.lastItem !== undefined ? this.valueLocale(this.lastItem.data.value) : undefined
+      return this.lastItem !== undefined ? this.lastItem.data.value.toFixed(0) : undefined
     },
     calibrationFmtVal () {
-      return this.lastItem !== undefined ? this.valueLocale(this.lastItem.data.calibration) : undefined
+      return this.lastItem !== undefined ? this.lastItem.data.calibration.toFixed(0) : undefined
     },
     actualFmtVal () {
-      if (this.lastItem !== undefined) {
-        const val = this.lastItem.data.value - this.lastItem.data.calibration
-        return this.lastItem !== undefined ? this.valueLocale(val < 0.0 ? 0.0 : val) : undefined
-      }
-      return undefined
+      return this.lastItem !== undefined ? this.lastItem.data.actual.toFixed(0) : undefined
+    },
+    percentFmtVal () {
+      return this.lastItem !== undefined ? this.valueLocale(this.lastItem.data.percent) : undefined
     },
 
     chartData () {
@@ -84,7 +86,6 @@ export default {
             radius: 0,
             hoverRadius: 0,
             hitRadius: 0
-            // borderDash: [2, 2]
           }
         ]
       }
@@ -110,7 +111,7 @@ export default {
       this.lastItem = this.items !== undefined ? this.items[this.items.length - 1] : undefined
 
       if (this.items !== undefined && this.items.length > 2) {
-        this.chartPoints = this.items.map(e => ({ point: e.timestamp, value: e.data.value }))
+        this.chartPoints = this.items.map(e => ({ point: e.timestamp, value: e.data.percent }))
       } else {
         this.chartPoints = []
       }

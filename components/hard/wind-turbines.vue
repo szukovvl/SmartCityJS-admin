@@ -4,7 +4,7 @@
     flat
   >
     <v-card-title class="teal lighten-4">
-      Солнечные элементы
+      Ветрогенераторы
       <v-spacer />
       <v-btn
         icon
