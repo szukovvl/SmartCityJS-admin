@@ -547,12 +547,12 @@ export default {
         //
         this.t_total = this.tariff.tk_mid + this.sales_allowance.tch_mid + this.t_service + val
         //
-        this.t_zone_3.peak = this.t_total / 1000.0 * 1.25
-        this.t_zone_3.pp = this.t_total / 1000.0
-        this.t_zone_3.night = this.t_total / 1000.0 * 0.7
+        this.t_zone_3.peak = this.t_total / 1000.0 * 0.99
+        this.t_zone_3.pp = this.t_total / 1000.0 * 1.11
+        this.t_zone_3.night = this.t_total / 1000.0 * 0.97
         //
-        this.t_zone_2.day = this.t_total / 1000.0 * 1.15
-        this.t_zone_2.night = this.t_total / 1000.0 * 0.7
+        this.t_zone_2.day = this.t_total / 1000.0 * 1.08
+        this.t_zone_2.night = this.t_total / 1000.0 * 0.97
       }
       //
       this.tariff.tk_high = roundToTwoAsStr(this.tariff.tk_high)
