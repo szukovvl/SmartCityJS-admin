@@ -110,40 +110,7 @@
           </v-tooltip>
         </div>
       </v-col>
-      <v-col>
-        <div class="d-flex">
-          <v-text-field
-            v-model="data.tariff"
-            class="right-input"
-            type="number"
-            hint="Стоимость одного коловатта энергии в рублях"
-            persistent-hint
-            suffix="руб."
-            dense
-            :error-messages="tariffErrors"
-            @input="$v.data.tariff.$touch()"
-            @blur="$v.data.tariff.$touch()"
-          />
-          <v-tooltip
-            right
-            max-width="400"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            Задается положительным числом и определяет стоимость одного киловатта энергии
-            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
-          </v-tooltip>
-        </div>
-      </v-col>
+      <v-col>&nbsp;</v-col>
     </v-row>
 
     <v-card-text class="ps-0">
@@ -215,15 +182,13 @@ export default {
 
     data: undefined,
     external_energy_enabled: false,
-    carbon_enabled: false,
-    tariff_enabled: false
+    carbon_enabled: false
   }),
 
   validations: {
     data: {
       external_energy: { required, decimal, checkGreatZeroDecimal },
-      carbon: { required, decimal, checkGreatZeroDecimal },
-      tariff: { required, decimal, checkGreatZeroDecimal }
+      carbon: { required, decimal, checkGreatZeroDecimal }
     }
   },
 
@@ -247,16 +212,6 @@ export default {
       !this.$v.data.carbon.checkGreatZeroDecimal && errors.push('Не может быть отрицательным')
       !this.$v.data.carbon.required && errors.push('Необходимо определить')
       return errors
-    },
-    tariffErrors () {
-      const errors = []
-      if (!this.$v.data.tariff.$dirty) {
-        return errors
-      }
-      !this.$v.data.tariff.decimal && errors.push('Задается вещественным числом: целая часть рубли, дробная часть копейки')
-      !this.$v.data.tariff.checkGreatZeroDecimal && errors.push('Не может быть отрицательным')
-      !this.$v.data.tariff.required && errors.push('Необходимо определить')
-      return errors
     }
   },
 
@@ -272,12 +227,6 @@ export default {
         this.onSaveChanges()
       }
       this.carbon_enabled = true
-    },
-    'data.tariff' (v) {
-      if (this.tariff_enabled) {
-        this.onSaveChanges()
-      }
-      this.tariff_enabled = true
     }
   },
 
@@ -293,22 +242,19 @@ export default {
         const transmitted = {
           external_energy: this.data.external_energy,
           carbon: this.data.carbon,
-          tariff: this.data.tariff,
           inputs: this.element.data.inputs.map(e => ({
             energy: e.data.energy,
             lossfactor: e.data.lossfactor,
             highload: e.data.highload,
             criticalload: e.data.criticalload,
-            blackouttime: e.data.blackouttime,
-            tariff: e.data.tariff
+            blackouttime: e.data.blackouttime
           })),
           outputs: this.element.data.outputs.map(e => ({
             energy: e.data.energy,
             lossfactor: e.data.lossfactor,
             highload: e.data.highload,
             criticalload: e.data.criticalload,
-            blackouttime: e.data.blackouttime,
-            tariff: e.data.tariff
+            blackouttime: e.data.blackouttime
           }))
         }
         this.$axios.$put(API_ENERGY_SERVICE_DATA + '/' + this.element.identy, transmitted, { progress: false })

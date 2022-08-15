@@ -216,39 +216,6 @@
           </v-tooltip>
         </div>
         <div class="d-flex">
-          <v-text-field
-            v-model="data.tariff"
-            class="right-input"
-            type="number"
-            hint="Стоимость одного коловатта генерации"
-            persistent-hint
-            suffix="руб."
-            dense
-            step="0.1"
-            :error-messages="tariffErrors"
-            @input="$v.data.tariff.$touch()"
-            @blur="$v.data.tariff.$touch()"
-          />
-          <v-tooltip
-            right
-            max-width="400"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            Задается положительным числом и определяет стоимость одного киловатта сгенерированной энергии
-            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
-          </v-tooltip>
-        </div>
-        <div class="d-flex">
           <v-select
             v-model="data.mode"
             :items="generationMode"
@@ -410,7 +377,6 @@ export default {
     highload_endbled: false,
     criticalload_enabled: false,
     blackouttime_enabled: false,
-    tariff_enabled: false,
     mode_enabled: false,
 
     forecastLoading: false,
@@ -435,8 +401,7 @@ export default {
         betweenValue: between(0.5, 1.0),
         loadStateCheck
       },
-      blackouttime: { required, integer, carbonValidate },
-      tariff: { required, decimal, powerValidate }
+      blackouttime: { required, integer, carbonValidate }
     }
   },
 
@@ -489,16 +454,6 @@ export default {
       !this.$v.data.blackouttime.integer && errors.push('Задается целым числом')
       !this.$v.data.blackouttime.carbonValidate && errors.push('Не должно быть меньше нуля')
       !this.$v.data.blackouttime.required && errors.push('Необходимо определить')
-      return errors
-    },
-    tariffErrors () {
-      const errors = []
-      if (!this.$v.data.tariff.$dirty) {
-        return errors
-      }
-      !this.$v.data.tariff.decimal && errors.push('Задается вещественным числом: целая часть рубли, дробная часть копейки')
-      !this.$v.data.tariff.powerValidate && errors.push('Не должно быть меньше нуля')
-      !this.$v.data.tariff.required && errors.push('Необходимо определить')
       return errors
     },
 
@@ -578,12 +533,6 @@ export default {
       }
       this.blackouttime_enabled = true
     },
-    'data.tariff' (v) {
-      if (this.tariff_enabled) {
-        this.saveChanges()
-      }
-      this.tariff_enabled = true
-    },
     'data.mode' (v) {
       if (this.mode_enabled) {
         this.saveChanges()
@@ -635,7 +584,6 @@ export default {
             highload: this.data.highload,
             criticalload: this.data.criticalload,
             blackouttime: this.data.blackouttime,
-            tariff: this.data.tariff,
             mode: this.data.mode
           }, { progress: false })
           .then((v) => {

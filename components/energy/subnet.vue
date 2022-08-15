@@ -180,39 +180,6 @@
             <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
           </v-tooltip>
         </div>
-        <div class="d-flex">
-          <v-text-field
-            v-model="data.tariff"
-            class="right-input"
-            type="number"
-            hint="Стоимость одного коловатта транспортируемой энергии"
-            persistent-hint
-            suffix="руб."
-            dense
-            step="0.1"
-            :error-messages="tariffErrors"
-            @input="$v.data.tariff.$touch()"
-            @blur="$v.data.tariff.$touch()"
-          />
-          <v-tooltip
-            right
-            max-width="400"
-          >
-            <template #activator="{ on, attrs }">
-              <v-icon
-                class="align-self-start"
-                color="blue"
-                small
-                v-bind="attrs"
-                v-on="on"
-              >
-                mdi-help-circle-outline
-              </v-icon>
-            </template>
-            Задается положительным числом и определяет стоимость одного киловатта транспортированной энергии в данной подсети
-            <span class="red--text text--lighten-1"><i>Обязательно к заполнению.</i></span>
-          </v-tooltip>
-        </div>
       </v-col>
     </v-row>
   </v-card>
@@ -268,8 +235,7 @@ export default {
         betweenValue: between(0.5, 1.0),
         loadStateCheck
       },
-      blackouttime: { required, integer, checkGreatZeroInt },
-      tariff: { required, decimal, checkGreatZeroDecimal }
+      blackouttime: { required, integer, checkGreatZeroInt }
     }
   },
 
@@ -321,16 +287,6 @@ export default {
       !this.$v.data.blackouttime.integer && errors.push('Задается целым числом')
       !this.$v.data.blackouttime.checkGreatZeroInt && errors.push('Не может быть отрицательным')
       !this.$v.data.blackouttime.required && errors.push('Необходимо определить')
-      return errors
-    },
-    tariffErrors () {
-      const errors = []
-      if (!this.$v.data.tariff.$dirty) {
-        return errors
-      }
-      !this.$v.data.tariff.decimal && errors.push('Задается вещественным числом: целая часть рубли, дробная часть копейки')
-      !this.$v.data.tariff.checkGreatZeroDecimal && errors.push('Не может быть отрицательным')
-      !this.$v.data.tariff.required && errors.push('Необходимо определить')
       return errors
     }
   },

@@ -93,8 +93,7 @@ export default {
           lossfactor: e.data.lossfactor,
           highload: e.data.highload,
           criticalload: e.data.criticalload,
-          blackouttime: e.data.blackouttime,
-          tariff: e.data.tariff
+          blackouttime: e.data.blackouttime
         }))
         this.$axios.$put(API_ENERGY_SERVICE_DATA + '/' + this.element.identy, transmitted, { progress: false })
           // .then((v) => {})
