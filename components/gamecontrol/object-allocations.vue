@@ -7,7 +7,6 @@ export default {
   name: 'ObjectAllocationControl',
 
   data: () => ({
-    stationlaunched: false
   })
 }
 </script>

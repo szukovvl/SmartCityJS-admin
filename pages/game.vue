@@ -102,6 +102,10 @@
                 :readonly="!$store.state.game.hasAdmin"
               />
             </div>
+            <div class="mt-4">
+              Начальное распределение объектов по игрокам
+            </div>
+            <v-divider class="info" />
             <v-row class="mt-2">
               <v-col>
                 <GamerAreaComponent />
