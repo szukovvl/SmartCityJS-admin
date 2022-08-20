@@ -37,8 +37,17 @@ export const ENERGYSTORAGE_STATES = [
 ]
 
 //
+export const GAME_EVENT_STATUS = 'STATUS'
+export const GAME_EVENT_ERROR = 'ERROR'
+export const GAME_EVENT_LOCK_CONTROLLER = 'GAMECONTROL'
+
+//
+export const GAME_STATUS_NONE = 'NONE'
+
+//
 const WS_API_BASE_URL = '/wsapi'
 export const WS_API_INFO_SERVICE = WS_API_BASE_URL + '/common'
+export const WS_GAME_CONTROLLER_SERVICE = WS_API_BASE_URL + '/game-service'
 
 //
 const REST_API_URL = '/api'

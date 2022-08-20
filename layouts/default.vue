@@ -307,6 +307,11 @@ export default {
           url: '/'
         },
         {
+          name: 'gamesettings',
+          icon: 'teddy-bear',
+          url: '/game'
+        },
+        {
           name: 'hardsettings',
           icon: 'cog-outline',
           url: '/hard'
@@ -378,6 +383,7 @@ export default {
   created () {
     if (process.client) {
       this.$store.dispatch('initializeClientApp')
+      this.$store.dispatch('game/initializeGameController')
     }
   },
   mounted () {
