@@ -107,11 +107,11 @@
             </div>
             <v-divider class="info" />
             <v-row class="mt-2">
-              <v-col>
-                <GamerAreaComponent />
-              </v-col>
-              <v-col>
-                <GamerAreaComponent />
+              <v-col
+                v-for="(station, index) in mainstations"
+                :key="station.data.identy"
+              >
+                <GamerAreaComponent :title="'Игрок ' + (index + 1)" :gamer-index="index" :mainstation="station" />
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -124,6 +124,7 @@
 <script>
 import GamerAreaComponent from '~/components/gamecontrol/gamer-area.vue'
 import { nextTimePoint } from '~/assets/datetime'
+import { ESO_MAINSTATION_TYPE } from '~/assets/helpers'
 
 export default {
   name: 'GamePage',
@@ -144,12 +145,16 @@ export default {
         itemTime = nextTimePoint(itemTime, 10)
       }
       return times
+    },
+    mainstations () {
+      return this.$store.state.game.gameResources[ESO_MAINSTATION_TYPE]
     }
   },
 
   created () {
     if (process.client) {
       this.$store.dispatch('game/setAdministratorMode')
+      this.$store.dispatch('game/loadGameResources')
     }
   }
 }

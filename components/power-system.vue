@@ -47,7 +47,13 @@
 </template>
 
 <script>
-import { CONSUMER_BY_TYPES, ALTERNATION_BY_TYPES, API_ENERGY_SERVICE_FIND } from '~/assets/helpers'
+import {
+  CONSUMER_BY_TYPES,
+  ALTERNATION_BY_TYPES,
+  ENERGYSYSTEM_OBJECT_TYPES,
+
+  API_ENERGY_SERVICE_FIND
+} from '~/assets/helpers'
 import ConsumerObjet from '~/components/energy/consumer.vue'
 import DistributorObjet from '~/components/energy/distributor.vue'
 import GeneratorObjet from '~/components/energy/generator.vue'
@@ -61,14 +67,7 @@ export default {
   components: { ConsumerObjet, DistributorObjet, GeneratorObjet, StorageObjet, AlternateObjet, MainStationObjet },
 
   data: () => ({
-    objectTypes: [
-      { text: 'потребители', value: 'CONSUMER' },
-      { text: 'генераторы', value: 'GENERATOR' },
-      { text: 'хранение', value: 'STORAGE' },
-      { text: 'альтернативная энергетика', value: 'GREEGENERATOR' },
-      { text: 'мини-подстанции', value: 'DISTRIBUTOR' },
-      { text: 'главные подстанции', value: 'MAINSUBSTATION' }
-    ],
+    objectTypes: ENERGYSYSTEM_OBJECT_TYPES,
     selectedType: undefined,
     extSelection: false,
     extSelected: undefined,

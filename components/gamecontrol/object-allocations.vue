@@ -1,5 +1,10 @@
 <template>
-  <h1>распределение объектов</h1>
+  <v-card
+    outlined
+    tile
+  >
+    <v-card-text>распределение объектов</v-card-text>
+  </v-card>
 </template>
 
 <script>

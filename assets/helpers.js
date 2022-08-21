@@ -1,4 +1,20 @@
 //
+export const ENERGYSYSTEM_OBJECT_TYPES = [
+  { text: 'потребители', value: 'CONSUMER' },
+  { text: 'генераторы', value: 'GENERATOR' },
+  { text: 'хранение', value: 'STORAGE' },
+  { text: 'альтернативная энергетика', value: 'GREEGENERATOR' },
+  { text: 'мини-подстанции', value: 'DISTRIBUTOR' },
+  { text: 'главные подстанции', value: 'MAINSUBSTATION' }
+]
+
+export const ESO_MAINSTATION_TYPE = 'MAINSUBSTATION'
+export const ESO_DISTRIBUTOR_TYPE = 'DISTRIBUTOR'
+export const ESO_GREEGENERATOR_TYPE = 'GREEGENERATOR'
+export const ESO_STORAGE_TYPE = 'STORAGE'
+export const ESO_GENERATOR_TYPE = 'GENERATOR'
+export const ESO_CONSUMER_TYPE = 'CONSUMER'
+//
 export const CONSUMER_BY_TYPES = [
   { text: '1-й категории', value: 'HOSPITAL' },
   { text: '2-й категории', value: 'INDUSTRY' },
@@ -103,4 +119,10 @@ export const roundToTwoAsStr = val => (Math.round(val * 100.0) / 100.0).toFixed(
 
 export function round (value, decimals) {
   return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals)
+}
+
+export const FORMATTER_LOCALE = new Intl.NumberFormat('ru-RU')
+
+export function formatValueLocale (val, decimals = 2) {
+  return FORMATTER_LOCALE.format(round(val, decimals))
 }

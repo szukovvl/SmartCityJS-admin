@@ -95,7 +95,7 @@
           outlined
         >
           <v-card-subtitle class="font-weight-bold">
-            Тариф (котловой) услуги передачи  ЭЭ (Т<sup>К</sup>):
+            Тариф (котловой) услуги передачи ЭЭ (Т<sup>К</sup>):
           </v-card-subtitle>
           <v-card-text>
             <ul>

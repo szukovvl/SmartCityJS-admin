@@ -2,11 +2,16 @@
 import {
   WS_GAME_CONTROLLER_SERVICE,
 
+  API_ENERGY_SERVICE_FIND,
+  API_TARIFFS_SERVICE,
+
   GAME_EVENT_STATUS,
   GAME_EVENT_LOCK_CONTROLLER,
   GAME_EVENT_ERROR,
 
-  GAME_STATUS_NONE
+  GAME_STATUS_NONE,
+
+  ENERGYSYSTEM_OBJECT_TYPES
 } from '~/assets/helpers'
 //
 let connection
@@ -40,6 +45,13 @@ function wsGameController (context) {
     setTimeout(() => { wsGameController(context) }, 10000)
   }
 }
+
+//
+function initGameResources () {
+  const res = { }
+  ENERGYSYSTEM_OBJECT_TYPES.forEach(e => (res[e.value] = []))
+  return res
+}
 //
 export const state = () => ({
   isConnected: false,
@@ -50,7 +62,10 @@ export const state = () => ({
     administrationLocked: false,
     gamersCount: 0,
     guestsCount: 0
-  }
+  },
+  gameResources: initGameResources(),
+  restApiError: undefined,
+  tariffs: undefined
 })
 
 //
@@ -90,6 +105,19 @@ export const mutations = {
         state.errorEvent = data
         break
     }
+  },
+
+  setRestApiError (state, data) {
+    state.restApiError = data
+  },
+  translateGameResources (state, data) {
+    state.gameResources[data.type] = data.data.map(e => ({
+      usedefault: false,
+      data: e
+    }))
+  },
+  setTariffsData (state, data) {
+    state.tariffs = data
   }
 }
 
@@ -102,5 +130,41 @@ export const actions = {
     if (connection !== undefined && !context.state.hasAdmin) {
       connection.send(JSON.stringify({ type: GAME_EVENT_LOCK_CONTROLLER }))
     }
+  },
+
+  loadGameResources (context, data) {
+    ENERGYSYSTEM_OBJECT_TYPES.forEach(item =>
+      this.$axios.$get(API_ENERGY_SERVICE_FIND + '/' + item.value, { progress: false })
+        .then((v) => {
+          context.commit('translateGameResources', { type: item.value, data: v })
+        })
+        .catch((error) => {
+          let msg
+          if (error.response) {
+            msg = 'ошибка ' + error.response.status + ': ' + error.response.data
+          } else {
+            msg = 'ошибка REST API'
+          }
+          context.commit('setRestApiError', msg)
+        })
+    )
+
+    this.$axios.$get(API_TARIFFS_SERVICE, { progress: false })
+      .then((v) => {
+        context.commit('setTariffsData', v)
+      })
+      .catch((error) => {
+        let msg
+        if (error.response) {
+          msg = 'ошибка ' + error.response.status + ': ' + error.response.data
+        } else {
+          msg = 'ошибка REST API'
+        }
+        context.commit('setRestApiError', msg)
+      })
+  },
+
+  clearRestApiError (context, data) {
+    context.commit('game/setRestApiError', undefined)
   }
 }
