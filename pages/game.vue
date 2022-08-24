@@ -109,7 +109,7 @@
             <v-row class="mt-2">
               <v-col
                 v-for="(station, index) in mainstations"
-                :key="station.data.identy"
+                :key="station.identy"
               >
                 <GamerAreaComponent :title="'Игрок ' + (index + 1)" :gamer-index="index" :mainstation="station" />
               </v-col>

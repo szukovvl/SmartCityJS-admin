@@ -3,9 +3,9 @@
     <div class="blue-grey lighten-5 pa-2 text-center">
       {{ title }}
     </div>
-    <MainStationMonitorControl :mainstation="mainstation !== undefined ? mainstation.data : undefined" />
+    <MainStationMonitorControl :mainstation="mainstation !== undefined ? mainstation : undefined" />
     <SubstationCardControl :station="substation" />
-    <ObjectAllocationControl />
+    <ObjectAllocationControl :title="title" :gamer-index="gamerIndex" />
   </div>
 </template>
 
@@ -44,7 +44,7 @@ export default {
     substation () {
       const items = this.$store.state.game.gameResources[ESO_DISTRIBUTOR_TYPE]
       if (items !== undefined && items.length > this.gamerIndex) {
-        return items[this.gamerIndex].data
+        return items[this.gamerIndex]
       }
       return undefined
     }

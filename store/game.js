@@ -11,7 +11,8 @@ import {
 
   GAME_STATUS_NONE,
 
-  ENERGYSYSTEM_OBJECT_TYPES
+  ENERGYSYSTEM_OBJECT_TYPES,
+  ESO_MAINSTATION_TYPE
 } from '~/assets/helpers'
 //
 let connection
@@ -65,7 +66,8 @@ export const state = () => ({
   },
   gameResources: initGameResources(),
   restApiError: undefined,
-  tariffs: undefined
+  tariffs: undefined,
+  gamerAreas: []
 })
 
 //
@@ -111,13 +113,25 @@ export const mutations = {
     state.restApiError = data
   },
   translateGameResources (state, data) {
-    state.gameResources[data.type] = data.data.map(e => ({
-      usedefault: false,
-      data: e
-    }))
+    state.gameResources[data.type] = data.data
+    if (data.type === ESO_MAINSTATION_TYPE) {
+      if (state.gameResources[ESO_MAINSTATION_TYPE] !== undefined &&
+        state.gameResources[ESO_MAINSTATION_TYPE].length !== state.gamerAreas.length) {
+        state.gamerAreas = []
+        state.gameResources[ESO_MAINSTATION_TYPE].forEach((e) => {
+          state.gamerAreas.push({
+            key: e.data.devaddr,
+            consumers: []
+          })
+        })
+      }
+    }
   },
   setTariffsData (state, data) {
     state.tariffs = data
+  },
+  setGamerConsumersByIndex (state, data) {
+    state.gamerAreas[data.index].consumers = data.data
   }
 }
 
@@ -166,5 +180,9 @@ export const actions = {
 
   clearRestApiError (context, data) {
     context.commit('game/setRestApiError', undefined)
+  },
+
+  setGamerConsumersByIndex (context, data) {
+    context.commit('setGamerConsumersByIndex', data)
   }
 }
