@@ -46,7 +46,7 @@ export default {
       if (items !== undefined && items.length > this.gamerIndex) {
         return items[this.gamerIndex]
       }
-      return undefined
+      return { }
     }
   }
 }

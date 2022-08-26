@@ -14,7 +14,7 @@
         </v-icon>
       </v-avatar>
       &laquo;{{ mainstation !== undefined ? mainstation.identy : '' }}&raquo;
-      <v-icon
+      <!-- v-icon
         class="ml-4"
         :color="stationlaunched ? 'indigo accent-4' : 'amber darken-3'"
       >
@@ -29,7 +29,7 @@
         color="teal"
       >
         <v-icon>mdi-replay</v-icon>
-      </v-btn>
+      </v-btn -->
     </v-card-title>
     <v-divider
       class="info"

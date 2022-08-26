@@ -116,6 +116,24 @@
             </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-btn
+          v-if="noGameScene && $store.state.game.hasAdmin"
+          class="ma-2"
+          color="success"
+          @click="doBeginGameScenes"
+        >
+          Начать игровой сценарий
+        </v-btn>
+        <v-expansion-panel>
+          <v-expansion-panel-header class="teal lighten-5">
+            Сцена 1
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <div class="mt-4">
+              регистрация игроков
+            </div>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
     </v-card>
   </v-container>
@@ -124,7 +142,11 @@
 <script>
 import GamerAreaComponent from '~/components/gamecontrol/gamer-area.vue'
 import { nextTimePoint } from '~/assets/datetime'
-import { ESO_MAINSTATION_TYPE } from '~/assets/helpers'
+import {
+  ESO_MAINSTATION_TYPE,
+
+  GAME_STATUS_NONE
+} from '~/assets/helpers'
 
 export default {
   name: 'GamePage',
@@ -148,6 +170,9 @@ export default {
     },
     mainstations () {
       return this.$store.state.game.gameResources[ESO_MAINSTATION_TYPE]
+    },
+    noGameScene () {
+      return this.$store.state.game.gameStatus === GAME_STATUS_NONE
     }
   },
 
@@ -155,6 +180,12 @@ export default {
     if (process.client) {
       this.$store.dispatch('game/setAdministratorMode')
       this.$store.dispatch('game/loadGameResources')
+    }
+  },
+
+  methods: {
+    doBeginGameScenes () {
+      this.panels = [1]
     }
   }
 }

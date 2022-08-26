@@ -51,7 +51,7 @@ export default {
 
   computed: {
     outputLines () {
-      return this.station !== undefined ? this.station.data.outputs : []
+      return this.station.data !== undefined ? this.station.data.outputs : []
     }
   }
 }

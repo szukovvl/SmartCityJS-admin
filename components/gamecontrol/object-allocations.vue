@@ -3,8 +3,30 @@
     outlined
     tile
   >
-    <v-card-text>объектов нет</v-card-text>
+    <div v-if="gamerObjectsPreset">
+      <div
+        v-for="item in gamerObjects"
+        :key="item.itemgroup.value"
+      >
+        <div class="text-subtitle-2 teal lighten-5 pa-2 mb-2">
+          Потребители {{ item.itemgroup.text }}
+        </div>
+        <div class="d-flex flex-wrap">
+          <div
+            v-for="consumer in item.items"
+            :key="consumer.identy"
+            class="d-flex flex-nowrap text-body-2"
+          >
+            <ConsumerCardComponent :consumer="consumer" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <v-card-text v-else>
+      объектов нет
+    </v-card-text>
     <v-btn
+      v-if="$store.state.game.hasAdmin"
       class="ma-2 text-capitalize"
       color="primary"
       plain
@@ -50,12 +72,20 @@
             <div class="text-subtitle-2 teal lighten-5 pa-2 mb-2">
               Потребители {{ itemgroup.itemgroup.text }}
             </div>
-            <ConsumerCardComponent
-              v-for="consumer in itemgroup.items"
-              :key="consumer.identy"
-              :consumer="consumer"
-              @consumerUseChanged="consumerUseChanged"
-            />
+            <div class="d-flex flex-wrap">
+              <div
+                v-for="consumer in itemgroup.items"
+                :key="consumer.identy"
+                class="d-flex flex-nowrap"
+              >
+                <v-checkbox
+                  v-model="consumer.usedefault"
+                  color="success"
+                  hide-details
+                />
+                <ConsumerCardComponent :consumer="consumer.data" />
+              </div>
+            </div>
           </div>
         </v-card-text>
       </v-card>
@@ -92,6 +122,21 @@ export default {
   }),
 
   computed: {
+    gamerObjects () {
+      const gamerItems = this.$store.state.game.gamerAreas[this.gamerIndex].consumers
+      const all = this.$store.state.game.gameResources[ESO_CONSUMER_TYPE]
+      let res = []
+      if (gamerItems.length !== 0) {
+        res = CONSUMER_BY_TYPES.map(e => ({
+          itemgroup: e,
+          items: all.filter(el => el.data.consumertype === e.value && gamerItems.includes(el.devaddr))
+        }))
+      }
+      return res.filter(e => e.items.length !== 0)
+    },
+    gamerObjectsPreset () {
+      return this.gamerObjects.length !== 0
+    }
   },
 
   methods: {

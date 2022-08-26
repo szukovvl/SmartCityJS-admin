@@ -35,6 +35,9 @@ export const PRICE_CATEGORIES = [
   { text: 'Вторая Ценовая Категория ЦК 2-3 для трех зон суток', value: 'CATEGORY_2_3' }
 ]
 
+export const PRICE_CATEGORIES_CATEGORY_2_2 = 'CATEGORY_2_2'
+export const PRICE_CATEGORIES_CATEGORY_2_3 = 'CATEGORY_2_3'
+
 export const VOLTAGE_LEVELS = [
   { text: 'Среднее напряжение (СН1) 35 кВ', value: 'AVG_VOLTAGE_1' },
   { text: 'Низкое напряжение (НН) 0,4 кВ', value: 'LOW_VOLTAGE' }
