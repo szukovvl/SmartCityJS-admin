@@ -155,7 +155,7 @@ export default {
 
   data: () => ({
     panels: [0],
-    gametime: '02:00'
+    gametime: '01:00'
   }),
 
   computed: {
@@ -185,6 +185,9 @@ export default {
 
   methods: {
     doBeginGameScenes () {
+      this.$store.dispatch('game/startGameScenes', {
+        gameday: this.gametime
+      })
       this.panels = [1]
     }
   }

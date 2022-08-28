@@ -26,7 +26,7 @@
       объектов нет
     </v-card-text>
     <v-btn
-      v-if="$store.state.game.hasAdmin"
+      v-if="noGameScene && $store.state.game.hasAdmin"
       class="ma-2 text-capitalize"
       color="primary"
       plain
@@ -97,7 +97,8 @@
 import ConsumerCardComponent from '~/components/gamecontrol/consumer-card.vue'
 import {
   ESO_CONSUMER_TYPE,
-  CONSUMER_BY_TYPES
+  CONSUMER_BY_TYPES,
+  GAME_STATUS_NONE
 } from '~/assets/helpers'
 
 export default {
@@ -136,6 +137,9 @@ export default {
     },
     gamerObjectsPreset () {
       return this.gamerObjects.length !== 0
+    },
+    noGameScene () {
+      return this.$store.state.game.gameStatus === GAME_STATUS_NONE
     }
   },
 

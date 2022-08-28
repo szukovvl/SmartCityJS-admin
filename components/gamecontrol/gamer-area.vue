@@ -48,6 +48,14 @@ export default {
       }
       return { }
     }
+  },
+
+  created () {
+    this.$store.dispatch('game/setGamerStationsByIndex', {
+      index: this.gamerIndex,
+      mainstation: this.mainstation.devaddr,
+      substation: this.substation.devaddr
+    })
   }
 }
 </script>
