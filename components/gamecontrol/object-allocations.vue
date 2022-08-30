@@ -111,9 +111,9 @@ export default {
       type: String,
       required: true
     },
-    gamerIndex: {
+    gamerKey: {
       type: Number,
-      required: true
+      default: 0
     }
   },
 
@@ -124,7 +124,7 @@ export default {
 
   computed: {
     gamerObjects () {
-      const gamerItems = this.$store.state.game.gamerAreas[this.gamerIndex].consumers
+      const gamerItems = this.$store.state.game.scenesData.find(e => e.mainstation === this.gamerKey).consumers
       const all = this.$store.state.game.gameResources[ESO_CONSUMER_TYPE]
       let res = []
       if (gamerItems.length !== 0) {
@@ -146,12 +146,12 @@ export default {
   methods: {
     buildConsumers () {
       let excludedItems = []
-      for (let index = 0; index < this.$store.state.game.gamerAreas.length; index++) {
-        if (index !== this.gamerIndex) {
-          excludedItems = excludedItems.concat(this.$store.state.game.gamerAreas[index].consumers)
+      this.$store.state.game.scenesData.forEach((e) => {
+        if (e.mainstation !== this.gamerKey) {
+          excludedItems = excludedItems.concat(e.consumers)
         }
-      }
-      const usedItems = this.$store.state.game.gamerAreas[this.gamerIndex].consumers
+      })
+      const usedItems = this.$store.state.game.scenesData.find(e => e.mainstation === this.gamerKey).consumers
 
       const allItems = this.$store.state.game.gameResources[ESO_CONSUMER_TYPE]
         .filter(e => !excludedItems.includes(e.devaddr))
@@ -172,7 +172,7 @@ export default {
       this.allByTypes.forEach((e) => {
         usedObjects = usedObjects.concat(e.items.filter(item => item.usedefault).map(item => item.data.devaddr))
       })
-      this.$store.dispatch('game/setGamerConsumersByIndex', { data: usedObjects, index: this.gamerIndex })
+      this.$store.dispatch('game/setGamerConsumers', { consumers: usedObjects, key: this.gamerKey })
       this.allByTypes = []
     },
     doCancel () {

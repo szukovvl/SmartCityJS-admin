@@ -128,29 +128,39 @@ export default {
           return [
             {
               text: 'Тариф дневной зоны суток',
-              value: roundToTwoAsStr(this.$store.state.game.tariffs.t_zone_2.day)
+              value: roundToTwoAsStr(
+                this.$store.state.game.tariffs !== undefined ? this.$store.state.game.tariffs.t_zone_2.day : 0)
             },
             {
               text: 'Тариф ночной зоны суток',
-              value: roundToTwoAsStr(this.$store.state.game.tariffs.t_zone_2.night)
+              value: roundToTwoAsStr(
+                this.$store.state.game.tariffs !== undefined ? this.$store.state.game.tariffs.t_zone_2.night : 0)
             }
           ]
         case PRICE_CATEGORIES_CATEGORY_2_3:
           return [
             {
               text: 'Тариф пиковой зоны суток',
-              value: roundToTwoAsStr(this.$store.state.game.tariffs.t_zone_3.peak)
+              value: roundToTwoAsStr(
+                this.$store.state.game.tariffs !== undefined ? this.$store.state.game.tariffs.t_zone_3.peak : 0)
             },
             {
               text: 'Тариф полупиковой зоны суток',
-              value: roundToTwoAsStr(this.$store.state.game.tariffs.t_zone_3.pp)
+              value: roundToTwoAsStr(
+                this.$store.state.game.tariffs !== undefined ? this.$store.state.game.tariffs.t_zone_3.pp : 0)
             },
             {
               text: 'Тариф ночной зоны суток',
-              value: roundToTwoAsStr(this.$store.state.game.tariffs.t_zone_3.night)
+              value: roundToTwoAsStr(
+                this.$store.state.game.tariffs !== undefined ? this.$store.state.game.tariffs.t_zone_3.night : 0)
             }
           ]
-        default: return [{ text: 'Стоимость ЭЭ', value: roundToTwoAsStr(this.$store.state.game.tariffs.t_total / 1000.0) }]
+        default: return [{
+          text: 'Стоимость ЭЭ',
+          value: roundToTwoAsStr(this.$store.state.game.tariffs !== undefined
+            ? this.$store.state.game.tariffs.t_total / 1000.0
+            : 0)
+        }]
       }
     },
     forecastEnabled () {

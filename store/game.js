@@ -8,15 +8,17 @@ import {
   GAME_EVENT_STATUS,
   GAME_EVENT_LOCK_CONTROLLER,
   GAME_EVENT_ERROR,
-  GAME_EVENT_START_GAME_SCENES,
-  GAME_EVENT_GAMERS_DATA,
+  GAME_EVENT_SCENES_DATA,
   GAME_EVENT_SCENE_IDENTIFY,
+  GAME_EVENT_START_GAME_SCENES,
+  GAME_EVENT_CANCEL_GAME_SCENES,
 
   GAME_STATUS_NONE,
+  GAME_STATUS_SCENE_1,
 
-  ENERGYSYSTEM_OBJECT_TYPES,
-  ESO_MAINSTATION_TYPE
+  ENERGYSYSTEM_OBJECT_TYPES
 } from '~/assets/helpers'
+
 //
 let connection
 
@@ -70,6 +72,7 @@ export const state = () => ({
   isConnected: false,
   errorEvent: undefined,
   gameStatus: GAME_STATUS_NONE,
+  sceneNumber: 0,
   hasAdmin: false,
   info: {
     administrationLocked: false,
@@ -79,7 +82,7 @@ export const state = () => ({
   gameResources: initGameResources(),
   restApiError: undefined,
   tariffs: undefined,
-  gamerAreas: []
+  scenesData: []
 })
 
 //
@@ -90,6 +93,15 @@ function internalSetState (state, data) {
     guestsCount: data.data.guests
   }
   state.gameStatus = data.data.status
+
+  switch (state.gameStatus) {
+    case GAME_STATUS_NONE:
+      state.sceneNumber = 0
+      break
+    case GAME_STATUS_SCENE_1:
+      state.sceneNumber = 1
+      break
+  }
 }
 
 export const mutations = {
@@ -104,7 +116,6 @@ export const mutations = {
   },
   translateEvent (state, data) {
     state.errorEvent = undefined
-    let item
     switch (data.type) {
       case GAME_EVENT_STATUS:
         internalSetState(state, data)
@@ -118,52 +129,38 @@ export const mutations = {
         break
       case GAME_EVENT_ERROR:
         state.errorEvent = data
-        break
-      case GAME_EVENT_GAMERS_DATA:
-        item = state.gamerAreas.find(e => e.mainstation === data.mainstation)
-        if (item !== undefined) {
-          item.substation = data.substation
-          item.consumers = data.consumers
-        }
-        break
-      case GAME_EVENT_SCENE_IDENTIFY:
         /* eslint-disable no-console */
-        console.log('GAME_EVENT_SCENE_IDENTIFY', data)
+        console.warn('GAME_EVENT_ERROR', data)
         /* eslint-enable no-console */
         break
+      case GAME_EVENT_SCENE_IDENTIFY:
+        state.sceneNumber = 1
+        break
+      case GAME_EVENT_SCENES_DATA:
+        state.scenesData = data.data
+        break
+      default:
+        /* eslint-disable no-console */
+        console.warn('translateEvent - необработанное', data)
+        /* eslint-enable no-console */
     }
   },
 
   setRestApiError (state, data) {
     state.restApiError = data
   },
-  translateGameResources (state, data) {
+  setGameResources (state, data) {
     state.gameResources[data.type] = data.data
-    if (data.type === ESO_MAINSTATION_TYPE) {
-      if (state.gameResources[ESO_MAINSTATION_TYPE] !== undefined &&
-        state.gameResources[ESO_MAINSTATION_TYPE].length !== state.gamerAreas.length) {
-        state.gamerAreas = []
-        state.gameResources[ESO_MAINSTATION_TYPE].forEach((e) => {
-          state.gamerAreas.push({
-            mainstation: e.devaddr,
-            substation: undefined,
-            consumers: []
-          })
-          sendEventMessage(GAME_EVENT_GAMERS_DATA, e.devaddr)
-        })
-      }
-    }
   },
   setTariffsData (state, data) {
     state.tariffs = data
   },
-  setGamerConsumersByIndex (state, data) {
-    state.gamerAreas[data.index].consumers = data.data
-  },
-  setGamerStationsByIndex (state, data) {
-    if (state.gamerAreas[data.index] !== undefined) {
-      state.gamerAreas[data.index].mainstation = data.mainstation
-      state.gamerAreas[data.index].substation = data.substation
+  setGamerConsumers (state, data) {
+    if (state.scenesData !== undefined) {
+      const scene = state.scenesData.find(e => e.mainstation === data.key)
+      if (scene !== undefined) {
+        scene.consumers = data.consumers
+      }
     }
   }
 }
@@ -174,19 +171,19 @@ export const actions = {
   },
 
   setAdministratorMode (context, data) {
-    if (connection !== undefined && !context.state.hasAdmin) {
-      connection.send(JSON.stringify({ type: GAME_EVENT_LOCK_CONTROLLER }))
+    if (!context.state.hasAdmin) {
+      sendEventMessage(GAME_EVENT_LOCK_CONTROLLER)
     }
   },
   startGameScenes (context, data) {
-    if (connection !== undefined && context.state.hasAdmin) {
-      connection.send(JSON.stringify({
-        type: GAME_EVENT_START_GAME_SCENES,
-        payload: JSON.stringify({
-          gameday: data.gameday,
-          data: context.state.gamerAreas
-        })
-      }))
+    sendEventMessage(GAME_EVENT_START_GAME_SCENES, JSON.stringify({
+      gameday: data.gameday,
+      data: context.state.scenesData
+    }))
+  },
+  cancelGameScenes (context, data) {
+    if (context.state.gameStatus !== GAME_STATUS_NONE) {
+      sendEventMessage(GAME_EVENT_CANCEL_GAME_SCENES)
     }
   },
 
@@ -194,7 +191,7 @@ export const actions = {
     ENERGYSYSTEM_OBJECT_TYPES.forEach(item =>
       this.$axios.$get(API_ENERGY_SERVICE_FIND + '/' + item.value, { progress: false })
         .then((v) => {
-          context.commit('translateGameResources', { type: item.value, data: v })
+          context.commit('setGameResources', { type: item.value, data: v })
         })
         .catch((error) => {
           let msg
@@ -220,16 +217,15 @@ export const actions = {
         }
         context.commit('setRestApiError', msg)
       })
+
+    setTimeout(sendEventMessage(GAME_EVENT_SCENES_DATA), 100)
   },
 
   clearRestApiError (context, data) {
     context.commit('game/setRestApiError', undefined)
   },
 
-  setGamerConsumersByIndex (context, data) {
-    context.commit('setGamerConsumersByIndex', data)
-  },
-  setGamerStationsByIndex (context, data) {
-    context.commit('setGamerStationsByIndex', data)
+  setGamerConsumers (context, data) {
+    context.commit('setGamerConsumers', data)
   }
 }

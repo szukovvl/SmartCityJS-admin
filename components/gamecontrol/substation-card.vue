@@ -42,7 +42,7 @@ export default {
   props: {
     station: {
       type: Object,
-      required: true
+      default: undefined
     }
   },
 
@@ -51,7 +51,7 @@ export default {
 
   computed: {
     outputLines () {
-      return this.station.data !== undefined ? this.station.data.outputs : []
+      return this.station !== undefined ? this.station.data.outputs : []
     }
   }
 }

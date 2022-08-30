@@ -14,22 +14,6 @@
         </v-icon>
       </v-avatar>
       &laquo;{{ mainstation !== undefined ? mainstation.identy : '' }}&raquo;
-      <!-- v-icon
-        class="ml-4"
-        :color="stationlaunched ? 'indigo accent-4' : 'amber darken-3'"
-      >
-        {{ stationlaunched ? 'mdi-rocket-launch-outline' : 'mdi-power-standby' }}
-      </v-icon>
-      <v-spacer />
-      <v-btn
-        class="mx-2"
-        outlined
-        fab
-        small
-        color="teal"
-      >
-        <v-icon>mdi-replay</v-icon>
-      </v-btn -->
     </v-card-title>
     <v-divider
       class="info"
@@ -92,7 +76,7 @@ export default {
   props: {
     mainstation: {
       type: Object,
-      required: true
+      default: undefined
     }
   },
 
@@ -108,10 +92,12 @@ export default {
       return this.mainstation !== undefined ? this.mainstation.data.outputs : []
     },
     externalEnergy () {
-      return formatValueLocale(this.mainstation.data.external_energy, 1)
+      return formatValueLocale(
+        this.mainstation !== undefined ? this.mainstation.data.external_energy : 0, 1)
     },
     carbon () {
-      return formatValueLocale(this.mainstation.data.carbon, 2)
+      return formatValueLocale(
+        this.mainstation !== undefined ? this.mainstation.data.carbon : 0, 2)
     }
   }
 }

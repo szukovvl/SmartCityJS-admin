@@ -3,9 +3,9 @@
     <div class="blue-grey lighten-5 pa-2 text-center">
       {{ title }}
     </div>
-    <MainStationMonitorControl :mainstation="mainstation !== undefined ? mainstation : undefined" />
+    <MainStationMonitorControl :mainstation="mainstation" />
     <SubstationCardControl :station="substation" />
-    <ObjectAllocationControl :title="title" :gamer-index="gamerIndex" />
+    <ObjectAllocationControl :title="title" :gamer-key="itemSceneData.mainstation" />
   </div>
 </template>
 
@@ -14,6 +14,7 @@ import MainStationMonitorControl from '~/components/gamecontrol/main-station-mon
 import ObjectAllocationControl from '~/components/gamecontrol/object-allocations.vue'
 import SubstationCardControl from '~/components/gamecontrol/substation-card.vue'
 import {
+  ESO_MAINSTATION_TYPE,
   ESO_DISTRIBUTOR_TYPE
 } from '~/assets/helpers'
 
@@ -31,7 +32,7 @@ export default {
       type: Number,
       required: true
     },
-    mainstation: {
+    itemSceneData: {
       type: Object,
       default: undefined
     }
@@ -41,21 +42,23 @@ export default {
   }),
 
   computed: {
-    substation () {
-      const items = this.$store.state.game.gameResources[ESO_DISTRIBUTOR_TYPE]
-      if (items !== undefined && items.length > this.gamerIndex) {
-        return items[this.gamerIndex]
+    mainstation () {
+      if (this.itemSceneData === undefined) {
+        return undefined
       }
-      return { }
+      return this.$store.state.game.gameResources[ESO_MAINSTATION_TYPE]
+        .find(e => e.devaddr === this.itemSceneData.mainstation)
+    },
+    substation () {
+      if (this.itemSceneData === undefined) {
+        return undefined
+      }
+      return this.$store.state.game.gameResources[ESO_DISTRIBUTOR_TYPE]
+        .find(e => e.devaddr === this.itemSceneData.substation)
     }
   },
 
   created () {
-    this.$store.dispatch('game/setGamerStationsByIndex', {
-      index: this.gamerIndex,
-      mainstation: this.mainstation.devaddr,
-      substation: this.substation.devaddr
-    })
   }
 }
 </script>

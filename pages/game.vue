@@ -79,6 +79,16 @@
           mdi-connection
         </v-icon>
       </v-toolbar>
+      <div class="d-flex justify-center">
+        <v-btn
+          v-if="!noGameScene && $store.state.game.hasAdmin"
+          class="ma-2"
+          color="warning"
+          @click="doCancelGameScenes"
+        >
+          Прервать игровой сценарий
+        </v-btn>
+      </div>
       <v-expansion-panels
         v-model="panels"
         class="mt-1"
@@ -108,10 +118,10 @@
             <v-divider class="info" />
             <v-row class="mt-2">
               <v-col
-                v-for="(station, index) in mainstations"
-                :key="station.identy"
+                v-for="(data, index) in scenesData"
+                :key="data.mainstation"
               >
-                <GamerAreaComponent :title="'Игрок ' + (index + 1)" :gamer-index="index" :mainstation="station" />
+                <GamerAreaComponent :title="'Игрок ' + (index + 1)" :gamer-index="index" :item-scene-data="data" />
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -124,38 +134,121 @@
         >
           Начать игровой сценарий
         </v-btn>
-        <v-expansion-panel>
+        <v-expansion-panel v-if="$store.state.game.sceneNumber > 0">
           <v-expansion-panel-header class="teal lighten-5">
-            Сцена 1
+            Определение игроков
           </v-expansion-panel-header>
           <v-expansion-panel-content>
-            <div class="mt-4">
-              регистрация игроков
-            </div>
+            <v-row class="mt-2">
+              <v-col
+                v-for="(data, index) in scenesData"
+                :key="data.mainstation"
+              >
+                <div class="blue-grey lighten-5 pa-2 text-center">
+                  {{ 'Игрок ' + (index + 1) }}
+                </div>
+                <GamerCardComponent />
+              </v-col>
+            </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
+      <v-stepper
+        v-if="!noGameScene"
+        v-model="step"
+        vertical
+        flat
+      >
+        <v-stepper-header>
+          <v-stepper-step
+            :complete="step > 1"
+            step="1"
+          >
+            регистрация
+          </v-stepper-step>
+
+          <v-divider />
+
+          <v-stepper-step
+            :complete="step > 2"
+            step="2"
+          >
+            объекты ЭС
+          </v-stepper-step>
+
+          <v-divider />
+
+          <v-stepper-step
+            :complete="step > 3"
+            step="3"
+          >
+            портфель
+          </v-stepper-step>
+
+          <v-divider />
+
+          <v-stepper-step
+            :complete="step > 4"
+            step="4"
+          >
+            договора
+          </v-stepper-step>
+
+          <v-divider />
+
+          <v-stepper-step
+            :complete="step > 5"
+            step="5"
+          >
+            аукцион
+          </v-stepper-step>
+
+          <v-divider />
+
+          <v-stepper-step
+            :complete="step > 6"
+            step="6"
+          >
+            схемы ЭС
+          </v-stepper-step>
+
+          <v-divider />
+
+          <v-stepper-step
+            :complete="step > 7"
+            step="7"
+          >
+            анализ
+          </v-stepper-step>
+
+          <v-divider />
+
+          <v-stepper-step step="8">
+            игра
+          </v-stepper-step>
+        </v-stepper-header>
+      </v-stepper>
     </v-card>
   </v-container>
 </template>
 
 <script>
 import GamerAreaComponent from '~/components/gamecontrol/gamer-area.vue'
+import GamerCardComponent from '~/components/gamecontrol/gamer-card.vue'
 import { nextTimePoint } from '~/assets/datetime'
 import {
-  ESO_MAINSTATION_TYPE,
-
   GAME_STATUS_NONE
 } from '~/assets/helpers'
 
 export default {
   name: 'GamePage',
 
-  components: { GamerAreaComponent },
+  components: { GamerAreaComponent, GamerCardComponent },
 
   data: () => ({
     panels: [0],
-    gametime: '01:00'
+    gametime: '01:00',
+    step: 1
   }),
 
   computed: {
@@ -168,18 +261,40 @@ export default {
       }
       return times
     },
-    mainstations () {
-      return this.$store.state.game.gameResources[ESO_MAINSTATION_TYPE]
+    scenesData () {
+      const items = this.$store.state.game.scenesData
+      return items != null ? items : []
     },
     noGameScene () {
       return this.$store.state.game.gameStatus === GAME_STATUS_NONE
+    },
+    currentScene () {
+      return this.$store.state.game.sceneNumber
+    }
+  },
+
+  watch: {
+    currentScene (v) {
+      if (v !== 0) {
+        this.panels = [v]
+      }
+    },
+    noGameScene (v) {
+      if (v) {
+        this.panels = [0]
+      }
     }
   },
 
   created () {
     if (process.client) {
-      this.$store.dispatch('game/setAdministratorMode')
       this.$store.dispatch('game/loadGameResources')
+      this.$store.dispatch('game/setAdministratorMode')
+    }
+    if (this.noGameScene) {
+      this.panels = [0]
+    } else {
+      this.panels = [1]
     }
   },
 
@@ -188,7 +303,9 @@ export default {
       this.$store.dispatch('game/startGameScenes', {
         gameday: this.gametime
       })
-      this.panels = [1]
+    },
+    doCancelGameScenes () {
+      this.$store.dispatch('game/cancelGameScenes')
     }
   }
 }
