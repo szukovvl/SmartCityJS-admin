@@ -10,8 +10,9 @@ import {
   GAME_EVENT_ERROR,
   GAME_EVENT_SCENES_DATA,
   GAME_EVENT_SCENE_IDENTIFY,
-  GAME_EVENT_START_GAME_SCENES,
   GAME_EVENT_CANCEL_GAME_SCENES,
+  GAME_EVENT_START_GAME_SCENES,
+  GAME_EVENT_SCENE_NEXT,
 
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
@@ -34,12 +35,13 @@ function wsGameController (context) {
   }
 
   connection.onerror = function (event) {
+    const lconn = connection
     connection = undefined
     context.commit('game/setConnetted', false)
     /* eslint-disable no-console */
     console.error(event)
     /* eslint-enable no-console */
-    connection.close()
+    lconn.close()
   }
 
   connection.onclose = () => {
@@ -182,8 +184,13 @@ export const actions = {
     }))
   },
   cancelGameScenes (context, data) {
-    if (context.state.gameStatus !== GAME_STATUS_NONE) {
+    if (context.state.gameStatus !== GAME_STATUS_NONE && context.state.hasAdmin) {
       sendEventMessage(GAME_EVENT_CANCEL_GAME_SCENES)
+    }
+  },
+  nextGameScene (context) {
+    if (context.state.gameStatus !== GAME_STATUS_NONE && context.state.hasAdmin) {
+      sendEventMessage(GAME_EVENT_SCENE_NEXT)
     }
   },
 

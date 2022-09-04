@@ -59,7 +59,7 @@ export default {
       // target: 'http://localhost:3000/api/1_0',
       // target: 'http://192.168.5.241:3000/api/1_0',
       target: 'http://smartcity:3000/api/1_0',
-      // changeOrigin: false,
+      changeOrigin: false,
       pathRewrite: { '^/api': '' }
     },
     '/wsapi': {

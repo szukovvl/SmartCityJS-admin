@@ -1,76 +1,39 @@
 <template>
   <v-card flat>
     <v-card-text>
-      <v-text-field
-        hint="название команды/игрока"
-        persistent-hint
-        dense
-        placeholder="назови свою команду"
-        filled
-      />
+      Команда <strong>{{ commandname }}</strong>
     </v-card-text>
     <v-divider />
-    <v-card-text>
-      <v-textarea
-        hint="девиз команды"
-        persistent-hint
-        placeholder="придумай правильный девиз и победи!"
-        rows="2"
-        auto-grow
-        filled
-      />
+    <v-card-text v-if="slogan !== undefined">
+      {{ slogan }}
     </v-card-text>
     <v-divider />
-    <v-card-text>
-      <v-row class="align-center">
-        <v-col cols="1">
-          Участник 1
-        </v-col>
-        <v-col cols="2">
-          <v-text-field
-            hint="роль"
-            persistent-hint
-            dense
-            filled
-          />
-        </v-col>
-        <v-col>
-          <v-text-field
-            hint="имя участника"
-            persistent-hint
-            dense
-            placeholder="имя участника"
-            filled
-          />
-        </v-col>
-        <v-col>
-          <v-text-field
-            hint="от куда ты"
-            persistent-hint
-            dense
-            placeholder="от куда ты"
-            filled
-          />
-        </v-col>
-        <v-col cols="1">
-          <v-icon>
-            mdi-close
-          </v-icon>
-          <v-icon>
-            mdi-close
-          </v-icon>
-        </v-col>
-      </v-row>
+    <v-card-text v-if="partners.length !== 0">
+      <div
+        v-for="(item, index) in partners"
+        :key="'part_' + index"
+        class="d-flex flex-row align-center mr-2"
+      >
+        <div class="mr-2">
+          {{ index + 1 }}.
+        </div>
+        <div
+          v-if="item.role !== undefined"
+          class="mr-2"
+        >
+          {{ item.role }}
+        </div>
+        <div class="mr-2">
+          {{ item.name }}
+        </div>
+        <div v-if="item.youfrom !== undefined">
+          {{ item.youfrom }}
+        </div>
+      </div>
     </v-card-text>
     <v-divider />
-    <v-card-text>
-      <v-textarea
-        hint="дополнительно"
-        persistent-hint
-        placeholder="можно что-то написать..."
-        auto-grow
-        filled
-      />
+    <v-card-text v-if="notice !== undefined">
+      <i>{{ notice }}</i>
     </v-card-text>
   </v-card>
 </template>
@@ -79,7 +42,47 @@
 export default {
   name: 'GamerCardComponent',
 
+  props: {
+    gamerCard: {
+      type: Object,
+      default: undefined
+    }
+  },
+
   data: () => ({
-  })
+  }),
+
+  computed: {
+    commandname () {
+      return this.gamerCard !== undefined
+        ? this.gamerCard.sceneidentify !== undefined
+          ? this.gamerCard.sceneidentify.commandname
+          : 'нет данных'
+        : 'нет данных'
+    },
+    slogan () {
+      return this.gamerCard !== undefined
+        ? this.gamerCard.sceneidentify !== undefined
+          ? this.gamerCard.sceneidentify.slogan
+          : undefined
+        : undefined
+    },
+    partners () {
+      return this.gamerCard !== undefined
+        ? this.gamerCard.sceneidentify !== undefined
+          ? this.gamerCard.sceneidentify.partners !== undefined
+            ? this.gamerCard.sceneidentify.partners
+            : []
+          : []
+        : []
+    },
+    notice () {
+      return this.gamerCard !== undefined
+        ? this.gamerCard.sceneidentify !== undefined
+          ? this.gamerCard.sceneidentify.notice
+          : undefined
+        : undefined
+    }
+  }
 }
 </script>

@@ -147,7 +147,7 @@
                 <div class="blue-grey lighten-5 pa-2 text-center">
                   {{ 'Игрок ' + (index + 1) }}
                 </div>
-                <GamerCardComponent />
+                <GamerCardComponent :gamer-card="data" />
               </v-col>
             </v-row>
           </v-expansion-panel-content>
@@ -228,6 +228,16 @@
           </v-stepper-step>
         </v-stepper-header>
       </v-stepper>
+      <v-card-text class="d-flex justify-center">
+        <v-btn
+          v-if="!noGameScene && $store.state.game.hasAdmin"
+          class="ma-2"
+          color="success"
+          @click="doNextScene"
+        >
+          Дальше
+        </v-btn>
+      </v-card-text>
     </v-card>
   </v-container>
 </template>
@@ -306,6 +316,9 @@ export default {
     },
     doCancelGameScenes () {
       this.$store.dispatch('game/cancelGameScenes')
+    },
+    doNextScene () {
+      this.$store.dispatch('game/nextGameScene')
     }
   }
 }
