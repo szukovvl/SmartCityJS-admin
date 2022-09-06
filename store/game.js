@@ -9,13 +9,15 @@ import {
   GAME_EVENT_LOCK_CONTROLLER,
   GAME_EVENT_ERROR,
   GAME_EVENT_SCENES_DATA,
-  GAME_EVENT_SCENE_IDENTIFY,
+  GAME_EVENT_SCENE_NEXT,
   GAME_EVENT_CANCEL_GAME_SCENES,
   GAME_EVENT_START_GAME_SCENES,
-  GAME_EVENT_SCENE_NEXT,
+  GAME_EVENT_SCENE_IDENTIFY,
+  GAME_EVENT_SCENE_CHOICE,
 
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
+  GAME_STATUS_SCENE_2,
 
   ENERGYSYSTEM_OBJECT_TYPES
 } from '~/assets/helpers'
@@ -84,7 +86,9 @@ export const state = () => ({
   gameResources: initGameResources(),
   restApiError: undefined,
   tariffs: undefined,
-  scenesData: []
+  scenesData: [],
+  choiceAll: [],
+  gamersCohice: []
 })
 
 //
@@ -102,6 +106,9 @@ function internalSetState (state, data) {
       break
     case GAME_STATUS_SCENE_1:
       state.sceneNumber = 1
+      break
+    case GAME_STATUS_SCENE_2:
+      state.sceneNumber = 2
       break
   }
 }
@@ -137,6 +144,11 @@ export const mutations = {
         break
       case GAME_EVENT_SCENE_IDENTIFY:
         state.sceneNumber = 1
+        break
+      case GAME_EVENT_SCENE_CHOICE:
+        state.choiceAll = data.data.items
+        state.gamersCohice = data.data.gamers
+        state.sceneNumber = 2
         break
       case GAME_EVENT_SCENES_DATA:
         state.scenesData = data.data

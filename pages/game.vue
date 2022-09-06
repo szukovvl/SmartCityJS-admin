@@ -152,16 +152,24 @@
             </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel v-if="$store.state.game.sceneNumber > 1">
+          <v-expansion-panel-header class="teal lighten-5">
+            Выбор потребителей игроками
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <GamersChoiceView />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
       <v-stepper
         v-if="!noGameScene"
-        v-model="step"
+        v-model="scenestep"
         vertical
         flat
       >
         <v-stepper-header>
           <v-stepper-step
-            :complete="step > 1"
+            :complete="scenestep > 1"
             step="1"
           >
             регистрация
@@ -170,7 +178,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="step > 2"
+            :complete="scenestep > 2"
             step="2"
           >
             объекты ЭС
@@ -179,7 +187,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="step > 3"
+            :complete="scenestep > 3"
             step="3"
           >
             портфель
@@ -188,7 +196,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="step > 4"
+            :complete="scenestep > 4"
             step="4"
           >
             договора
@@ -197,7 +205,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="step > 5"
+            :complete="scenestep > 5"
             step="5"
           >
             аукцион
@@ -206,7 +214,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="step > 6"
+            :complete="scenestep > 6"
             step="6"
           >
             схемы ЭС
@@ -215,7 +223,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="step > 7"
+            :complete="scenestep > 7"
             step="7"
           >
             анализ
@@ -228,14 +236,23 @@
           </v-stepper-step>
         </v-stepper-header>
       </v-stepper>
-      <v-card-text class="d-flex justify-center">
+      <v-card-text class="d-flex">
         <v-btn
-          v-if="!noGameScene && $store.state.game.hasAdmin"
+          v-if="prevSceneEnabled"
+          class="ma-2"
+          color="success"
+          @click="doPrevScene"
+        >
+          Назад
+        </v-btn>
+        <v-spacer />
+        <v-btn
+          v-if="nextSceneEnabled"
           class="ma-2"
           color="success"
           @click="doNextScene"
         >
-          Дальше
+          Далее
         </v-btn>
       </v-card-text>
     </v-card>
@@ -245,20 +262,26 @@
 <script>
 import GamerAreaComponent from '~/components/gamecontrol/gamer-area.vue'
 import GamerCardComponent from '~/components/gamecontrol/gamer-card.vue'
+import GamersChoiceView from '~/components/gamecontrol/gamers-choice.vue'
 import { nextTimePoint } from '~/assets/datetime'
 import {
-  GAME_STATUS_NONE
+  GAME_STATUS_NONE,
+  GAME_STATUS_SCENE_1
 } from '~/assets/helpers'
 
 export default {
   name: 'GamePage',
 
-  components: { GamerAreaComponent, GamerCardComponent },
+  components: {
+    GamerAreaComponent,
+    GamerCardComponent,
+    GamersChoiceView
+  },
 
   data: () => ({
     panels: [0],
     gametime: '01:00',
-    step: 1
+    scenestep: 0
   }),
 
   computed: {
@@ -280,11 +303,18 @@ export default {
     },
     currentScene () {
       return this.$store.state.game.sceneNumber
+    },
+    prevSceneEnabled () {
+      return !this.noGameScene && this.$store.state.game.hasAdmin && this.$store.state.game.gameStatus !== GAME_STATUS_SCENE_1
+    },
+    nextSceneEnabled () {
+      return !this.noGameScene && this.$store.state.game.hasAdmin
     }
   },
 
   watch: {
     currentScene (v) {
+      this.scenestep = v
       if (v !== 0) {
         this.panels = [v]
       }
@@ -319,6 +349,9 @@ export default {
     },
     doNextScene () {
       this.$store.dispatch('game/nextGameScene')
+    },
+    doPrevScene () {
+      alert('пока заглушка')
     }
   }
 }
