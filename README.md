@@ -90,7 +90,7 @@ More information about the usage of this directory in [the documentation](https:
 
 ## vue-chartjs
 
-с
+yarn add vue-chartjs chart.js
 
 -- yarn remove vue-chartjs chart.js
 

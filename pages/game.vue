@@ -169,7 +169,7 @@
       >
         <v-stepper-header>
           <v-stepper-step
-            :complete="scenestep > 1"
+            :complete="currentScene > 1"
             step="1"
           >
             регистрация
@@ -178,7 +178,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="scenestep > 2"
+            :complete="currentScene > 2"
             step="2"
           >
             объекты ЭС
@@ -187,7 +187,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="scenestep > 3"
+            :complete="currentScene > 3"
             step="3"
           >
             портфель
@@ -196,7 +196,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="scenestep > 4"
+            :complete="currentScene > 4"
             step="4"
           >
             договора
@@ -205,7 +205,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="scenestep > 5"
+            :complete="currentScene > 5"
             step="5"
           >
             аукцион
@@ -214,7 +214,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="scenestep > 6"
+            :complete="currentScene > 6"
             step="6"
           >
             схемы ЭС
@@ -223,7 +223,7 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="scenestep > 7"
+            :complete="currentScene > 7"
             step="7"
           >
             анализ
@@ -334,7 +334,7 @@ export default {
     if (this.noGameScene) {
       this.panels = [0]
     } else {
-      this.panels = [1]
+      this.panels = [this.currentScene]
     }
   },
 

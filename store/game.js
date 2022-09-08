@@ -100,6 +100,12 @@ function internalSetState (state, data) {
   }
   state.gameStatus = data.data.status
 
+  internalTranslateScene(state, state.gameStatus)
+}
+
+function internalTranslateScene (state, srvstatus) {
+  state.gameStatus = srvstatus
+
   switch (state.gameStatus) {
     case GAME_STATUS_NONE:
       state.sceneNumber = 0
@@ -110,6 +116,10 @@ function internalSetState (state, data) {
     case GAME_STATUS_SCENE_2:
       state.sceneNumber = 2
       break
+    default:
+      /* eslint-disable no-console */
+      console.warn('internalTranslateScene - необработанное', srvstatus)
+      /* eslint-enable no-console */
   }
 }
 
@@ -143,12 +153,12 @@ export const mutations = {
         /* eslint-enable no-console */
         break
       case GAME_EVENT_SCENE_IDENTIFY:
-        state.sceneNumber = 1
+        internalTranslateScene(state, GAME_STATUS_SCENE_1)
         break
       case GAME_EVENT_SCENE_CHOICE:
         state.choiceAll = data.data.items
         state.gamersCohice = data.data.gamers
-        state.sceneNumber = 2
+        internalTranslateScene(state, GAME_STATUS_SCENE_2)
         break
       case GAME_EVENT_SCENES_DATA:
         state.scenesData = data.data
