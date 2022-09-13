@@ -17,6 +17,7 @@ export const ESO_CONSUMER_TYPE = 'CONSUMER'
 export const ESO_CONSUMER_TYPE_DISTRICT = 'DISTRICT'
 export const ESO_CONSUMER_TYPE_INDUSTRY = 'INDUSTRY'
 export const ESO_CONSUMER_TYPE_HOSPITAL = 'HOSPITAL'
+
 //
 export const CONSUMER_BY_TYPES = [
   { text: '1-й категории', value: 'HOSPITAL' },
