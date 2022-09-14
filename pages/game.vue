@@ -134,7 +134,7 @@
         >
           Начать игровой сценарий
         </v-btn>
-        <v-expansion-panel v-if="$store.state.game.sceneNumber > 0">
+        <v-expansion-panel v-if="currentScene > 0">
           <v-expansion-panel-header class="teal lighten-5">
             Определение игроков
           </v-expansion-panel-header>
@@ -152,12 +152,20 @@
             </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
-        <v-expansion-panel v-if="$store.state.game.sceneNumber > 1">
+        <v-expansion-panel v-if="currentScene > 1">
           <v-expansion-panel-header class="teal lighten-5">
             Выбор потребителей игроками
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <GamersChoiceView />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel v-if="currentScene > 2">
+          <v-expansion-panel-header class="teal lighten-5">
+            Подготовка к аукциону
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <AuctionParametersCard />
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -181,7 +189,7 @@
             :complete="currentScene > 2"
             step="2"
           >
-            объекты ЭС
+            присоединение потребителей
           </v-stepper-step>
 
           <v-divider />
@@ -190,7 +198,7 @@
             :complete="currentScene > 3"
             step="3"
           >
-            портфель
+            подготовка к аукциону
           </v-stepper-step>
 
           <v-divider />
@@ -198,15 +206,6 @@
           <v-stepper-step
             :complete="currentScene > 4"
             step="4"
-          >
-            договора
-          </v-stepper-step>
-
-          <v-divider />
-
-          <v-stepper-step
-            :complete="currentScene > 5"
-            step="5"
           >
             аукцион
           </v-stepper-step>
@@ -263,6 +262,7 @@
 import GamerAreaComponent from '~/components/gamecontrol/gamer-area.vue'
 import GamerCardComponent from '~/components/gamecontrol/gamer-card.vue'
 import GamersChoiceView from '~/components/gamecontrol/gamers-choice.vue'
+import AuctionParametersCard from '~/components/gamecontrol/auction-parameters.vue'
 import { nextTimePoint } from '~/assets/datetime'
 import {
   GAME_STATUS_NONE,
@@ -275,7 +275,8 @@ export default {
   components: {
     GamerAreaComponent,
     GamerCardComponent,
-    GamersChoiceView
+    GamersChoiceView,
+    AuctionParametersCard
   },
 
   data: () => ({
@@ -331,6 +332,7 @@ export default {
       this.$store.dispatch('game/loadGameResources')
       this.$store.dispatch('game/setAdministratorMode')
     }
+    this.scenestep = this.currentScene
     if (this.noGameScene) {
       this.panels = [0]
     } else {
