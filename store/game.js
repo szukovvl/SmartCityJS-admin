@@ -15,11 +15,15 @@ import {
   GAME_EVENT_SCENE_IDENTIFY,
   GAME_EVENT_SCENE_CHOICE,
   GAME_EVENT_SCENE_AUCTION_PREPARE,
+  GAME_EVENT_SCENE_AUCTION,
+  GAME_EVENT_SCENE_AUCTION_SETTINGS,
+  GAME_EVENT_SCENE_AUCTION_SALE,
 
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
   GAME_STATUS_SCENE_2,
   GAME_STATUS_SCENE_3,
+  GAME_STATUS_SCENE_4,
 
   ENERGYSYSTEM_OBJECT_TYPES
 } from '~/assets/helpers'
@@ -122,6 +126,9 @@ function internalTranslateScene (state, srvstatus) {
     case GAME_STATUS_SCENE_3:
       state.sceneNumber = 3
       break
+    case GAME_STATUS_SCENE_4:
+      state.sceneNumber = 4
+      break
     default:
       /* eslint-disable no-console */
       console.warn('internalTranslateScene - необработанное', srvstatus)
@@ -169,6 +176,14 @@ export const mutations = {
       case GAME_EVENT_SCENE_AUCTION_PREPARE:
         state.auction = data.data
         internalTranslateScene(state, GAME_STATUS_SCENE_3)
+        break
+      case GAME_EVENT_SCENE_AUCTION:
+        state.auction = data.data
+        internalTranslateScene(state, data.data.status)
+        break
+      case GAME_EVENT_SCENE_AUCTION_SALE:
+        state.auction = data.data
+        internalTranslateScene(state, GAME_STATUS_SCENE_4)
         break
       case GAME_EVENT_SCENES_DATA:
         state.scenesData = data.data
@@ -268,6 +283,9 @@ export const actions = {
     context.commit('setGamerConsumers', data)
   },
   requestActionData (context, data) {
-    sendEventMessage(GAME_EVENT_SCENE_AUCTION_PREPARE)
+    sendEventMessage(GAME_EVENT_SCENE_AUCTION)
+  },
+  setActionParams (context, data) {
+    sendEventMessage(GAME_EVENT_SCENE_AUCTION_SETTINGS, JSON.stringify(data))
   }
 }

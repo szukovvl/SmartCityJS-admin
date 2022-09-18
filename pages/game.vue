@@ -166,6 +166,15 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <AuctionParametersCard />
+            <AuctionLotsViewer />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel v-if="currentScene > 3">
+          <v-expansion-panel-header class="teal lighten-5">
+            Аукцион
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <AuctionSaleViewer />
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -263,6 +272,8 @@ import GamerAreaComponent from '~/components/gamecontrol/gamer-area.vue'
 import GamerCardComponent from '~/components/gamecontrol/gamer-card.vue'
 import GamersChoiceView from '~/components/gamecontrol/gamers-choice.vue'
 import AuctionParametersCard from '~/components/gamecontrol/auction-parameters.vue'
+import AuctionLotsViewer from '~/components/gamecontrol/auction-lots.vue'
+import AuctionSaleViewer from '~/components/gamecontrol/auction-sale.vue'
 import { nextTimePoint } from '~/assets/datetime'
 import {
   GAME_STATUS_NONE,
@@ -276,7 +287,9 @@ export default {
     GamerAreaComponent,
     GamerCardComponent,
     GamersChoiceView,
-    AuctionParametersCard
+    AuctionParametersCard,
+    AuctionLotsViewer,
+    AuctionSaleViewer
   },
 
   data: () => ({

@@ -51,6 +51,14 @@
       class="d-flex justify-end"
     >
       <v-btn
+        v-if="paramsChanged"
+        class="ma-2"
+        color="warning"
+        @click="rejectParameters"
+      >
+        Отменить изменения
+      </v-btn>
+      <v-btn
         class="ma-2"
         color="info"
         :disabled="!paramsChanged"
@@ -135,9 +143,13 @@ export default {
 
   methods: {
     applyParameters () {
-      /* eslint-disable no-console */
-      console.log('передать изменения')
-      /* eslint-enable no-console */
+      this.$v.params.$touch()
+      if (!this.$v.params.$invalid) {
+        this.$store.dispatch('game/setActionParams', this.params)
+      }
+    },
+    rejectParameters () {
+      this.params = Object.assign({}, this.auctionParams)
     },
     checkForChanges () {
       this.paramsChanged = !Object
