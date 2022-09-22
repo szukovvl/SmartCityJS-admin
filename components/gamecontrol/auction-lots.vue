@@ -26,7 +26,7 @@
         <StorageCardComponent
           v-for="item in storages"
           :key="item.identy"
-          :storage="item"
+          :generator="item"
         />
       </div>
     </v-card>

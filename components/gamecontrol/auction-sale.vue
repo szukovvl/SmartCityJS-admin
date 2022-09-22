@@ -17,18 +17,41 @@
       нет доступных лотов
     </div>
 
-    <div class="text-subtitle-1 teal darken-4 px-2 py-1 white--text">
-      Лот торга
+    <div v-if="unsoldsLots.length !== 0">
+      <div class="text-subtitle-1 teal darken-4 px-2 py-1 white--text">
+        Отказники
+      </div>
+      <div class="d-flex flex-wrap">
+        <GenerationShortCard
+          v-for="item in unsoldsLots"
+          :key="item.identy"
+          :oes="item"
+        />
+      </div>
     </div>
 
     <div class="text-subtitle-1 teal darken-4 px-2 py-1 white--text">
-      Отказники
+      Торги
     </div>
+
+    <AuctionLotForm />
+
+    <v-row class="mt-2">
+      <v-col
+        v-for="(data, index) in scenesData"
+        :key="data.mainstation"
+      >
+        <div class="text-subtitle-1 teal darken-4 px-2 py-1 white--text">
+          {{ 'Игрок ' + (index + 1) }}
+        </div>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
 import GenerationShortCard from '~/components/gamecontrol/generation-short-card.vue'
+import AuctionLotForm from '~/components/gamecontrol/auction-lot-form.vue'
 import {
   ESO_GREEGENERATOR_TYPE,
   ESO_STORAGE_TYPE,
@@ -39,7 +62,8 @@ export default {
   name: 'AuctionSaleViewer',
 
   components: {
-    GenerationShortCard
+    GenerationShortCard,
+    AuctionLotForm
   },
 
   data: () => ({
@@ -68,6 +92,19 @@ export default {
     },
     generatorLots () {
       return this.allGenerators.filter(e => this.auctionLots.includes(e.devaddr))
+    },
+    unsolds () {
+      return this.$store.state.game.auction.unsolds !== undefined
+        ? this.$store.state.game.auction.unsolds
+        : []
+    },
+    unsoldsLots () {
+      return this.allGenerators.filter(e => this.unsolds.includes(e.devaddr))
+    },
+
+    scenesData () {
+      const items = this.$store.state.game.scenesData
+      return items != null ? items : []
     }
   },
 

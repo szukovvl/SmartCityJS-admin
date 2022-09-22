@@ -18,6 +18,9 @@ import {
   GAME_EVENT_SCENE_AUCTION,
   GAME_EVENT_SCENE_AUCTION_SETTINGS,
   GAME_EVENT_SCENE_AUCTION_SALE,
+  GAME_EVENT_SCENE_AUCTION_PUT_LOT,
+  GAME_EVENT_SCENE_AUCTION_CANCEL_LOT,
+  GAME_EVENT_SCENE_AUCTION_TIME_LOT,
 
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
@@ -83,6 +86,7 @@ export const state = () => ({
   errorEvent: undefined,
   gameStatus: GAME_STATUS_NONE,
   sceneNumber: 0,
+  lotTime: 0,
   hasAdmin: false,
   info: {
     administrationLocked: false,
@@ -184,6 +188,9 @@ export const mutations = {
       case GAME_EVENT_SCENE_AUCTION_SALE:
         state.auction = data.data
         internalTranslateScene(state, GAME_STATUS_SCENE_4)
+        break
+      case GAME_EVENT_SCENE_AUCTION_TIME_LOT:
+        state.lotTime = data.data
         break
       case GAME_EVENT_SCENES_DATA:
         state.scenesData = data.data
@@ -287,5 +294,11 @@ export const actions = {
   },
   setActionParams (context, data) {
     sendEventMessage(GAME_EVENT_SCENE_AUCTION_SETTINGS, JSON.stringify(data))
+  },
+  auctionPutLot (context, data) {
+    sendEventMessage(GAME_EVENT_SCENE_AUCTION_PUT_LOT)
+  },
+  auctionCancelLot (context, data) {
+    sendEventMessage(GAME_EVENT_SCENE_AUCTION_CANCEL_LOT)
   }
 }

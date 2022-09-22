@@ -13,7 +13,7 @@
           mdi-battery-charging-70
         </v-icon>
       </v-avatar>
-      &laquo;{{ storage.identy }}&raquo;
+      &laquo;{{ generator.identy }}&raquo;
     </v-card-title>
     <div>
       <p class="px-4">
@@ -33,7 +33,7 @@
       </p>
       <p class="px-4">
         <b>
-          {{ storage.data.overload_enabled
+          {{ generator.data.overload_enabled
             ? 'Разрешено превышать границу нормального значения мощности'
             : 'Запрещено превышать границу нормального значения мощности' }}
         </b>
@@ -48,7 +48,7 @@
         Порог критической нагрузки <b>{{ criticalload }}</b>
       </p>
       <p class="px-4">
-        Время действия критической нагрузки до блэкаута <b>{{ storage.data.blackouttime }}</b> сек.
+        Время действия критической нагрузки до блэкаута <b>{{ generator.data.blackouttime }}</b> сек.
       </p>
       <p class="px-4">
         Режим использования <b>{{ storageMode.text }}</b>
@@ -80,7 +80,7 @@ export default {
   name: 'StorageCardComponent',
 
   props: {
-    storage: {
+    generator: {
       type: Object,
       required: true
     }
@@ -91,37 +91,37 @@ export default {
 
   computed: {
     energy () {
-      return formatValueLocale(this.storage.data.energy)
+      return formatValueLocale(this.generator.data.energy)
     },
     carbon () {
-      return formatValueLocale(this.storage.data.carbon)
+      return formatValueLocale(this.generator.data.carbon)
     },
     performance () {
-      return formatValueLocale(this.storage.data.performance)
+      return formatValueLocale(this.generator.data.performance)
     },
     peckertexponent () {
-      return formatValueLocale(this.storage.data.peckertexponent)
+      return formatValueLocale(this.generator.data.peckertexponent)
     },
     outpower () {
-      return formatValueLocale(this.storage.data.outpower)
+      return formatValueLocale(this.generator.data.outpower)
     },
     maxdischarge () {
-      return formatValueLocale(this.storage.data.maxdischarge)
+      return formatValueLocale(this.generator.data.maxdischarge)
     },
     undercharging () {
-      return formatValueLocale(this.storage.data.undercharging)
+      return formatValueLocale(this.generator.data.undercharging)
     },
     criticalload () {
-      return formatValueLocale(this.storage.data.criticalload)
+      return formatValueLocale(this.generator.data.criticalload)
     },
     storageMode () {
-      return GENERATION_USAGE_MODES.find(e => e.value === this.storage.data.mode)
+      return GENERATION_USAGE_MODES.find(e => e.value === this.generator.data.mode)
     },
     chargebehavior () {
-      return ENERGYSTORAGE_CHARGEBEHAVIORS.find(e => e.value === this.storage.data.chargebehavior)
+      return ENERGYSTORAGE_CHARGEBEHAVIORS.find(e => e.value === this.generator.data.chargebehavior)
     },
     initstate () {
-      return ENERGYSTORAGE_STATES.find(e => e.value === this.storage.data.initstate)
+      return ENERGYSTORAGE_STATES.find(e => e.value === this.generator.data.initstate)
     },
     tariff () {
       return roundToTwoAsStr(
