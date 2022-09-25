@@ -44,6 +44,9 @@
         <div class="text-subtitle-1 teal darken-4 px-2 py-1 white--text">
           {{ 'Игрок ' + (index + 1) }}
         </div>
+        <div>
+          <AuctionGamerLots :gamer-key="data.mainstation" />
+        </div>
       </v-col>
     </v-row>
   </div>
@@ -52,6 +55,7 @@
 <script>
 import GenerationShortCard from '~/components/gamecontrol/generation-short-card.vue'
 import AuctionLotForm from '~/components/gamecontrol/auction-lot-form.vue'
+import AuctionGamerLots from '~/components/gamecontrol/auction-gamer-lots.vue'
 import {
   ESO_GREEGENERATOR_TYPE,
   ESO_STORAGE_TYPE,
@@ -63,7 +67,8 @@ export default {
 
   components: {
     GenerationShortCard,
-    AuctionLotForm
+    AuctionLotForm,
+    AuctionGamerLots
   },
 
   data: () => ({

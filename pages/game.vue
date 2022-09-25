@@ -225,7 +225,7 @@
             :complete="currentScene > 6"
             step="6"
           >
-            схемы ЭС
+            схема ЭС
           </v-stepper-step>
 
           <v-divider />
