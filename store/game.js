@@ -10,6 +10,7 @@ import {
   GAME_EVENT_ERROR,
   GAME_EVENT_SCENES_DATA,
   GAME_EVENT_SCENE_NEXT,
+  GAME_EVENT_SCENE_PREV,
   GAME_EVENT_CANCEL_GAME_SCENES,
   GAME_EVENT_START_GAME_SCENES,
   GAME_EVENT_SCENE_IDENTIFY,
@@ -245,6 +246,11 @@ export const actions = {
   nextGameScene (context) {
     if (context.state.gameStatus !== GAME_STATUS_NONE && context.state.hasAdmin) {
       sendEventMessage(GAME_EVENT_SCENE_NEXT)
+    }
+  },
+  prevGameScene (context) {
+    if (context.state.gameStatus !== GAME_STATUS_NONE && context.state.hasAdmin) {
+      sendEventMessage(GAME_EVENT_SCENE_PREV)
     }
   },
 

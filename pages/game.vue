@@ -366,7 +366,7 @@ export default {
       this.$store.dispatch('game/nextGameScene')
     },
     doPrevScene () {
-      alert('пока заглушка')
+      this.$store.dispatch('game/prevGameScene')
     }
   }
 }
