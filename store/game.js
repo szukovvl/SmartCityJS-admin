@@ -22,12 +22,15 @@ import {
   GAME_EVENT_SCENE_AUCTION_PUT_LOT,
   GAME_EVENT_SCENE_AUCTION_CANCEL_LOT,
   GAME_EVENT_SCENE_AUCTION_TIME_LOT,
+  GAME_EVENT_GAME_SCENE_SCHEME,
+  GAME_EVENT_GAME_SCHEMA_DATA,
 
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
   GAME_STATUS_SCENE_2,
   GAME_STATUS_SCENE_3,
   GAME_STATUS_SCENE_4,
+  GAME_STATUS_SCENE_5,
 
   ENERGYSYSTEM_OBJECT_TYPES
 } from '~/assets/helpers'
@@ -100,7 +103,9 @@ export const state = () => ({
   scenesData: [],
   choiceAll: [],
   gamersCohice: [],
-  auction: {}
+  auction: {},
+  schemeData: [],
+  scheme: []
 })
 
 //
@@ -133,6 +138,9 @@ function internalTranslateScene (state, srvstatus) {
       break
     case GAME_STATUS_SCENE_4:
       state.sceneNumber = 4
+      break
+    case GAME_STATUS_SCENE_5:
+      state.sceneNumber = 5
       break
     default:
       /* eslint-disable no-console */
@@ -192,6 +200,13 @@ export const mutations = {
         break
       case GAME_EVENT_SCENE_AUCTION_TIME_LOT:
         state.lotTime = data.data
+        break
+      case GAME_EVENT_GAME_SCENE_SCHEME:
+        state.schemeData = data.data
+        internalTranslateScene(state, GAME_STATUS_SCENE_5)
+        break
+      case GAME_EVENT_GAME_SCHEMA_DATA:
+        state.scheme = data.data
         break
       case GAME_EVENT_SCENES_DATA:
         state.scenesData = data.data
@@ -306,5 +321,9 @@ export const actions = {
   },
   auctionCancelLot (context, data) {
     sendEventMessage(GAME_EVENT_SCENE_AUCTION_CANCEL_LOT)
+  },
+  requestSchemesData (context, data) {
+    sendEventMessage(GAME_EVENT_GAME_SCENE_SCHEME)
+    sendEventMessage(GAME_EVENT_GAME_SCHEMA_DATA)
   }
 }

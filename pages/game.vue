@@ -177,6 +177,14 @@
             <AuctionSaleViewer />
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel v-if="currentScene > 4">
+          <v-expansion-panel-header class="teal lighten-5">
+            Подготовка схемы
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <SchemeComponent />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
       <v-stepper
         v-if="!noGameScene"
@@ -274,6 +282,7 @@ import GamersChoiceView from '~/components/gamecontrol/gamers-choice.vue'
 import AuctionParametersCard from '~/components/gamecontrol/auction-parameters.vue'
 import AuctionLotsViewer from '~/components/gamecontrol/auction-lots.vue'
 import AuctionSaleViewer from '~/components/gamecontrol/auction-sale.vue'
+import SchemeComponent from '~/components/gamecontrol/scheme-component.vue'
 import { nextTimePoint } from '~/assets/datetime'
 import {
   GAME_STATUS_NONE,
@@ -289,7 +298,8 @@ export default {
     GamersChoiceView,
     AuctionParametersCard,
     AuctionLotsViewer,
-    AuctionSaleViewer
+    AuctionSaleViewer,
+    SchemeComponent
   },
 
   data: () => ({
