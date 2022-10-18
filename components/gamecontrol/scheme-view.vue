@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="d-flex justify-center">
-      <SchemeMainStationCadr :address="data.address" />
+      <SchemeMainStationCadr :oes="data" />
     </div>
     <p>&nbsp;</p>
     <p>
