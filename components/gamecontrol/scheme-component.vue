@@ -11,9 +11,6 @@
         <SchemeOesView :data="data" />
         <SchemeView :data="scheme.find(e => e.address == data.gamerkey)" />
       </div>
-      <div>
-        {{ scheme }}
-      </div>
     </v-col>
   </v-row>
 </template>

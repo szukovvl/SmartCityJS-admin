@@ -230,8 +230,8 @@
           <v-divider />
 
           <v-stepper-step
-            :complete="currentScene > 6"
-            step="6"
+            :complete="currentScene > 5"
+            step="5"
           >
             схема ЭС
           </v-stepper-step>

@@ -1,8 +1,9 @@
 <template>
   <div>
     <div class="d-flex justify-center">
-      <SchemeMainStationCadr />
+      <SchemeMainStationCadr :address="data.address" />
     </div>
+    <p>&nbsp;</p>
     <p>
       {{ data }}
     </p>
@@ -29,6 +30,9 @@ export default {
   },
 
   data: () => ({
-  })
+  }),
+
+  computed: {
+  }
 }
 </script>
