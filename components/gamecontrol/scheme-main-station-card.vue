@@ -161,7 +161,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .card-with-border.v-sheet.v-card {
   border: 2px solid blue;
   border-radius: 8px;

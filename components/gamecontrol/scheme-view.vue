@@ -5,41 +5,61 @@
       :key="'u_' + item.hub.address"
     >
       <div class="d-flex justify-center mb-4">
-        <SchemeUnknownCadr :hub="item.hub" />
+        <SchemeUnknownCadr :hub="item" />
       </div>
     </div>
     <div
-      v-for="item in oesDevices"
+      v-for="item in generatorsOes"
       :key="'g_' + item.hub.address"
     >
       <div class="d-flex justify-center mb-4">
-        {{ item }}
+        <SchemeGeneratorCadr :hub="item" />
       </div>
     </div>
     <div class="d-flex justify-center">
       <SchemeMainStationCadr :oes="data" />
     </div>
-    <p>&nbsp;</p>
-    <p>
-      {{ data }}
-    </p>
-    <p>&nbsp;</p>
-    <p>
-      {{ allPorts }}
-    </p>
+    <div
+      v-for="item in industryOes"
+      :key="'i_' + item.hub.address"
+    >
+      <div class="d-flex justify-center mb-4">
+        <SchemeUnknownCadr :hub="item" />
+      </div>
+    </div>
+    <div
+      v-for="item in hospitalOes"
+      :key="'h_' + item.hub.address"
+    >
+      <div class="d-flex justify-center mb-4">
+        <SchemeUnknownCadr :hub="item" />
+      </div>
+    </div>
+    <div
+      v-for="item in districtOes"
+      :key="'d_' + item.hub.address"
+    >
+      <div class="d-flex justify-center mb-4">
+        <SchemeUnknownCadr :hub="item" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import SchemeMainStationCadr from '~/components/gamecontrol/scheme-main-station-card.vue'
 import SchemeUnknownCadr from '~/components/gamecontrol/scheme-unknown-card.vue'
+import SchemeGeneratorCadr from '~/components/gamecontrol/scheme-generator-card.vue'
 import {
   ESO_GREEGENERATOR_TYPE,
   ESO_STORAGE_TYPE,
   ESO_GENERATOR_TYPE,
   ESO_CONSUMER_TYPE,
   ESO_DISTRIBUTOR_TYPE,
-  ESO_MAINSTATION_TYPE
+  ESO_MAINSTATION_TYPE,
+  ESO_CONSUMER_TYPE_INDUSTRY,
+  ESO_CONSUMER_TYPE_HOSPITAL,
+  ESO_CONSUMER_TYPE_DISTRICT
 } from '~/assets/helpers'
 
 export default {
@@ -47,7 +67,8 @@ export default {
 
   components: {
     SchemeMainStationCadr,
-    SchemeUnknownCadr
+    SchemeUnknownCadr,
+    SchemeGeneratorCadr
   },
 
   props: {
@@ -112,14 +133,96 @@ export default {
     },
     unknownOes () {
       const items = this.oesDevices.filter(e => e.oes === undefined)
-      items.forEach((e) => {
+      const devs = []
+      items.forEach((hub) => {
         const ports = []
-        e.hub.inputs.forEach((conn) => {
-          ports.push(this.allPorts.find(a => a.address === conn.address))
+        hub.hub.inputs.forEach((port) => {
+          ports.push(this.allPorts.find(a => a.portaddr === port.address))
         })
-        e.ports = ports
+        devs.push({
+          hub: hub.hub,
+          oes: undefined,
+          ports: ports.filter(a => a !== undefined)
+        })
       })
-      return items
+      return devs
+    },
+    industryOes () {
+      const items = this.oesDevices
+        .filter(e => e.oes !== undefined && e.oes.componentType === ESO_CONSUMER_TYPE)
+        .filter(e => e.oes.data.consumertype === ESO_CONSUMER_TYPE_INDUSTRY)
+      const devs = []
+      items.forEach((hub) => {
+        const ports = []
+        hub.hub.inputs.forEach((port) => {
+          ports.push(this.allPorts.find(a => a.portaddr === port.address))
+        })
+        devs.push({
+          hub: hub.hub,
+          oes: undefined,
+          ports: ports.filter(a => a !== undefined)
+        })
+      })
+      return devs
+    },
+    hospitalOes () {
+      const items = this.oesDevices
+        .filter(e => e.oes !== undefined && e.oes.componentType === ESO_CONSUMER_TYPE)
+        .filter(e => e.oes.data.consumertype === ESO_CONSUMER_TYPE_HOSPITAL)
+      const devs = []
+      items.forEach((hub) => {
+        const ports = []
+        hub.hub.inputs.forEach((port) => {
+          ports.push(this.allPorts.find(a => a.portaddr === port.address))
+        })
+        devs.push({
+          hub: hub.hub,
+          oes: undefined,
+          ports: ports.filter(a => a !== undefined)
+        })
+      })
+      return devs
+    },
+    districtOes () {
+      const items = this.oesDevices
+        .filter(e => e.oes !== undefined && e.oes.componentType === ESO_CONSUMER_TYPE)
+        .filter(e => e.oes.data.consumertype === ESO_CONSUMER_TYPE_DISTRICT)
+      const devs = []
+      items.forEach((hub) => {
+        const ports = []
+        hub.hub.inputs.forEach((port) => {
+          ports.push(this.allPorts.find(a => a.portaddr === port.address))
+        })
+        devs.push({
+          hub: hub.hub,
+          oes: undefined,
+          ports: ports.filter(a => a !== undefined)
+        })
+      })
+      return devs
+    },
+    generatorsOes () {
+      const items = this.oesDevices
+        .filter(e => e.oes !== undefined && e.oes.componentType === ESO_GENERATOR_TYPE)
+        .concat(
+          this.oesDevices
+            .filter(e => e.oes !== undefined && e.oes.componentType === ESO_GENERATOR_TYPE),
+          this.oesDevices
+            .filter(e => e.oes !== undefined && e.oes.componentType === ESO_STORAGE_TYPE)
+        )
+      const devs = []
+      items.forEach((hub) => {
+        const ports = []
+        hub.hub.inputs.forEach((port) => {
+          ports.push(this.allPorts.find(a => a.portaddr === port.address))
+        })
+        devs.push({
+          hub: hub.hub,
+          oes: undefined,
+          ports: ports.filter(a => a !== undefined)
+        })
+      })
+      return devs
     },
 
     subnets () {
@@ -143,37 +246,34 @@ export default {
       return items
     },
     inputPorts () {
-      const ports = []
-      if (this.data.inputs !== undefined) {
-        this.data.inputs.filter(e => e.connections !== undefined).forEach((e) => {
-          e.connections.forEach((conn) => {
-            ports.push({
-              address: conn.address,
-              hub: this.data,
-              subnet: this.subnets.find(l => l.devaddr === e.address)
-            })
-          })
-        })
-      }
-      return ports
+      return this.buildExtConnections(this.data.inputs)
     },
     outputPorts () {
-      const ports = []
-      if (this.data.outputs !== undefined) {
-        this.data.outputs.filter(e => e.connections !== undefined).forEach((e) => {
-          e.connections.forEach((conn) => {
-            ports.push({
-              address: conn.address,
-              hub: this.data,
-              subnet: this.subnets.find(l => l.subnet.devaddr === e.address)
-            })
-          })
-        })
-      }
-      return ports
+      return this.buildExtConnections(this.data.outputs)
     },
     allPorts () {
       return this.inputPorts.concat(this.outputPorts)
+    }
+  },
+
+  methods: {
+    buildExtConnections (items) {
+      const ports = []
+      if (items !== undefined) {
+        items
+          .filter(e => e.connections !== undefined)
+          .forEach((e) => {
+            e.connections.forEach((conn) => {
+              ports.push({
+                portaddr: conn.address, // адрес порта подключенного устройства
+                oesport: e, // порт-подключения устройства-владельца
+                owndata: this.subnets
+                  .find(l => l.subnet.devaddr === e.address) // владелец (устройство и подсеть)
+              })
+            })
+          })
+      }
+      return ports
     }
   }
 }

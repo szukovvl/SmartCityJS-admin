@@ -1,0 +1,139 @@
+[
+    {
+        "hub": {
+            "address": 103,
+            "inputs": [
+                {
+                    "address": 56
+                },
+                {
+                    "address": 57
+                }
+            ],
+            "outputs": null,
+            "controlPort": null
+        },
+        "ports": [
+            {
+                "portaddr": 56,
+                "oesport": {
+                    "address": 42,
+                    "connections": [
+                        {
+                            "address": 56
+                        }
+                    ],
+                    "error": "К входной линии главной подстанции может быть подключено не более одного устройства генерации."
+                },
+                "owndata": {
+                    "subnet": {
+                        "identy": "Гп-2-Лг-1",
+                        "devaddr": 42,
+                        "data": {
+                            "energy": 1,
+                            "lossfactor": 0.9,
+                            "highload": 0.8,
+                            "criticalload": 0.95,
+                            "blackouttime": 300
+                        },
+                        "id": -1,
+                        "componentType": "LINE"
+                    },
+                    "owner": {
+                        "data": {
+                            "ctrladdr": 41,
+                            "inputs": [
+                                {
+                                    "identy": "Гп-2-Лг-1",
+                                    "devaddr": 42,
+                                    "data": {
+                                        "energy": 1,
+                                        "lossfactor": 0.9,
+                                        "highload": 0.8,
+                                        "criticalload": 0.95,
+                                        "blackouttime": 300
+                                    },
+                                    "id": -1,
+                                    "componentType": "LINE"
+                                },
+                                {
+                                    "identy": "Гп-2-Лг-2",
+                                    "devaddr": 43,
+                                    "data": {
+                                        "energy": 1,
+                                        "lossfactor": 0.9,
+                                        "highload": 0.8,
+                                        "criticalload": 0.95,
+                                        "blackouttime": 300
+                                    },
+                                    "id": -1,
+                                    "componentType": "LINE"
+                                },
+                                {
+                                    "identy": "Гп-2-Лг-3",
+                                    "devaddr": 44,
+                                    "data": {
+                                        "energy": 1,
+                                        "lossfactor": 0.9,
+                                        "highload": 0.8,
+                                        "criticalload": 0.95,
+                                        "blackouttime": 300
+                                    },
+                                    "id": -1,
+                                    "componentType": "LINE"
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "identy": "Гп-2-Лп-1",
+                                    "devaddr": 45,
+                                    "data": {
+                                        "energy": 1,
+                                        "lossfactor": 0.9,
+                                        "highload": 0.8,
+                                        "criticalload": 0.95,
+                                        "blackouttime": 300
+                                    },
+                                    "id": -1,
+                                    "componentType": "LINE"
+                                },
+                                {
+                                    "identy": "Гп-2-Лп-2",
+                                    "devaddr": 46,
+                                    "data": {
+                                        "energy": 1,
+                                        "lossfactor": 0.9,
+                                        "highload": 0.8,
+                                        "criticalload": 0.95,
+                                        "blackouttime": 300
+                                    },
+                                    "id": -1,
+                                    "componentType": "LINE"
+                                },
+                                {
+                                    "identy": "Гп-2-Лп-3",
+                                    "devaddr": 47,
+                                    "data": {
+                                        "energy": 1,
+                                        "lossfactor": 0.9,
+                                        "highload": 0.8,
+                                        "criticalload": 0.95,
+                                        "blackouttime": 300
+                                    },
+                                    "id": -1,
+                                    "componentType": "LINE"
+                                }
+                            ],
+                            "external_energy": 0,
+                            "carbon": 684.75
+                        },
+                        "id": 2,
+                        "identy": "Гп-2",
+                        "devaddr": 99,
+                        "componentType": "MAINSUBSTATION"
+                    }
+                }
+            }
+        ]
+    }
+]

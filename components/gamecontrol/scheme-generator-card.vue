@@ -7,13 +7,13 @@
       <v-avatar
         class="mr-2"
         tile
-        color="yellow darken-3"
+        color="#008000"
       >
         <v-icon dark>
-          mdi-timeline-question-outline
+          mdi-engine-outline
         </v-icon>
       </v-avatar>
-      #{{ hub.hub.address }}
+      &laquo;{{ hub.oes.identy }}&raquo;
     </v-card-title>
     <div class="d-inline-flex">
       <div
@@ -29,7 +29,7 @@
 
 <script>
 export default {
-  name: 'SchemeUnknownCadr',
+  name: 'SchemeGeneratorCadr',
 
   props: {
     hub: {
@@ -53,7 +53,7 @@ export default {
           if (line.oesport.error !== undefined) {
             return text + ' deep-orange accent-3'
           } else {
-            return text + ' yellow darken-3'
+            return text + ' green'
           }
         }
       }
@@ -76,7 +76,7 @@ export default {
 
 <style scoped>
 .card-with-border.v-sheet.v-card {
-  border: 2px solid #F9A825;
+  border: 2px solid #008000;
   border-radius: 8px;
 }
 </style>
