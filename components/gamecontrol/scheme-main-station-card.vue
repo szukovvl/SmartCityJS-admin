@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="card-with-border"
+    :class="mainClass"
     flat
   >
     <div class="d-inline-flex align-center">
@@ -8,7 +8,7 @@
         <v-avatar
           class="mr-2"
           tile
-          color="#00F"
+          :color="mainColor"
         >
           <v-icon dark>
             mdi-space-station
@@ -21,25 +21,34 @@
           <div
             v-for="inputLine in inputs"
             :key="inputLine.port"
-            class="px-2 py-1 mx-1 mb-1 black white--text"
+            :class="inputLine.classoes"
           >
-            {{ inputLine.subnet.identy }}
+            {{ inputLine.subnet !== undefined ? inputLine.subnet.identy : '' }}
           </div>
         </div>
         <div class="d-inline-flex">
           <div
             v-for="outputLine in outputs"
             :key="outputLine.port"
-            class="px-2 py-1 mx-1 mt-1 black white--text"
+            :class="outputLine.classoes"
           >
-            {{ outputLine.subnet.identy }}
+            {{ outputLine.subnet !== undefined ? outputLine.subnet.identy : '' }}
           </div>
         </div>
       </div>
     </div>
-    <div>
-      {{ mainstation }}
-    </div>
+    <v-card-text
+      v-if="errorMsg.length !== 0"
+      class="deep-orange--text text-accent-3"
+    >
+      <div
+        v-for="(error, index) in errorMsg"
+        :key="'e_' + index"
+        class="mt-2"
+      >
+        {{ error }}
+      </div>
+    </v-card-text>
   </v-card>
 </template>
 
@@ -74,7 +83,8 @@ export default {
       return lines.map(e => ({
         port: e.address,
         subnet: lineInputs.find(item => e.address === item.devaddr),
-        error: e.error !== undefined
+        error: e.error !== undefined,
+        classoes: this.getInputLineClass(e)
       }))
     },
     outputs () {
@@ -83,7 +93,8 @@ export default {
       return lines.map(e => ({
         port: e.address,
         subnet: lineOutputs.find(item => e.address === item.devaddr),
-        error: e.error !== undefined
+        error: e.error !== undefined,
+        classoes: this.getOutputLineClass(e)
       }))
     },
     errors () {
@@ -93,6 +104,58 @@ export default {
     },
     isConnected () {
       return this.oes.connected !== undefined ? this.oes.connected : false
+    },
+    mainColor () {
+      if (this.errors) {
+        return 'deep-orange accent-3'
+      }
+      if (this.isConnected) {
+        return '#00F'
+      }
+      return '#78909C'
+    },
+    mainClass () {
+      if (this.errors) {
+        return 'card-with-errorborder'
+      }
+      if (this.isConnected) {
+        return 'card-with-border'
+      }
+      return 'card-with-offborder'
+    },
+    errorMsg () {
+      const msg = []
+      if (this.errors) {
+        if (this.oes.error !== undefined) {
+          msg.push(this.oes.error)
+        }
+        this.oes.inputs.filter(e => e.error !== undefined).forEach((e) => { msg.push(e.error) })
+        this.oes.outputs.filter(e => e.error !== undefined).forEach((e) => { msg.push(e.error) })
+      }
+      return msg
+    }
+  },
+
+  methods: {
+    getInputLineClass (inline) {
+      const str = 'px-2 py-1 mx-1 mb-1 white--text'
+      if (inline.error) {
+        return str + ' deep-orange accent-3'
+      }
+      if (this.isConnected) {
+        return str + ' green'
+      }
+      return str + ' blue-grey lighten-1'
+    },
+    getOutputLineClass (inline) {
+      const str = 'px-2 py-1 mx-1 mt-1 white--text'
+      if (inline.error) {
+        return str + ' deep-orange accent-3'
+      }
+      if (this.isConnected) {
+        return str + ' amber'
+      }
+      return str + ' blue-grey lighten-1'
     }
   }
 }
@@ -101,6 +164,14 @@ export default {
 <style>
 .card-with-border.v-sheet.v-card {
   border: 2px solid blue;
+  border-radius: 8px;
+}
+.card-with-offborder.v-sheet.v-card {
+  border: 2px solid #78909C;
+  border-radius: 8px;
+}
+.card-with-errorborder.v-sheet.v-card {
+  border: 2px solid #FF3D00;
   border-radius: 8px;
 }
 </style>
