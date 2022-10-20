@@ -212,7 +212,7 @@ export default {
         .filter(e => e.oes !== undefined && e.oes.componentType === ESO_GENERATOR_TYPE)
         .concat(
           this.oesDevices
-            .filter(e => e.oes !== undefined && e.oes.componentType === ESO_GENERATOR_TYPE),
+            .filter(e => e.oes !== undefined && e.oes.componentType === ESO_GREEGENERATOR_TYPE),
           this.oesDevices
             .filter(e => e.oes !== undefined && e.oes.componentType === ESO_STORAGE_TYPE)
         )
