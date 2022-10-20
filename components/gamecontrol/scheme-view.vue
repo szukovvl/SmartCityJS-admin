@@ -8,6 +8,12 @@
         <SchemeUnknownCadr :hub="item" />
       </div>
     </div>
+    <div>
+      {{ oesDevices }}
+    </div>
+    <div>
+      {{ generatorsOes }}
+    </div>
     <div
       v-for="item in generatorsOes"
       :key="'g_' + item.hub.address"
