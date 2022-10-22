@@ -8,17 +8,18 @@
         <SchemeUnknownCadr :hub="item" />
       </div>
     </div>
-    <div>
+    <!-- div>
       {{ oesDevices }}
     </div>
     <div>
       {{ generatorsOes }}
-    </div>
-    <div
-      v-for="item in generatorsOes"
-      :key="'g_' + item.hub.address"
-    >
-      <div class="d-flex justify-center mb-4">
+    </div -->
+    <div class="d-flex justify-center mb-4">
+      <div
+        v-for="item in generatorsOes"
+        :key="'g_' + item.hub.address"
+        class="ma-2"
+      >
         <SchemeGeneratorCadr :hub="item" />
       </div>
     </div>
@@ -224,7 +225,7 @@ export default {
         })
         devs.push({
           hub: hub.hub,
-          oes: undefined,
+          oes: hub.oes,
           ports: ports.filter(a => a !== undefined)
         })
       })

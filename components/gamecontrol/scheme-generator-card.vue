@@ -10,10 +10,10 @@
         color="#008000"
       >
         <v-icon dark>
-          mdi-engine-outline
+          {{ avatar }}
         </v-icon>
       </v-avatar>
-      &laquo;{{ hub.oes.identy }}&raquo;
+      &laquo;{{ hub.oes !== undefined ? hub.oes.identy : '' }}&raquo;
     </v-card-title>
     <div class="d-inline-flex">
       <div
@@ -28,6 +28,12 @@
 </template>
 
 <script>
+import {
+  ESO_GREEGENERATOR_TYPE,
+  ESO_STORAGE_TYPE,
+  ESO_GREENGENERATION_TYPE_SOLAR
+} from '~/assets/helpers'
+
 export default {
   name: 'SchemeGeneratorCadr',
 
@@ -43,6 +49,23 @@ export default {
 
   data: () => ({
   }),
+
+  computed: {
+    avatar () {
+      if (this.hub.oes !== undefined) {
+        switch (this.hub.oes.componentType) {
+          case ESO_STORAGE_TYPE: return 'mdi-battery-charging-70'
+          case ESO_GREEGENERATOR_TYPE:
+            if (this.hub.oes.data.generation_type === ESO_GREENGENERATION_TYPE_SOLAR) {
+              return 'mdi-solar-power-variant-outline'
+            }
+            return 'mdi-wind-power-outline'
+          default: return 'mdi-engine-outline'
+        }
+      }
+      return 'mdi-engine-outline'
+    }
+  },
 
   methods: {
     getPortClass (port) {
