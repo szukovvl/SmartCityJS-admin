@@ -1,30 +1,77 @@
 [
     {
         "hub": {
-            "address": 23,
+            "address": 100,
             "inputs": [
                 {
-                    "address": 23
+                    "address": 48
                 }
             ],
-            "outputs": null,
+            "outputs": [
+                {
+                    "address": 49
+                },
+                {
+                    "address": 50
+                }
+            ],
             "controlPort": null
+        },
+        "oes": {
+            "data": {
+                "inaddr": 48,
+                "outputs": [
+                    {
+                        "identy": "Мп-1-Лп-1",
+                        "devaddr": 49,
+                        "data": {
+                            "energy": 1,
+                            "lossfactor": 0.9,
+                            "highload": 0.8,
+                            "criticalload": 0.95,
+                            "blackouttime": 300
+                        },
+                        "id": -1,
+                        "componentType": "LINE"
+                    },
+                    {
+                        "identy": "Мп-1-Лп-2",
+                        "devaddr": 50,
+                        "data": {
+                            "energy": 1,
+                            "lossfactor": 0.9,
+                            "highload": 0.8,
+                            "criticalload": 0.95,
+                            "blackouttime": 300
+                        },
+                        "id": -1,
+                        "componentType": "LINE"
+                    }
+                ]
+            },
+            "id": 3,
+            "identy": "Мп-1",
+            "devaddr": 100,
+            "componentType": "DISTRIBUTOR"
         },
         "ports": [
             {
-                "portaddr": 23,
+                "portaddr": 48,
                 "oesport": {
-                    "address": 42,
+                    "address": 47,
                     "connections": [
                         {
-                            "address": 23
+                            "address": 63
+                        },
+                        {
+                            "address": 48
                         }
                     ]
                 },
                 "owndata": {
                     "subnet": {
-                        "identy": "Гп-2-Лг-1",
-                        "devaddr": 42,
+                        "identy": "Гп-2-Лп-3",
+                        "devaddr": 47,
                         "data": {
                             "energy": 1,
                             "lossfactor": 0.9,

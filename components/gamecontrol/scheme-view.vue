@@ -1,18 +1,16 @@
 <template>
   <div>
-    <div
-      v-for="item in unknownOes"
-      :key="'u_' + item.hub.address"
-    >
-      <div class="d-flex justify-center mb-4">
+    <div class="d-flex justify-center mb-4">
+      <div
+        v-for="item in unknownOes"
+        :key="'u_' + item.hub.address"
+        class="ma-2"
+      >
         <SchemeUnknownCadr :hub="item" />
       </div>
     </div>
     <!-- div>
       {{ oesDevices }}
-    </div>
-    <div>
-      {{ generatorsOes }}
     </div -->
     <div class="d-flex justify-center mb-4">
       <div
@@ -26,30 +24,46 @@
     <div class="d-flex justify-center">
       <SchemeMainStationCadr :oes="data" />
     </div>
-    <div
-      v-for="item in industryOes"
-      :key="'i_' + item.hub.address"
-    >
-      <div class="d-flex justify-center mb-4">
-        <SchemeUnknownCadr :hub="item" />
-      </div>
-    </div>
-    <div
-      v-for="item in hospitalOes"
-      :key="'h_' + item.hub.address"
-    >
-      <div class="d-flex justify-center mb-4">
-        <SchemeUnknownCadr :hub="item" />
-      </div>
-    </div>
-    <div
-      v-for="item in districtOes"
-      :key="'d_' + item.hub.address"
-    >
-      <div class="d-flex justify-center mb-4">
-        <SchemeUnknownCadr :hub="item" />
-      </div>
-    </div>
+    <v-row cols="3">
+      <v-col>
+        <div
+          v-for="item in hospitalOes"
+          :key="'h_' + item.hub.address"
+          class="ma-2"
+        >
+          <SchemeConsumerCadr :hub="item" />
+        </div>
+      </v-col>
+      <v-col>
+        <div
+          v-for="item in industryOes"
+          :key="'i_' + item.hub.address"
+          class="ma-2"
+        >
+          <SchemeConsumerCadr :hub="item" />
+        </div>
+      </v-col>
+      <v-col>
+        <v-row class="mt-1">
+          <div
+            v-for="item in distributorOes"
+            :key="'h_' + item.hub.address"
+            class="ma-2"
+          >
+            <SchemeDistributorCadr :hub="item" />
+          </div>
+        </v-row>
+        <v-row>
+          <div
+            v-for="item in districtOes"
+            :key="'d_' + item.hub.address"
+            class="ma-2"
+          >
+            <SchemeConsumerCadr :hub="item" />
+          </div>
+        </v-row>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -57,6 +71,8 @@
 import SchemeMainStationCadr from '~/components/gamecontrol/scheme-main-station-card.vue'
 import SchemeUnknownCadr from '~/components/gamecontrol/scheme-unknown-card.vue'
 import SchemeGeneratorCadr from '~/components/gamecontrol/scheme-generator-card.vue'
+import SchemeConsumerCadr from '~/components/gamecontrol/scheme-consumer-card.vue'
+import SchemeDistributorCadr from '~/components/gamecontrol/scheme-distribotor-card.vue'
 import {
   ESO_GREEGENERATOR_TYPE,
   ESO_STORAGE_TYPE,
@@ -75,7 +91,9 @@ export default {
   components: {
     SchemeMainStationCadr,
     SchemeUnknownCadr,
-    SchemeGeneratorCadr
+    SchemeGeneratorCadr,
+    SchemeConsumerCadr,
+    SchemeDistributorCadr
   },
 
   props: {
@@ -166,7 +184,7 @@ export default {
         })
         devs.push({
           hub: hub.hub,
-          oes: undefined,
+          oes: hub.oes,
           ports: ports.filter(a => a !== undefined)
         })
       })
@@ -184,7 +202,7 @@ export default {
         })
         devs.push({
           hub: hub.hub,
-          oes: undefined,
+          oes: hub.oes,
           ports: ports.filter(a => a !== undefined)
         })
       })
@@ -202,7 +220,7 @@ export default {
         })
         devs.push({
           hub: hub.hub,
-          oes: undefined,
+          oes: hub.oes,
           ports: ports.filter(a => a !== undefined)
         })
       })
@@ -231,6 +249,22 @@ export default {
       })
       return devs
     },
+    distributorOes () {
+      const items = this.oesDevices.filter(e => e.oes !== undefined && e.oes.componentType === ESO_DISTRIBUTOR_TYPE)
+      const devs = []
+      items.forEach((hub) => {
+        const ports = []
+        hub.hub.inputs.forEach((port) => {
+          ports.push(this.allPorts.find(a => a.portaddr === port.address))
+        })
+        devs.push({
+          hub: hub.hub,
+          oes: hub.oes,
+          ports: ports.filter(a => a !== undefined)
+        })
+      })
+      return devs
+    },
 
     subnets () {
       const items = []
@@ -245,7 +279,7 @@ export default {
         }))
       }
       this.oesDistributors.forEach((e) => {
-        e.data.outputs.forEach(item => items.push({
+        e.oes.data.outputs.forEach(item => items.push({
           subnet: item,
           owner: e
         }))
