@@ -9,9 +9,9 @@
         <SchemeUnknownCadr :hub="item" />
       </div>
     </div>
-    <!-- div>
-      {{ oesDevices }}
-    </div -->
+    <div>
+      {{ subnets }}
+    </div>
     <div class="d-flex justify-center mb-4">
       <div
         v-for="item in generatorsOes"
