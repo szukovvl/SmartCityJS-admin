@@ -9,9 +9,6 @@
         <SchemeUnknownCadr :hub="item" />
       </div>
     </div>
-    <div>
-      {{ subnets }}
-    </div>
     <div class="d-flex justify-center mb-4">
       <div
         v-for="item in generatorsOes"
@@ -293,7 +290,11 @@ export default {
       return this.buildExtConnections(this.data.outputs)
     },
     allPorts () {
-      return this.inputPorts.concat(this.outputPorts)
+      let res = this.inputPorts.concat(this.outputPorts)
+      this.oesDistributors.forEach((e) => {
+        res = res.concat(res, this.buildExtConnections(e.hub.outputs))
+      })
+      return res
     }
   },
 
