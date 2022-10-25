@@ -16,7 +16,7 @@
       <v-avatar
         class="mr-2"
         tile
-        color="amber darken-3"
+        :color="avatarColor"
       >
         <v-icon dark>
           {{ avatar }}
@@ -59,6 +59,12 @@ export default {
         }
       }
       return 'mdi-home-city'
+    },
+    avatarColor () {
+      if (this.hub.hub !== undefined && this.hub.hub.alien) {
+        return 'blue-grey darken-4'
+      }
+      return 'amber darken-3'
     }
   },
 

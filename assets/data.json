@@ -1,6 +1,20 @@
-[
-    {
-        "hub": {
+{
+    "missed": [
+        105,
+        102
+    ],
+    "devices": [
+        {
+            "address": 7,
+            "inputs": [
+                {
+                    "address": 7
+                }
+            ],
+            "outputs": null,
+            "controlPort": null
+        },
+        {
             "address": 100,
             "inputs": [
                 {
@@ -13,51 +27,131 @@
                     "connections": [
                         {
                             "address": 14
+                        },
+                        {
+                            "address": 13
+                        },
+                        {
+                            "address": 15
                         }
                     ]
                 },
                 {
-                    "address": 50
+                    "address": 50,
+                    "connections": [
+                        {
+                            "address": 17
+                        },
+                        {
+                            "address": 16
+                        }
+                    ]
                 }
             ],
             "controlPort": null
         },
-        "oes": {
-            "data": {
-                "inaddr": 48,
-                "outputs": [
-                    {
-                        "identy": "Мп-1-Лп-1",
-                        "devaddr": 49,
-                        "data": {
-                            "energy": 1,
-                            "lossfactor": 0.9,
-                            "highload": 0.8,
-                            "criticalload": 0.95,
-                            "blackouttime": 300
-                        },
-                        "id": -1,
-                        "componentType": "LINE"
-                    },
-                    {
-                        "identy": "Мп-1-Лп-2",
-                        "devaddr": 50,
-                        "data": {
-                            "energy": 1,
-                            "lossfactor": 0.9,
-                            "highload": 0.8,
-                            "criticalload": 0.95,
-                            "blackouttime": 300
-                        },
-                        "id": -1,
-                        "componentType": "LINE"
-                    }
-                ]
-            },
-            "id": 3,
-            "identy": "Мп-1",
-            "devaddr": 100,
-            "componentType": "DISTRIBUTOR"
+        {
+            "address": 14,
+            "inputs": [
+                {
+                    "address": 14
+                }
+            ],
+            "outputs": null,
+            "controlPort": null
+        },
+        {
+            "address": 13,
+            "inputs": [
+                {
+                    "address": 13
+                }
+            ],
+            "outputs": null,
+            "controlPort": null
+        },
+        {
+            "address": 15,
+            "inputs": [
+                {
+                    "address": 15
+                }
+            ],
+            "outputs": null,
+            "controlPort": null
+        },
+        {
+            "address": 17,
+            "inputs": [
+                {
+                    "address": 17
+                }
+            ],
+            "outputs": null,
+            "controlPort": null
+        },
+        {
+            "address": 16,
+            "inputs": [
+                {
+                    "address": 16
+                }
+            ],
+            "outputs": null,
+            "controlPort": null
         }
-    }
-]
+    ],
+    "address": 99,
+    "controlPort": {
+        "address": 41
+    },
+    "inputs": [
+        {
+            "address": 42,
+            "connections": [
+                {
+                    "address": 7
+                }
+            ]
+        },
+        {
+            "address": 43
+        },
+        {
+            "address": 44
+        }
+    ],
+    "outputs": [
+        {
+            "address": 45,
+            "connections": [
+                {
+                    "address": 55
+                },
+                {
+                    "address": 62
+                }
+            ]
+        },
+        {
+            "address": 46,
+            "connections": [
+                {
+                    "address": 54
+                }
+            ]
+        },
+        {
+            "address": 47,
+            "connections": [
+                {
+                    "address": 63
+                },
+                {
+                    "address": 48
+                }
+            ]
+        }
+    ],
+    "connected": true
+}

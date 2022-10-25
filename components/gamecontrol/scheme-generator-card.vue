@@ -7,7 +7,7 @@
       <v-avatar
         class="mr-2"
         tile
-        color="#008000"
+        :color="avatarColor"
       >
         <v-icon dark>
           {{ avatar }}
@@ -64,6 +64,12 @@ export default {
         }
       }
       return 'mdi-engine-outline'
+    },
+    avatarColor () {
+      if (this.hub.hub !== undefined && this.hub.hub.alien) {
+        return 'blue-grey darken-4'
+      }
+      return '#008000'
     }
   },
 

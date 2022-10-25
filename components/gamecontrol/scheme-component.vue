@@ -8,7 +8,7 @@
         {{ 'Игрок ' + (index + 1) }}
       </div>
       <div>
-        <SchemeOesView :data="data" />
+        <SchemeOesView :data="scheme.find(e => e.address == data.gamerkey)" />
         <SchemeView :data="scheme.find(e => e.address == data.gamerkey)" />
       </div>
     </v-col>

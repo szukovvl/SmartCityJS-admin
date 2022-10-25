@@ -16,7 +16,7 @@
       <v-avatar
         class="mr-2"
         tile
-        color="amber darken-3"
+        :color="avatarColor"
       >
         <v-icon dark>
           mdi-home-lightning-bolt
@@ -92,6 +92,13 @@ export default {
         this.hub.hub.outputs.filter(e => e.error !== undefined).forEach((e) => { msg.push(e.error) })
       }
       return msg
+    },
+
+    avatarColor () {
+      if (this.hub.hub !== undefined && this.hub.hub.alien) {
+        return 'blue-grey darken-4'
+      }
+      return 'amber darken-3'
     }
   },
 
