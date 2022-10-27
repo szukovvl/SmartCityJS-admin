@@ -1,6 +1,7 @@
 ﻿# FROM node:alpine
 # FROM node
-FROM node:lts-alpine
+# FROM node:lts-alpine
+FROM node:16.17.1-alpine3.15
 # ENV APP_ROOT /web
 # ENV NODE_ENV production
 
