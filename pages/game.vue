@@ -89,188 +89,178 @@
           Прервать игровой сценарий
         </v-btn>
       </div>
-      <v-expansion-panels
-        v-model="panels"
-        class="mt-1"
-        accordion
-        multiple
-        flat
-        tile
-      >
-        <v-expansion-panel>
-          <v-expansion-panel-header class="teal lighten-5">
-            Подготовка игрового сценария
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <div>
-              <v-select
-                v-model="gametime"
-                :items="gameTimes"
-                hint="выберите из списка продолжительность игровых суток (ЧЧ:ММ)"
-                persistent-hint
-                dense
-                :readonly="!$store.state.game.hasAdmin"
-              />
-            </div>
-            <div class="mt-4">
-              Начальное распределение объектов по игрокам
-            </div>
-            <v-divider class="info" />
-            <v-row class="mt-2">
-              <v-col
-                v-for="(data, index) in scenesData"
-                :key="data.mainstation"
-              >
-                <GamerAreaComponent :title="'Игрок ' + (index + 1)" :gamer-index="index" :item-scene-data="data" />
-              </v-col>
-            </v-row>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-btn
-          v-if="noGameScene && $store.state.game.hasAdmin"
-          class="ma-2"
-          color="success"
-          @click="doBeginGameScenes"
+      <div v-if="inGameProcess">
+        <GameGlobalComponent />
+      </div>
+      <div v-else>
+        <v-expansion-panels
+          v-model="panels"
+          class="mt-1"
+          accordion
+          multiple
+          flat
+          tile
         >
-          Начать игровой сценарий
-        </v-btn>
-        <v-expansion-panel v-if="currentScene > 0">
-          <v-expansion-panel-header class="teal lighten-5">
-            Определение игроков
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-row class="mt-2">
-              <v-col
-                v-for="(data, index) in scenesData"
-                :key="data.mainstation"
-              >
-                <div class="blue-grey lighten-5 pa-2 text-center">
-                  {{ 'Игрок ' + (index + 1) }}
-                </div>
-                <GamerCardComponent :gamer-card="data" />
-              </v-col>
-            </v-row>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-expansion-panel v-if="currentScene > 1">
-          <v-expansion-panel-header class="teal lighten-5">
-            Выбор потребителей игроками
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <GamersChoiceView />
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-expansion-panel v-if="currentScene > 2">
-          <v-expansion-panel-header class="teal lighten-5">
-            Подготовка к аукциону
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <AuctionParametersCard />
-            <AuctionLotsViewer />
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-expansion-panel v-if="currentScene > 3">
-          <v-expansion-panel-header class="teal lighten-5">
-            Аукцион
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <AuctionSaleViewer />
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-        <v-expansion-panel v-if="currentScene > 4">
-          <v-expansion-panel-header class="teal lighten-5">
-            Подготовка схемы
-          </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <SchemeComponent />
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <v-stepper
-        v-if="!noGameScene"
-        v-model="scenestep"
-        vertical
-        flat
-      >
-        <v-stepper-header>
-          <v-stepper-step
-            :complete="currentScene > 1"
-            step="1"
+          <v-expansion-panel>
+            <v-expansion-panel-header class="teal lighten-5">
+              Подготовка игрового сценария
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div>
+                <v-select
+                  v-model="gametime"
+                  :items="gameTimes"
+                  hint="выберите из списка продолжительность игровых суток (ЧЧ:ММ)"
+                  persistent-hint
+                  dense
+                  :readonly="!$store.state.game.hasAdmin"
+                />
+              </div>
+              <div class="mt-4">
+                Начальное распределение объектов по игрокам
+              </div>
+              <v-divider class="info" />
+              <v-row class="mt-2">
+                <v-col
+                  v-for="(data, index) in scenesData"
+                  :key="data.mainstation"
+                >
+                  <GamerAreaComponent :title="'Игрок ' + (index + 1)" :gamer-index="index" :item-scene-data="data" />
+                </v-col>
+              </v-row>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-btn
+            v-if="noGameScene && $store.state.game.hasAdmin"
+            class="ma-2"
+            color="success"
+            @click="doBeginGameScenes"
           >
-            регистрация
-          </v-stepper-step>
-
-          <v-divider />
-
-          <v-stepper-step
-            :complete="currentScene > 2"
-            step="2"
-          >
-            присоединение потребителей
-          </v-stepper-step>
-
-          <v-divider />
-
-          <v-stepper-step
-            :complete="currentScene > 3"
-            step="3"
-          >
-            подготовка к аукциону
-          </v-stepper-step>
-
-          <v-divider />
-
-          <v-stepper-step
-            :complete="currentScene > 4"
-            step="4"
-          >
-            аукцион
-          </v-stepper-step>
-
-          <v-divider />
-
-          <v-stepper-step
-            :complete="currentScene > 5"
-            step="5"
-          >
-            схема ЭС
-          </v-stepper-step>
-
-          <v-divider />
-
-          <v-stepper-step
-            :complete="currentScene > 7"
-            step="7"
-          >
-            анализ
-          </v-stepper-step>
-
-          <v-divider />
-
-          <v-stepper-step step="8">
-            игра
-          </v-stepper-step>
-        </v-stepper-header>
-      </v-stepper>
-      <v-card-text class="d-flex">
-        <v-btn
-          v-if="prevSceneEnabled"
-          class="ma-2"
-          color="success"
-          @click="doPrevScene"
+            Начать игровой сценарий
+          </v-btn>
+          <v-expansion-panel v-if="currentScene > 0">
+            <v-expansion-panel-header class="teal lighten-5">
+              Определение игроков
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-row class="mt-2">
+                <v-col
+                  v-for="(data, index) in scenesData"
+                  :key="data.mainstation"
+                >
+                  <div class="blue-grey lighten-5 pa-2 text-center">
+                    {{ 'Игрок ' + (index + 1) }}
+                  </div>
+                  <GamerCardComponent :gamer-card="data" />
+                </v-col>
+              </v-row>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel v-if="currentScene > 1">
+            <v-expansion-panel-header class="teal lighten-5">
+              Выбор потребителей игроками
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <GamersChoiceView />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel v-if="currentScene > 2">
+            <v-expansion-panel-header class="teal lighten-5">
+              Подготовка к аукциону
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <AuctionParametersCard />
+              <AuctionLotsViewer />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel v-if="currentScene > 3">
+            <v-expansion-panel-header class="teal lighten-5">
+              Аукцион
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <AuctionSaleViewer />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <v-expansion-panel v-if="currentScene > 4">
+            <v-expansion-panel-header class="teal lighten-5">
+              Подготовка схемы
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <SchemeComponent />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        <v-stepper
+          v-if="!noGameScene"
+          v-model="scenestep"
+          vertical
+          flat
         >
-          Назад
-        </v-btn>
-        <v-spacer />
-        <v-btn
-          v-if="nextSceneEnabled"
-          class="ma-2"
-          color="success"
-          @click="doNextScene"
-        >
-          Далее
-        </v-btn>
-      </v-card-text>
+          <v-stepper-header>
+            <v-stepper-step
+              :complete="currentScene > 1"
+              step="1"
+            >
+              регистрация
+            </v-stepper-step>
+
+            <v-divider />
+
+            <v-stepper-step
+              :complete="currentScene > 2"
+              step="2"
+            >
+              присоединение потребителей
+            </v-stepper-step>
+
+            <v-divider />
+
+            <v-stepper-step
+              :complete="currentScene > 3"
+              step="3"
+            >
+              подготовка к аукциону
+            </v-stepper-step>
+
+            <v-divider />
+
+            <v-stepper-step
+              :complete="currentScene > 4"
+              step="4"
+            >
+              аукцион
+            </v-stepper-step>
+
+            <v-divider />
+
+            <v-stepper-step
+              :complete="currentScene > 5"
+              step="5"
+            >
+              схема ЭС
+            </v-stepper-step>
+          </v-stepper-header>
+        </v-stepper>
+        <v-card-text class="d-flex">
+          <v-btn
+            v-if="prevSceneEnabled"
+            class="ma-2"
+            color="success"
+            @click="doPrevScene"
+          >
+            Назад
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            v-if="nextSceneEnabled"
+            class="ma-2"
+            color="success"
+            @click="doNextScene"
+          >
+            {{ prestartGame ? 'Начать игру' : 'Далее' }}
+          </v-btn>
+        </v-card-text>
+      </div>
     </v-card>
   </v-container>
 </template>
@@ -283,10 +273,13 @@ import AuctionParametersCard from '~/components/gamecontrol/auction-parameters.v
 import AuctionLotsViewer from '~/components/gamecontrol/auction-lots.vue'
 import AuctionSaleViewer from '~/components/gamecontrol/auction-sale.vue'
 import SchemeComponent from '~/components/gamecontrol/scheme-component.vue'
+import GameGlobalComponent from '~/components/gameprocess/game-process-global.vue'
 import { nextTimePoint } from '~/assets/datetime'
 import {
   GAME_STATUS_NONE,
-  GAME_STATUS_SCENE_1
+  GAME_STATUS_SCENE_1,
+  GAME_STATUS_SCENE_5,
+  GAME_PROCESS
 } from '~/assets/helpers'
 
 export default {
@@ -299,7 +292,8 @@ export default {
     AuctionParametersCard,
     AuctionLotsViewer,
     AuctionSaleViewer,
-    SchemeComponent
+    SchemeComponent,
+    GameGlobalComponent
   },
 
   data: () => ({
@@ -333,6 +327,12 @@ export default {
     },
     nextSceneEnabled () {
       return !this.noGameScene && this.$store.state.game.hasAdmin
+    },
+    prestartGame () {
+      return this.$store.state.game.gameStatus === GAME_STATUS_SCENE_5
+    },
+    inGameProcess () {
+      return this.$store.state.game.gameStatus === GAME_PROCESS
     }
   },
 

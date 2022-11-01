@@ -24,6 +24,7 @@ import {
   GAME_EVENT_SCENE_AUCTION_TIME_LOT,
   GAME_EVENT_GAME_SCENE_SCHEME,
   GAME_EVENT_GAME_SCHEMA_DATA,
+  GAME_EVENT_GAME_PROCESS_START,
 
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
@@ -31,6 +32,7 @@ import {
   GAME_STATUS_SCENE_3,
   GAME_STATUS_SCENE_4,
   GAME_STATUS_SCENE_5,
+  GAME_PROCESS,
 
   ENERGYSYSTEM_OBJECT_TYPES
 } from '~/assets/helpers'
@@ -105,7 +107,9 @@ export const state = () => ({
   gamersCohice: [],
   auction: {},
   schemeData: [],
-  scheme: []
+  scheme: [],
+  prepareData: [],
+  processData: []
 })
 
 //
@@ -141,6 +145,8 @@ function internalTranslateScene (state, srvstatus) {
       break
     case GAME_STATUS_SCENE_5:
       state.sceneNumber = 5
+      break
+    case GAME_PROCESS:
       break
     default:
       /* eslint-disable no-console */
@@ -210,6 +216,9 @@ export const mutations = {
         break
       case GAME_EVENT_SCENES_DATA:
         state.scenesData = data.data
+        break
+      case GAME_EVENT_GAME_PROCESS_START:
+        state.prepareData = data.data
         break
       default:
         /* eslint-disable no-console */
