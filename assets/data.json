@@ -1,0 +1,112 @@
+{
+    "root": {
+        "devices": [
+            {
+                "address": 103,
+                "inputs": [
+                    {
+                        "address": 56,
+                        "on": true
+                    },
+                    {
+                        "address": 57,
+                        "on": false
+                    }
+                ],
+                "alien": false,
+                "outputs": null,
+                "controlPort": null
+            },
+            {
+                "address": 105,
+                "inputs": [
+                    {
+                        "address": 60,
+                        "on": true
+                    },
+                    {
+                        "address": 61,
+                        "on": false
+                    }
+                ],
+                "alien": false,
+                "outputs": null,
+                "controlPort": null
+            }
+        ],
+        "address": 98,
+        "controlPort": {
+            "address": 34,
+            "on": false
+        },
+        "inputs": [
+            {
+                "address": 35,
+                "on": true
+            },
+            {
+                "address": 36,
+                "on": true
+            },
+            {
+                "address": 37,
+                "on": true
+            }
+        ],
+        "outputs": [
+            {
+                "address": 38,
+                "connections": [
+                    {
+                        "address": 56,
+                        "on": true
+                    }
+                ],
+                "on": true
+            },
+            {
+                "address": 39,
+                "connections": [
+                    {
+                        "address": 57,
+                        "on": false
+                    },
+                    {
+                        "address": 60,
+                        "on": true
+                    }
+                ],
+                "on": true
+            },
+            {
+                "address": 40,
+                "connections": [
+                    {
+                        "address": 61,
+                        "on": false
+                    }
+                ],
+                "on": true
+            }
+        ],
+        "connected": false,
+        "alien": false
+    },
+    "udevices": [
+        100,
+        106,
+        14,
+        17
+    ],
+    "adevices": [],
+    "credit_total": 0,
+    "debit_total": 0,
+    "energy_total": 0,
+    "generation_total": 0,
+    "carbon_total": 0,
+    "energy": 0,
+    "generation": 0,
+    "carbon": 0,
+    "credit": 1600352,
+    "debit": 0
+}

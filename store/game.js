@@ -25,6 +25,7 @@ import {
   GAME_EVENT_GAME_SCENE_SCHEME,
   GAME_EVENT_GAME_SCHEMA_DATA,
   GAME_EVENT_GAME_PROCESS_START,
+  GAME_EVENT_GAME_PROCESS_DATA,
 
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
@@ -217,6 +218,7 @@ export const mutations = {
       case GAME_EVENT_SCENES_DATA:
         state.scenesData = data.data
         break
+      case GAME_EVENT_GAME_PROCESS_DATA:
       case GAME_EVENT_GAME_PROCESS_START:
         state.prepareData = data.data
         break
@@ -334,5 +336,8 @@ export const actions = {
   requestSchemesData (context, data) {
     sendEventMessage(GAME_EVENT_GAME_SCENE_SCHEME)
     sendEventMessage(GAME_EVENT_GAME_SCHEMA_DATA)
+  },
+  requestProcessData (context, data) {
+    sendEventMessage(GAME_EVENT_GAME_PROCESS_DATA)
   }
 }
