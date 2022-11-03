@@ -4,7 +4,11 @@
       v-for="item in missedItems"
       :key="item.devaddr"
     >
-      <UnusedDeviceCard :device="item" />
+      <UnusedDeviceCard
+        class="ma-1"
+        :device="item"
+        :lots="data.adevices"
+      />
     </div>
   </div>
 </template>

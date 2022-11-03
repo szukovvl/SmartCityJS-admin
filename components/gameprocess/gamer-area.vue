@@ -2,10 +2,9 @@
   <div>
     <InformationPanel :data="data" />
     <UnusedDevicesPanel
-      v-if="data.udevices !== undefined"
-      :devices="data"
+      v-if="data.udevices !== undefined && data.udevices.length !== 0"
+      :data="data"
     />
-    <div>{{ data }}</div>
   </div>
 </template>
 

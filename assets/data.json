@@ -1,112 +1,29 @@
 {
-    "root": {
-        "devices": [
-            {
-                "address": 103,
-                "inputs": [
-                    {
-                        "address": 56,
-                        "on": true
-                    },
-                    {
-                        "address": 57,
-                        "on": false
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 105,
-                "inputs": [
-                    {
-                        "address": 60,
-                        "on": true
-                    },
-                    {
-                        "address": 61,
-                        "on": false
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            }
-        ],
-        "address": 98,
-        "controlPort": {
-            "address": 34,
-            "on": false
-        },
+    "id": 28,
+    "identy": "ЖМ-4",
+    "devaddr": 16,
+    "data": {
+        "useforecast": false,
+        "energy": 0.8,
+        "carbon": 0,
+        "catprice": "CATEGORY_1",
+        "voltagelevel": "AVG_VOLTAGE_1",
         "inputs": [
             {
-                "address": 35,
-                "on": true
-            },
-            {
-                "address": 36,
-                "on": true
-            },
-            {
-                "address": 37,
-                "on": true
+                "identy": "#1",
+                "devaddr": 16,
+                "data": {
+                    "energy": 1,
+                    "lossfactor": 0.9,
+                    "highload": 0.8,
+                    "criticalload": 0.95,
+                    "blackouttime": 300
+                },
+                "id": -1,
+                "componentType": "LINE"
             }
         ],
-        "outputs": [
-            {
-                "address": 38,
-                "connections": [
-                    {
-                        "address": 56,
-                        "on": true
-                    }
-                ],
-                "on": true
-            },
-            {
-                "address": 39,
-                "connections": [
-                    {
-                        "address": 57,
-                        "on": false
-                    },
-                    {
-                        "address": 60,
-                        "on": true
-                    }
-                ],
-                "on": true
-            },
-            {
-                "address": 40,
-                "connections": [
-                    {
-                        "address": 61,
-                        "on": false
-                    }
-                ],
-                "on": true
-            }
-        ],
-        "connected": false,
-        "alien": false
+        "consumertype": "DISTRICT"
     },
-    "udevices": [
-        100,
-        106,
-        14,
-        17
-    ],
-    "adevices": [],
-    "credit_total": 0,
-    "debit_total": 0,
-    "energy_total": 0,
-    "generation_total": 0,
-    "carbon_total": 0,
-    "energy": 0,
-    "generation": 0,
-    "carbon": 0,
-    "credit": 1600352,
-    "debit": 0
+    "componentType": "CONSUMER"
 }
