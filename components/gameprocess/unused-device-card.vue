@@ -40,7 +40,9 @@ import {
   ESO_GREENGENERATION_TYPE_SOLAR,
 
   ESO_CONSUMER_TYPE_HOSPITAL,
-  ESO_CONSUMER_TYPE_INDUSTRY
+  ESO_CONSUMER_TYPE_INDUSTRY,
+
+  roundToTwoAsStr
 } from '~/assets/helpers'
 
 export default {
@@ -118,7 +120,7 @@ export default {
       this.device.componentType === ESO_GREEGENERATOR_TYPE ||
       this.device.componentType === ESO_STORAGE_TYPE)) {
         const lot = this.lots !== undefined ? this.lots.find(e => e.key === this.device.devaddr) : undefined
-        return lot !== undefined ? lot.price : undefined
+        return lot !== undefined ? roundToTwoAsStr(lot.price) : undefined
       }
       return undefined
     },
