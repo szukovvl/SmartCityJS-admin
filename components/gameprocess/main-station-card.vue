@@ -1,5 +1,8 @@
 <template>
-  <v-card outlined>
+  <v-card
+    color="indigo lighten-4"
+    outlined
+  >
     <div class="d-inline-flex align-center">
       <v-card-title class="d-flex flex-nowrap text-no-wrap blue-grey--text">
         <v-avatar

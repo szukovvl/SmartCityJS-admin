@@ -1,5 +1,8 @@
 <template>
-  <v-card outlined>
+  <v-card
+    color="amber lighten-4"
+    outlined
+  >
     <div class="d-inline-flex">
       <div
         v-for="port in device.hub.inputs"

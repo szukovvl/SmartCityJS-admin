@@ -1,7 +1,5 @@
 <template>
-  <v-card
-    outlined
-  >
+  <v-card outlined>
     <v-card-title :class="decor.titleClass">
       <v-avatar
         class="mr-2"

@@ -1,7 +1,7 @@
 <template>
   <v-card
-    class="card-with-border"
-    flat
+    color="brown lighten-4"
+    outlined
   >
     <div class="d-inline-flex">
       <div
