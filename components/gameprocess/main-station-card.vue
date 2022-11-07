@@ -103,8 +103,8 @@
         <div class="d-inline-flex">
           <div
             v-for="inputLine in inputs"
-            :key="inputLine.port"
-            class="px-2 py-1 mx-1 mb-1 blue-grey white--text"
+            :key="inputLine.port.address"
+            :class="getPortClass(inputLine.port)"
           >
             <div>
               {{ inputLine.subnet !== undefined ? inputLine.subnet.identy : '' }}
@@ -128,8 +128,8 @@
         <div class="d-inline-flex">
           <div
             v-for="outputLine in outputs"
-            :key="outputLine.port"
-            class="px-2 py-1 mx-1 mb-1 blue-grey white--text"
+            :key="outputLine.port.address"
+            :class="getPortClass(outputLine.port)"
           >
             <div>
               {{ outputLine.subnet !== undefined ? outputLine.subnet.identy : '' }}
@@ -183,7 +183,7 @@ export default {
       const lines = this.hub.inputs !== undefined ? this.hub.inputs : []
       const lineInputs = this.oes.data !== undefined ? this.oes.data.inputs : []
       return lines.map(e => ({
-        port: e.address,
+        port: e,
         subnet: lineInputs.find(item => e.address === item.devaddr)
       }))
     },
@@ -191,9 +191,15 @@ export default {
       const lines = this.hub.outputs !== undefined ? this.hub.outputs : []
       const lineOutputs = this.oes.data !== undefined ? this.oes.data.outputs : []
       return lines.map(e => ({
-        port: e.address,
+        port: e,
         subnet: lineOutputs.find(item => e.address === item.devaddr)
       }))
+    }
+  },
+
+  methods: {
+    getPortClass (port) {
+      return port.on ? 'px-2 py-1 mx-1 mb-1 blue white--text' : 'px-2 py-1 mx-1 mb-1 blue-grey white--text'
     }
   }
 }

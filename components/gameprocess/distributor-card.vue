@@ -1,13 +1,25 @@
 <template>
-  <v-card outlined>
-    <v-card-title class="d-flex flex-nowrap text-no-wrap blue-grey--text">
+  <v-card
+    class="card-with-border"
+    flat
+  >
+    <div class="d-inline-flex">
+      <div
+        v-for="port in device.hub.inputs"
+        :key="port.address"
+        :class="getPortClass(port)"
+      >
+        {{ getPortName(port) }}
+      </div>
+    </div>
+    <v-card-title class="d-flex flex-nowrap text-no-wrap">
       <v-avatar
         class="mr-2"
         tile
         color="blue-grey"
       >
         <v-icon dark>
-          {{ avatar }}
+          mdi-home-lightning-bolt
         </v-icon>
       </v-avatar>
       &laquo;{{ oes.identy !== undefined ? oes.identy : '' }}&raquo;
@@ -100,31 +112,41 @@
     </div>
     <div class="d-inline-flex">
       <div
-        v-for="port in device.hub.inputs"
-        :key="port.address"
-        :class="getPortClass(port)"
+        v-for="line in outputs"
+        :key="line.port.address"
+        :class="getPortClass(line.port)"
       >
-        {{ getPortName(port) }}
+        <div>
+          {{ line.subnet !== undefined ? line.subnet.identy : '' }}
+        </div>
+        <div class="d-flex flex-nowrap white black--text">
+          <v-icon
+            small
+            color="orange"
+          >
+            mdi-power-plug-outline
+          </v-icon>
+          <div class="ml-1 small-text">
+            <div>0,00</div>
+            <div class="indigo--text text--accent-4">
+              0,00
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </v-card>
 </template>
 
 <script>
-import {
-  ESO_GREEGENERATOR_TYPE,
-  ESO_STORAGE_TYPE,
-  ESO_GREENGENERATION_TYPE_SOLAR
-} from '~/assets/helpers'
-
 export default {
-  name: 'GeneratorCard',
+  name: 'DistributorCadr',
 
   props: {
     device: {
       type: Object,
       default () {
-        return { }
+        return { hub: { } }
       }
     },
     ports: {
@@ -142,19 +164,13 @@ export default {
     oes () {
       return this.device.oes !== undefined ? this.device.oes : { }
     },
-    avatar () {
-      if (this.device.oes !== undefined) {
-        switch (this.device.oes.componentType) {
-          case ESO_GREEGENERATOR_TYPE:
-            if (this.hub.oes.data.generation_type === ESO_GREENGENERATION_TYPE_SOLAR) {
-              return 'mdi-solar-power-variant-outline'
-            }
-            return 'mdi-wind-power-outline'
-          case ESO_STORAGE_TYPE: return 'mdi-battery-charging-70'
-          default: return 'mdi-engine-outline'
-        }
-      }
-      return 'mdi-timeline-question-outline'
+    outputs () {
+      const lines = this.device.hub.outputs !== undefined ? this.device.hub.outputs : []
+      const lineOutputs = this.device.oes.data !== undefined ? this.device.oes.data.outputs : []
+      return lines.map(e => ({
+        port: e,
+        subnet: lineOutputs.find(item => e.address === item.devaddr)
+      }))
     }
   },
 

@@ -1,5 +1,14 @@
 <template>
   <v-card outlined>
+    <div class="d-inline-flex">
+      <div
+        v-for="port in device.hub.inputs"
+        :key="port.address"
+        :class="getPortClass(port)"
+      >
+        {{ getPortName(port) }}
+      </div>
+    </div>
     <v-card-title class="d-flex flex-nowrap text-no-wrap blue-grey--text">
       <v-avatar
         class="mr-2"
@@ -98,27 +107,17 @@
         </div>
       </div>
     </div>
-    <div class="d-inline-flex">
-      <div
-        v-for="port in device.hub.inputs"
-        :key="port.address"
-        :class="getPortClass(port)"
-      >
-        {{ getPortName(port) }}
-      </div>
-    </div>
   </v-card>
 </template>
 
 <script>
 import {
-  ESO_GREEGENERATOR_TYPE,
-  ESO_STORAGE_TYPE,
-  ESO_GREENGENERATION_TYPE_SOLAR
+  ESO_CONSUMER_TYPE_HOSPITAL,
+  ESO_CONSUMER_TYPE_INDUSTRY
 } from '~/assets/helpers'
 
 export default {
-  name: 'GeneratorCard',
+  name: 'ConsumerCadr',
 
   props: {
     device: {
@@ -144,14 +143,10 @@ export default {
     },
     avatar () {
       if (this.device.oes !== undefined) {
-        switch (this.device.oes.componentType) {
-          case ESO_GREEGENERATOR_TYPE:
-            if (this.hub.oes.data.generation_type === ESO_GREENGENERATION_TYPE_SOLAR) {
-              return 'mdi-solar-power-variant-outline'
-            }
-            return 'mdi-wind-power-outline'
-          case ESO_STORAGE_TYPE: return 'mdi-battery-charging-70'
-          default: return 'mdi-engine-outline'
+        switch (this.device.oes.data.consumertype) {
+          case ESO_CONSUMER_TYPE_INDUSTRY: return 'mdi-factory'
+          case ESO_CONSUMER_TYPE_HOSPITAL: return 'mdi-hospital-building'
+          default: return 'mdi-home-city'
         }
       }
       return 'mdi-timeline-question-outline'

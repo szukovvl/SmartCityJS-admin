@@ -1,245 +1,217 @@
-{
-    "root": {
-        "devices": [
-            {
-                "address": 27,
-                "inputs": [
-                    {
-                        "address": 27,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 8,
-                "inputs": [
-                    {
-                        "address": 8,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 103,
-                "inputs": [
-                    {
-                        "address": 56,
-                        "on": true
-                    },
-                    {
-                        "address": 57,
-                        "on": false
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 105,
-                "inputs": [
-                    {
-                        "address": 60,
-                        "on": true
-                    },
-                    {
-                        "address": 61,
-                        "on": false
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 100,
-                "inputs": [
-                    {
-                        "address": 48,
-                        "on": true
-                    }
-                ],
-                "outputs": [
-                    {
-                        "address": 49,
-                        "connections": [
-                            {
-                                "address": 14,
-                                "on": true
-                            },
-                            {
-                                "address": 13,
-                                "on": true
-                            },
-                            {
-                                "address": 15,
-                                "on": true
-                            }
-                        ],
-                        "on": true
-                    },
-                    {
-                        "address": 50,
-                        "connections": [
-                            {
-                                "address": 17,
-                                "on": true
-                            }
-                        ],
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "controlPort": null
-            },
-            {
-                "address": 14,
-                "inputs": [
-                    {
-                        "address": 14,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 13,
-                "inputs": [
-                    {
-                        "address": 13,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 15,
-                "inputs": [
-                    {
-                        "address": 15,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 17,
-                "inputs": [
-                    {
-                        "address": 17,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            }
-        ],
-        "address": 98,
-        "controlPort": {
-            "address": 34,
-            "on": false
+[
+    {
+        "hub": {
+            "address": 14,
+            "inputs": [
+                {
+                    "address": 14,
+                    "on": true
+                }
+            ],
+            "alien": false,
+            "outputs": null,
+            "controlPort": null
         },
-        "inputs": [
-            {
-                "address": 35,
-                "on": true
+        "oes": {
+            "id": 24,
+            "identy": "ЖМ-2",
+            "devaddr": 14,
+            "data": {
+                "useforecast": false,
+                "energy": 0.8,
+                "carbon": 0,
+                "catprice": "CATEGORY_1",
+                "voltagelevel": "AVG_VOLTAGE_1",
+                "inputs": [
+                    {
+                        "identy": "#1",
+                        "devaddr": 14,
+                        "data": {
+                            "energy": 1,
+                            "lossfactor": 0.9,
+                            "highload": 0.8,
+                            "criticalload": 0.95,
+                            "blackouttime": 300
+                        },
+                        "id": -1,
+                        "componentType": "LINE"
+                    }
+                ],
+                "consumertype": "DISTRICT"
             },
-            {
-                "address": 36,
-                "connections": [
-                    {
-                        "address": 27,
-                        "on": true
-                    }
-                ],
-                "on": true
-            },
-            {
-                "address": 37,
-                "connections": [
-                    {
-                        "address": 8,
-                        "on": true
-                    }
-                ],
-                "on": true
-            }
-        ],
-        "outputs": [
-            {
-                "address": 38,
-                "connections": [
-                    {
-                        "address": 56,
-                        "on": true
-                    }
-                ],
-                "on": true
-            },
-            {
-                "address": 39,
-                "connections": [
-                    {
-                        "address": 57,
-                        "on": false
-                    },
-                    {
-                        "address": 60,
-                        "on": true
-                    }
-                ],
-                "on": true
-            },
-            {
-                "address": 40,
-                "connections": [
-                    {
-                        "address": 61,
-                        "on": false
-                    },
-                    {
-                        "address": 48,
-                        "on": true
-                    }
-                ],
-                "on": true
-            }
-        ],
-        "connected": false,
-        "alien": false
-    },
-    "udevices": [],
-    "adevices": [
-        {
-            "key": 27,
-            "price": 1440
-        },
-        {
-            "key": 8,
-            "price": 1440
+            "componentType": "CONSUMER"
         }
-    ],
-    "credit_total": 4901078,
-    "debit_total": 0,
-    "energy_total": 0,
-    "generation_total": 0,
-    "carbon_total": 0,
-    "energy": 0,
-    "generation": 0,
-    "carbon": 0,
-    "credit": 0,
-    "debit": 0
-}
+    },
+    {
+        "hub": {
+            "address": 13,
+            "inputs": [
+                {
+                    "address": 13,
+                    "on": true
+                }
+            ],
+            "alien": false,
+            "outputs": null,
+            "controlPort": null
+        },
+        "oes": {
+            "id": 23,
+            "identy": "ЖМ-1",
+            "devaddr": 13,
+            "data": {
+                "useforecast": false,
+                "energy": 0.8,
+                "carbon": 0,
+                "catprice": "CATEGORY_1",
+                "voltagelevel": "AVG_VOLTAGE_1",
+                "inputs": [
+                    {
+                        "identy": "#1",
+                        "devaddr": 13,
+                        "data": {
+                            "energy": 1,
+                            "lossfactor": 0.9,
+                            "highload": 0.8,
+                            "criticalload": 0.95,
+                            "blackouttime": 300
+                        },
+                        "id": -1,
+                        "componentType": "LINE"
+                    }
+                ],
+                "consumertype": "DISTRICT"
+            },
+            "componentType": "CONSUMER"
+        }
+    },
+    {
+        "hub": {
+            "address": 15,
+            "inputs": [
+                {
+                    "address": 15,
+                    "on": true
+                }
+            ],
+            "alien": false,
+            "outputs": null,
+            "controlPort": null
+        },
+        "oes": {
+            "id": 25,
+            "identy": "ЖМ-3",
+            "devaddr": 15,
+            "data": {
+                "useforecast": false,
+                "energy": 0.8,
+                "carbon": 0,
+                "catprice": "CATEGORY_1",
+                "voltagelevel": "AVG_VOLTAGE_1",
+                "inputs": [
+                    {
+                        "identy": "#1",
+                        "devaddr": 15,
+                        "data": {
+                            "energy": 1,
+                            "lossfactor": 0.9,
+                            "highload": 0.8,
+                            "criticalload": 0.95,
+                            "blackouttime": 300
+                        },
+                        "id": -1,
+                        "componentType": "LINE"
+                    }
+                ],
+                "consumertype": "DISTRICT"
+            },
+            "componentType": "CONSUMER"
+        }
+    },
+    {
+        "hub": {
+            "address": 17,
+            "inputs": [
+                {
+                    "address": 17,
+                    "on": true
+                }
+            ],
+            "alien": false,
+            "outputs": null,
+            "controlPort": null
+        },
+        "oes": {
+            "id": 28,
+            "identy": "ЖМ-5",
+            "devaddr": 17,
+            "data": {
+                "useforecast": false,
+                "energy": 0.8,
+                "carbon": 0,
+                "catprice": "CATEGORY_1",
+                "voltagelevel": "AVG_VOLTAGE_1",
+                "inputs": [
+                    {
+                        "identy": "#1",
+                        "devaddr": 17,
+                        "data": {
+                            "energy": 1,
+                            "lossfactor": 0.9,
+                            "highload": 0.8,
+                            "criticalload": 0.95,
+                            "blackouttime": 300
+                        },
+                        "id": -1,
+                        "componentType": "LINE"
+                    }
+                ],
+                "consumertype": "DISTRICT"
+            },
+            "componentType": "CONSUMER"
+        }
+    },
+    {
+        "hub": {
+            "address": 16,
+            "inputs": [
+                {
+                    "address": 16,
+                    "on": true
+                }
+            ],
+            "alien": false,
+            "outputs": null,
+            "controlPort": null
+        },
+        "oes": {
+            "id": 26,
+            "identy": "ЖМ-4",
+            "devaddr": 16,
+            "data": {
+                "useforecast": false,
+                "energy": 0.8,
+                "carbon": 0,
+                "catprice": "CATEGORY_1",
+                "voltagelevel": "AVG_VOLTAGE_1",
+                "inputs": [
+                    {
+                        "identy": "#1",
+                        "devaddr": 16,
+                        "data": {
+                            "energy": 1,
+                            "lossfactor": 0.9,
+                            "highload": 0.8,
+                            "criticalload": 0.95,
+                            "blackouttime": 300
+                        },
+                        "id": -1,
+                        "componentType": "LINE"
+                    }
+                ],
+                "consumertype": "DISTRICT"
+            },
+            "componentType": "CONSUMER"
+        }
+    }
+]
