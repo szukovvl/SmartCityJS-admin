@@ -26,6 +26,7 @@ import {
   GAME_EVENT_GAME_SCHEMA_DATA,
   GAME_EVENT_GAME_PROCESS_START,
   GAME_EVENT_GAME_PROCESS_DATA,
+  GAME_EVENT_GAME_PROCESS_ITERATION,
 
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
@@ -110,7 +111,8 @@ export const state = () => ({
   schemeData: [],
   scheme: [],
   prepareData: [],
-  processData: []
+  processData: [],
+  datasets: []
 })
 
 //
@@ -222,6 +224,12 @@ export const mutations = {
       case GAME_EVENT_GAME_PROCESS_START:
         state.prepareData = data.data
         break
+      case GAME_EVENT_GAME_PROCESS_ITERATION: {
+        const newdata = state.datasets.filter(e => e.key !== data.data.key)
+        newdata.push(data.data)
+        state.datasets = newdata
+        break
+      }
       default:
         /* eslint-disable no-console */
         console.warn('translateEvent - необработанное', data)
