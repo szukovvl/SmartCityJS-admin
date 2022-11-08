@@ -149,7 +149,7 @@ export default {
       if (this.device.oes !== undefined) {
         switch (this.device.oes.componentType) {
           case ESO_GREEGENERATOR_TYPE:
-            if (this.hub.oes.data.generation_type === ESO_GREENGENERATION_TYPE_SOLAR) {
+            if (this.device.oes.data.generation_type === ESO_GREENGENERATION_TYPE_SOLAR) {
               return 'mdi-solar-power-variant-outline'
             }
             return 'mdi-wind-power-outline'
