@@ -12,6 +12,7 @@
         class="ma-2"
         :device="item"
         :ports="allPorts"
+        :dataset="gameDataset"
       />
     </div>
     <MainStationCard
@@ -26,6 +27,7 @@
           class="ma-2"
           :device="item"
           :ports="allPorts"
+          :dataset="gameDataset"
         />
       </v-col>
       <v-col>
@@ -35,6 +37,7 @@
           class="ma-2"
           :device="item"
           :ports="allPorts"
+          :dataset="gameDataset"
         />
       </v-col>
       <v-col>
@@ -45,6 +48,7 @@
             class="ma-2"
             :device="item"
             :ports="allPorts"
+            :dataset="gameDataset"
           />
         </v-row>
         <v-row>
@@ -54,6 +58,7 @@
             class="ma-2"
             :device="item"
             :ports="allPorts"
+            :dataset="gameDataset"
           />
         </v-row>
       </v-col>

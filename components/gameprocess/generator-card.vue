@@ -24,9 +24,9 @@
           mdi-sprout-outline
         </v-icon>
         <div class="ml-1 small-text">
-          <div>0,00</div>
+          <div>{{ carbon_total }}</div>
           <div class="indigo--text text--accent-4">
-            0,00
+            {{ carbon }}
           </div>
         </div>
       </div>
@@ -38,9 +38,9 @@
           mdi-power-plug-outline
         </v-icon>
         <div class="ml-1 small-text">
-          <div>0,00</div>
+          <div>{{ energy_total }}</div>
           <div class="indigo--text text--accent-4">
-            0,00
+            {{ energy }}
           </div>
         </div>
       </div>
@@ -52,9 +52,9 @@
           mdi-lightning-bolt-outline
         </v-icon>
         <div class="ml-1 small-text">
-          <div>0,00</div>
+          <div>{{ reserve_total }}</div>
           <div class="indigo--text text--accent-4">
-            0,00
+            {{ reserve }}
           </div>
         </div>
       </div>
@@ -66,9 +66,9 @@
           mdi-lightning-bolt
         </v-icon>
         <div class="ml-1 small-text">
-          <div>0,00</div>
+          <div>{{ generation_total }}</div>
           <div class="indigo--text text--accent-4">
-            0,00
+            {{ generation }}
           </div>
         </div>
       </div>
@@ -80,9 +80,9 @@
           mdi-piggy-bank-outline
         </v-icon>
         <div class="ml-1 small-text">
-          <div>0,00</div>
+          <div>{{ debit_total }}</div>
           <div class="indigo--text text--accent-4">
-            0,00
+            {{ debit }}
           </div>
         </div>
       </div>
@@ -94,9 +94,9 @@
           mdi-credit-card-refund-outline
         </v-icon>
         <div class="ml-1 small-text">
-          <div>0,00</div>
+          <div>{{ credit_total }}</div>
           <div class="indigo--text text--accent-4">
-            0,00
+            {{ credit }}
           </div>
         </div>
       </div>
@@ -117,7 +117,10 @@
 import {
   ESO_GREEGENERATOR_TYPE,
   ESO_STORAGE_TYPE,
-  ESO_GREENGENERATION_TYPE_SOLAR
+  ESO_GREENGENERATION_TYPE_SOLAR,
+
+  roundToTwoAsStr,
+  formatValueLocale
 } from '~/assets/helpers'
 
 export default {
@@ -134,6 +137,12 @@ export default {
       type: Array,
       default () {
         return []
+      }
+    },
+    dataset: {
+      type: Object,
+      default () {
+        return { }
       }
     }
   },
@@ -158,6 +167,56 @@ export default {
         }
       }
       return 'mdi-timeline-question-outline'
+    },
+
+    tracert () {
+      return this.dataset.hub_values !== undefined ? this.dataset.hub_values : []
+    },
+    totals () {
+      const item = this.tracert.find(e => e.hub === this.device.hub.address)
+      return item !== undefined ? item.totals : { }
+    },
+    values () {
+      const item = this.tracert.find(e => e.hub === this.device.hub.address)
+      return item !== undefined ? item.values : { }
+    },
+
+    carbon_total () {
+      return formatValueLocale(this.totals.carbon)
+    },
+    energy_total () {
+      return formatValueLocale(this.totals.energy)
+    },
+    reserve_total () {
+      return formatValueLocale(0)
+    },
+    generation_total () {
+      return formatValueLocale(this.totals.generation)
+    },
+    debit_total () {
+      return roundToTwoAsStr(this.totals.debit)
+    },
+    credit_total () {
+      return roundToTwoAsStr(this.totals.credit)
+    },
+
+    carbon () {
+      return formatValueLocale(this.values.carbon)
+    },
+    energy () {
+      return formatValueLocale(this.values.energy)
+    },
+    reserve () {
+      return formatValueLocale(0)
+    },
+    generation () {
+      return formatValueLocale(this.values.generation)
+    },
+    debit () {
+      return roundToTwoAsStr(this.values.debit)
+    },
+    credit () {
+      return roundToTwoAsStr(this.values.credit)
     }
   },
 

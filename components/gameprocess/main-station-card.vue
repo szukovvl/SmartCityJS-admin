@@ -120,9 +120,9 @@
                 mdi-power-plug-outline
               </v-icon>
               <div class="ml-1 small-text">
-                <div>0,00</div>
+                <div>{{ numberAsString(inputLine.values !== undefined ? inputLine.values.totals.energy : 0.0) }}</div>
                 <div class="indigo--text text--accent-4">
-                  0,00
+                  {{ numberAsString(inputLine.values !== undefined ? inputLine.values.values.energy : 0.0) }}
                 </div>
               </div>
             </div>
@@ -145,9 +145,9 @@
                 mdi-power-plug-outline
               </v-icon>
               <div class="ml-1 small-text">
-                <div>0,00</div>
+                <div>{{ numberAsString(outputLine.values !== undefined ? outputLine.values.totals.energy : 0.0) }}</div>
                 <div class="indigo--text text--accent-4">
-                  0,00
+                  {{ numberAsString(outputLine.values !== undefined ? outputLine.values.values.energy : 0.0) }}
                 </div>
               </div>
             </div>
@@ -193,12 +193,16 @@ export default {
         .find(e => e.devaddr === this.hub.address)
       return item !== undefined ? item : { }
     },
+    line_vals () {
+      return this.dataset.port_values !== undefined ? this.dataset.port_values : []
+    },
     inputs () {
       const lines = this.hub.inputs !== undefined ? this.hub.inputs : []
       const lineInputs = this.oes.data !== undefined ? this.oes.data.inputs : []
       return lines.map(e => ({
         port: e,
-        subnet: lineInputs.find(item => e.address === item.devaddr)
+        subnet: lineInputs.find(item => e.address === item.devaddr),
+        values: this.line_vals.find(item => e.address === item.port)
       }))
     },
     outputs () {
@@ -206,7 +210,8 @@ export default {
       const lineOutputs = this.oes.data !== undefined ? this.oes.data.outputs : []
       return lines.map(e => ({
         port: e,
-        subnet: lineOutputs.find(item => e.address === item.devaddr)
+        subnet: lineOutputs.find(item => e.address === item.devaddr),
+        values: this.line_vals.find(item => e.address === item.port)
       }))
     },
     tracert () {
@@ -261,6 +266,9 @@ export default {
   methods: {
     getPortClass (port) {
       return port.on ? 'px-2 py-1 mx-1 mb-1 blue white--text' : 'px-2 py-1 mx-1 mb-1 blue-grey white--text'
+    },
+    numberAsString (v) {
+      return formatValueLocale(v)
     }
   }
 }
