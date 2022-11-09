@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div>{{ gameDataset }}</div>
     <InformationPanel :dataset="gameDataset" />
     <UnusedDevicesPanel
       v-if="data.udevices !== undefined && data.udevices.length !== 0"
@@ -15,7 +14,10 @@
         :ports="allPorts"
       />
     </div>
-    <MainStationCard :hub="data.root" />
+    <MainStationCard
+      :hub="data.root"
+      :dataset="gameDataset"
+    />
     <v-row cols="3">
       <v-col>
         <ConsumerCadr

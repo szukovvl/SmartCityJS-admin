@@ -1,233 +1,237 @@
 {
-    "root": {
-        "devices": [
-            {
-                "address": 104,
-                "inputs": [
-                    {
-                        "address": 58,
-                        "on": true
-                    },
-                    {
-                        "address": 59,
-                        "on": false
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 105,
-                "inputs": [
-                    {
-                        "address": 60,
-                        "on": true
-                    },
-                    {
-                        "address": 61,
-                        "on": false
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 107,
-                "inputs": [
-                    {
-                        "address": 64,
-                        "on": true
-                    },
-                    {
-                        "address": 65,
-                        "on": false
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 100,
-                "inputs": [
-                    {
-                        "address": 48,
-                        "on": true
-                    }
-                ],
-                "outputs": [
-                    {
-                        "address": 49,
-                        "connections": [
-                            {
-                                "address": 14,
-                                "on": true
-                            },
-                            {
-                                "address": 13,
-                                "on": true
-                            },
-                            {
-                                "address": 15,
-                                "on": true
-                            }
-                        ],
-                        "on": true
-                    },
-                    {
-                        "address": 50,
-                        "connections": [
-                            {
-                                "address": 17,
-                                "on": true
-                            },
-                            {
-                                "address": 16,
-                                "on": true
-                            }
-                        ],
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "controlPort": null
-            },
-            {
-                "address": 14,
-                "inputs": [
-                    {
-                        "address": 14,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 13,
-                "inputs": [
-                    {
-                        "address": 13,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 15,
-                "inputs": [
-                    {
-                        "address": 15,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 17,
-                "inputs": [
-                    {
-                        "address": 17,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            },
-            {
-                "address": 16,
-                "inputs": [
-                    {
-                        "address": 16,
-                        "on": true
-                    }
-                ],
-                "alien": false,
-                "outputs": null,
-                "controlPort": null
-            }
-        ],
-        "address": 98,
-        "controlPort": {
-            "address": 34,
-            "on": false
-        },
-        "inputs": [
-            {
-                "address": 35,
-                "on": true
-            },
-            {
-                "address": 36,
-                "on": true
-            },
-            {
-                "address": 37,
-                "on": true
-            }
-        ],
-        "outputs": [
-            {
-                "address": 38,
-                "connections": [
-                    {
-                        "address": 58,
-                        "on": true
-                    }
-                ],
-                "on": true
-            },
-            {
-                "address": 39,
-                "connections": [
-                    {
-                        "address": 59,
-                        "on": false
-                    },
-                    {
-                        "address": 60,
-                        "on": true
-                    },
-                    {
-                        "address": 64,
-                        "on": true
-                    }
-                ],
-                "on": true
-            },
-            {
-                "address": 40,
-                "connections": [
-                    {
-                        "address": 61,
-                        "on": false
-                    },
-                    {
-                        "address": 65,
-                        "on": false
-                    },
-                    {
-                        "address": 48,
-                        "on": true
-                    }
-                ],
-                "on": true
-            }
-        ],
-        "connected": false,
-        "alien": false
+    "key": 98,
+    "cumulative_total": {
+        "energy": 0,
+        "generation": 0,
+        "carbon": 0,
+        "credit": 0,
+        "debit": 0
     },
-    "udevices": [
-        102
+    "instant_values": {
+        "energy": 0,
+        "generation": 0,
+        "carbon": 0,
+        "credit": 0,
+        "debit": 0
+    },
+    "seconds": 126,
+    "port_values": [
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "port": 48,
+            "owner": 40,
+            "game_step": 0,
+            "on": true,
+            "state": "LOW",
+            "zone": "NONE_DAY_PEAK"
+        },
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "port": 49,
+            "owner": 0,
+            "game_step": 0,
+            "on": true,
+            "state": "LOW",
+            "zone": "NONE_DAY_PEAK"
+        },
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "port": 50,
+            "owner": 0,
+            "game_step": 0,
+            "on": true,
+            "state": "LOW",
+            "zone": "NONE_DAY_PEAK"
+        },
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "port": 35,
+            "owner": 0,
+            "game_step": 0,
+            "on": true,
+            "state": "LOW",
+            "zone": "NONE_DAY_PEAK"
+        },
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "port": 36,
+            "owner": 0,
+            "game_step": 0,
+            "on": true,
+            "state": "LOW",
+            "zone": "NONE_DAY_PEAK"
+        },
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "port": 37,
+            "owner": 0,
+            "game_step": 0,
+            "on": true,
+            "state": "LOW",
+            "zone": "NONE_DAY_PEAK"
+        },
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "port": 38,
+            "owner": 0,
+            "game_step": 0,
+            "on": true,
+            "state": "LOW",
+            "zone": "NONE_DAY_PEAK"
+        },
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "port": 39,
+            "owner": 0,
+            "game_step": 0,
+            "on": true,
+            "state": "LOW",
+            "zone": "NONE_DAY_PEAK"
+        },
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "port": 40,
+            "owner": 0,
+            "game_step": 0,
+            "on": true,
+            "state": "LOW",
+            "zone": "NONE_DAY_PEAK"
+        }
     ],
-    "adevices": [],
-    "credit_total": 6401408
+    "hub_values": [
+        {
+            "values": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "totals": {
+                "energy": 0,
+                "generation": 0,
+                "carbon": 0,
+                "credit": 0,
+                "debit": 0
+            },
+            "hub": 100
+        }
+    ]
 }

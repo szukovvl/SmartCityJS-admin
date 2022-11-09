@@ -111,7 +111,6 @@ export const state = () => ({
   schemeData: [],
   scheme: [],
   prepareData: [],
-  processData: [],
   datasets: []
 })
 

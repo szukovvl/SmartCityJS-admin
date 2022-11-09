@@ -25,9 +25,9 @@
             mdi-sprout-outline
           </v-icon>
           <div class="ml-1 small-text">
-            <div>0,00</div>
+            <div>{{ carbon_total }}</div>
             <div class="indigo--text text--accent-4">
-              0,00
+              {{ carbon }}
             </div>
           </div>
         </div>
@@ -39,9 +39,9 @@
             mdi-power-plug-outline
           </v-icon>
           <div class="ml-1 small-text">
-            <div>0,00</div>
+            <div>{{ energy_total }}</div>
             <div class="indigo--text text--accent-4">
-              0,00
+              {{ energy }}
             </div>
           </div>
         </div>
@@ -53,9 +53,9 @@
             mdi-lightning-bolt-outline
           </v-icon>
           <div class="ml-1 small-text">
-            <div>0,00</div>
+            <div>{{ reserve_total }}</div>
             <div class="indigo--text text--accent-4">
-              0,00
+              {{ reserve }}
             </div>
           </div>
         </div>
@@ -67,9 +67,9 @@
             mdi-lightning-bolt
           </v-icon>
           <div class="ml-1 small-text">
-            <div>0,00</div>
+            <div>{{ generation_total }}</div>
             <div class="indigo--text text--accent-4">
-              0,00
+              {{ generation }}
             </div>
           </div>
         </div>
@@ -81,9 +81,9 @@
             mdi-piggy-bank-outline
           </v-icon>
           <div class="ml-1 small-text">
-            <div>0,00</div>
+            <div>{{ debit_total }}</div>
             <div class="indigo--text text--accent-4">
-              0,00
+              {{ debit }}
             </div>
           </div>
         </div>
@@ -95,9 +95,9 @@
             mdi-credit-card-refund-outline
           </v-icon>
           <div class="ml-1 small-text">
-            <div>0,00</div>
+            <div>{{ credit_total }}</div>
             <div class="indigo--text text--accent-4">
-              0,00
+              {{ credit }}
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@
             :key="inputLine.port.address"
             :class="getPortClass(inputLine.port)"
           >
-            <div>
+            <div class="text-no-wrap">
               {{ inputLine.subnet !== undefined ? inputLine.subnet.identy : '' }}
             </div>
             <div class="d-flex flex-nowrap white black--text">
@@ -134,7 +134,7 @@
             :key="outputLine.port.address"
             :class="getPortClass(outputLine.port)"
           >
-            <div>
+            <div class="text-no-wrap">
               {{ outputLine.subnet !== undefined ? outputLine.subnet.identy : '' }}
             </div>
             <div class="d-flex flex-nowrap white black--text">
@@ -159,13 +159,24 @@
 </template>
 
 <script>
-import { ESO_MAINSTATION_TYPE } from '~/assets/helpers'
+import {
+  roundToTwoAsStr,
+  formatValueLocale,
+
+  ESO_MAINSTATION_TYPE
+} from '~/assets/helpers'
 
 export default {
   name: 'MainStationCard',
 
   props: {
     hub: {
+      type: Object,
+      default () {
+        return { }
+      }
+    },
+    dataset: {
       type: Object,
       default () {
         return { }
@@ -197,6 +208,53 @@ export default {
         port: e,
         subnet: lineOutputs.find(item => e.address === item.devaddr)
       }))
+    },
+    tracert () {
+      return this.dataset.root_values !== undefined ? this.dataset.root_values : { }
+    },
+    totals () {
+      return this.tracert.totals !== undefined ? this.tracert.totals : { }
+    },
+    values () {
+      return this.tracert.values !== undefined ? this.tracert.values : { }
+    },
+
+    carbon_total () {
+      return formatValueLocale(this.totals.carbon)
+    },
+    energy_total () {
+      return formatValueLocale(this.totals.energy)
+    },
+    reserve_total () {
+      return formatValueLocale(0)
+    },
+    generation_total () {
+      return formatValueLocale(this.totals.generation)
+    },
+    debit_total () {
+      return roundToTwoAsStr(this.totals.debit)
+    },
+    credit_total () {
+      return roundToTwoAsStr(this.totals.credit)
+    },
+
+    carbon () {
+      return formatValueLocale(this.values.carbon)
+    },
+    energy () {
+      return formatValueLocale(this.values.energy)
+    },
+    reserve () {
+      return formatValueLocale(0)
+    },
+    generation () {
+      return formatValueLocale(this.values.generation)
+    },
+    debit () {
+      return roundToTwoAsStr(this.values.debit)
+    },
+    credit () {
+      return roundToTwoAsStr(this.values.credit)
     }
   },
 
