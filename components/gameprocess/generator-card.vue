@@ -75,7 +75,7 @@
       <div class="d-flex flex-nowrap mt-2 ml-2">
         <v-icon
           small
-          color="indigo--text"
+          color="indigo"
         >
           mdi-piggy-bank-outline
         </v-icon>
@@ -89,7 +89,7 @@
       <div class="d-flex flex-nowrap mt-2 ml-2">
         <v-icon
           small
-          color="indigo--text"
+          color="indigo"
         >
           mdi-credit-card-refund-outline
         </v-icon>

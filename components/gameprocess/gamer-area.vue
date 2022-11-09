@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div>{{ sss.toLocaleTimeString() }}</div>
-    <InformationPanel :data="data" />
+    <div>{{ gameDataset }}</div>
+    <InformationPanel :dataset="gameDataset" />
     <UnusedDevicesPanel
       v-if="data.udevices !== undefined && data.udevices.length !== 0"
       :data="data"
@@ -106,14 +106,6 @@ export default {
     gameDataset () {
       const item = this.$store.state.game.datasets.find(e => e.key === this.data.root.address)
       return item !== undefined ? item : { }
-    },
-    seconds () {
-      return this.gameDataset.seconds
-    },
-    sss () {
-      const dataobj = new Date()
-      dataobj.setSeconds(this.seconds)
-      return dataobj
     },
     devices () {
       return this.data.root !== undefined && this.data.root.devices !== undefined ? this.data.root.devices : []

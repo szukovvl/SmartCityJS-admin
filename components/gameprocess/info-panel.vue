@@ -1,24 +1,59 @@
 <template>
   <div class="d-flex align-center">
     <div class="d-flex align-center flex-nowrap ma-2">
-      <div>Затраты</div>
+      <v-icon
+        color="green"
+      >
+        mdi-sprout-outline
+      </v-icon>
       <div class="mx-2 px-2">
         <div>
-          {{ creditTotal }}
+          {{ carbonTotal }}, гCO2экв/кВт*ч
         </div>
         <div class="indigo--text text--accent-4">
-          {{ credit }}
+          {{ carbon }}, гCO2экв/кВт
         </div>
-      </div>
-      <div>
-        <v-icon>
-          mdi-currency-rub
-        </v-icon>
       </div>
     </div>
 
     <div class="d-flex align-center flex-nowrap ma-2">
-      <div>Приход</div>
+      <v-icon
+        color="orange"
+      >
+        mdi-power-plug-outline
+      </v-icon>
+      <div class="mx-2 px-2">
+        <div>
+          {{ energyTotal }}, МВт*ч
+        </div>
+        <div class="indigo--text text--accent-4">
+          {{ energy }}, МВт
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex align-center flex-nowrap ma-2">
+      <v-icon
+        color="blue"
+      >
+        mdi-lightning-bolt
+      </v-icon>
+      <div class="mx-2 px-2">
+        <div>
+          {{ generationTotal }}, МВт*ч
+        </div>
+        <div class="indigo--text text--accent-4">
+          {{ generation }}, МВт
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex align-center flex-nowrap ma-2">
+      <v-icon
+        color="indigo"
+      >
+        mdi-piggy-bank-outline
+      </v-icon>
       <div class="mx-2 px-2">
         <div>
           {{ debitTotal }}
@@ -35,38 +70,23 @@
     </div>
 
     <div class="d-flex align-center flex-nowrap ma-2">
-      <div>Потребление</div>
+      <v-icon
+        color="indigo"
+      >
+        mdi-credit-card-refund-outline
+      </v-icon>
       <div class="mx-2 px-2">
         <div>
-          {{ energyTotal }}, МВт*ч
+          {{ creditTotal }}
         </div>
         <div class="indigo--text text--accent-4">
-          {{ energy }}, МВт
+          {{ credit }}
         </div>
       </div>
-    </div>
-
-    <div class="d-flex align-center flex-nowrap ma-2">
-      <div>Генерация</div>
-      <div class="mx-2 px-2">
-        <div>
-          {{ generationTotal }}, МВт*ч
-        </div>
-        <div class="indigo--text text--accent-4">
-          {{ generation }}, МВт
-        </div>
-      </div>
-    </div>
-
-    <div class="d-flex align-center flex-nowrap ma-2">
-      <div>Выброс CO2</div>
-      <div class="mx-2 px-2">
-        <div>
-          {{ carbonTotal }}, гCO2экв/кВт*ч
-        </div>
-        <div class="indigo--text text--accent-4">
-          {{ carbon }}, гCO2экв/кВт
-        </div>
+      <div>
+        <v-icon>
+          mdi-currency-rub
+        </v-icon>
       </div>
     </div>
   </div>
@@ -79,7 +99,7 @@ export default {
   name: 'InformationPanel',
 
   props: {
-    data: {
+    dataset: {
       type: Object,
       default () {
         return { }
@@ -92,38 +112,41 @@ export default {
 
   computed: {
     creditTotal () {
-      return roundToTwoAsStr(this.data.credit_total)
+      return roundToTwoAsStr(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.credit : 0)
     },
     credit () {
-      return roundToTwoAsStr(this.data.credit)
+      return roundToTwoAsStr(this.dataset.instant_values !== undefined ? this.dataset.instant_values.credit : 0)
     },
     debitTotal () {
-      return roundToTwoAsStr(this.data.debit_total)
+      return roundToTwoAsStr(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.debit : 0)
     },
     debit () {
-      return roundToTwoAsStr(this.data.debit)
+      return roundToTwoAsStr(this.dataset.instant_values !== undefined ? this.dataset.instant_values.debit : 0)
     },
     energyTotal () {
-      return formatValueLocale(this.data.energy_total)
+      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.energy : 0)
     },
     energy () {
-      return formatValueLocale(this.data.energy)
+      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.energy : 0)
     },
     generationTotal () {
-      return formatValueLocale(this.data.generation_total)
+      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.generation : 0)
     },
     generation () {
-      return formatValueLocale(this.data.generation)
+      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.generation : 0)
     },
     carbonTotal () {
-      return formatValueLocale(this.data.carbon_total)
+      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.carbon : 0)
     },
     carbon () {
-      return formatValueLocale(this.data.carbon)
+      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.carbon : 0)
     }
   },
 
   created () {
+  },
+
+  methods: {
   }
 }
 </script>
