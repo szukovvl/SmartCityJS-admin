@@ -158,5 +158,6 @@ export function round (value, decimals) {
 export const FORMATTER_LOCALE = new Intl.NumberFormat('ru-RU')
 
 export function formatValueLocale (val, decimals = 2) {
-  return FORMATTER_LOCALE.format(round(val, decimals))
+  return FORMATTER_LOCALE.format(val)
+  // return FORMATTER_LOCALE.format(round(val, decimals))
 }

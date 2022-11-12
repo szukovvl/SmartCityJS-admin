@@ -124,22 +124,22 @@ export default {
       return roundToTwoAsStr(this.dataset.instant_values !== undefined ? this.dataset.instant_values.debit : 0)
     },
     energyTotal () {
-      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.energy : 0)
+      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.energy : 0, 4)
     },
     energy () {
-      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.energy : 0)
+      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.energy : 0, 4)
     },
     generationTotal () {
-      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.generation : 0)
+      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.generation : 0, 4)
     },
     generation () {
-      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.generation : 0)
+      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.generation : 0, 4)
     },
     carbonTotal () {
-      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.carbon : 0)
+      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.carbon : 0, 4)
     },
     carbon () {
-      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.carbon : 0)
+      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.carbon : 0, 4)
     }
   },
 

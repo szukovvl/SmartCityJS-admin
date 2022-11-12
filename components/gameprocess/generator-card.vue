@@ -182,16 +182,16 @@ export default {
     },
 
     carbon_total () {
-      return formatValueLocale(this.totals.carbon)
+      return formatValueLocale(this.totals.carbon, 4)
     },
     energy_total () {
-      return formatValueLocale(this.totals.energy)
+      return formatValueLocale(this.totals.energy, 4)
     },
     reserve_total () {
-      return formatValueLocale(0)
+      return formatValueLocale(this.totals.reserve_generation, 4)
     },
     generation_total () {
-      return formatValueLocale(this.totals.generation)
+      return formatValueLocale(this.totals.generation, 4)
     },
     debit_total () {
       return roundToTwoAsStr(this.totals.debit)
@@ -201,16 +201,16 @@ export default {
     },
 
     carbon () {
-      return formatValueLocale(this.values.carbon)
+      return formatValueLocale(this.values.carbon, 4)
     },
     energy () {
-      return formatValueLocale(this.values.energy)
+      return formatValueLocale(this.values.energy, 4)
     },
     reserve () {
-      return formatValueLocale(0)
+      return formatValueLocale(this.values.reserve_generation, 4)
     },
     generation () {
-      return formatValueLocale(this.values.generation)
+      return formatValueLocale(this.values.generation, 4)
     },
     debit () {
       return roundToTwoAsStr(this.values.debit)
