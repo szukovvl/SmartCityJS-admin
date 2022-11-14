@@ -8,10 +8,10 @@
       </v-icon>
       <div class="mx-2 px-2">
         <div>
-          {{ carbonTotal }}, гCO2экв/кВт*ч
+          {{ carbonTotal }}, кгCO2экв
         </div>
         <div class="indigo--text text--accent-4">
-          {{ carbon }}, гCO2экв/кВт
+          {{ carbon }}, гCO2экв
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@
       </v-icon>
       <div class="mx-2 px-2">
         <div>
-          {{ energyTotal }}, МВт*ч
+          {{ energyTotal }}, МВт
         </div>
         <div class="indigo--text text--accent-4">
           {{ energy }}, кВт
@@ -40,7 +40,7 @@
       </v-icon>
       <div class="mx-2 px-2">
         <div>
-          {{ generationTotal }}, МВт*ч
+          {{ generationTotal }}, МВт
         </div>
         <div class="indigo--text text--accent-4">
           {{ generation }}, кВт
