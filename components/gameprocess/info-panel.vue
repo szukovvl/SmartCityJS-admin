@@ -27,7 +27,7 @@
           {{ energyTotal }}, МВт*ч
         </div>
         <div class="indigo--text text--accent-4">
-          {{ energy }}, МВт
+          {{ energy }}, кВт
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@
           {{ generationTotal }}, МВт*ч
         </div>
         <div class="indigo--text text--accent-4">
-          {{ generation }}, МВт
+          {{ generation }}, кВт
         </div>
       </div>
     </div>
@@ -124,22 +124,22 @@ export default {
       return roundToTwoAsStr(this.dataset.instant_values !== undefined ? this.dataset.instant_values.debit : 0)
     },
     energyTotal () {
-      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.energy : 0, 4)
+      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.energy : 0, 3)
     },
     energy () {
-      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.energy : 0, 4)
+      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.energy : 0)
     },
     generationTotal () {
-      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.generation : 0, 4)
+      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.generation : 0, 3)
     },
     generation () {
-      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.generation : 0, 4)
+      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.generation : 0)
     },
     carbonTotal () {
-      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.carbon : 0, 4)
+      return formatValueLocale(this.dataset.cumulative_total !== undefined ? this.dataset.cumulative_total.carbon : 0, 3)
     },
     carbon () {
-      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.carbon : 0, 4)
+      return formatValueLocale(this.dataset.instant_values !== undefined ? this.dataset.instant_values.carbon : 0)
     }
   },
 
