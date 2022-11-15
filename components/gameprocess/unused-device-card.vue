@@ -16,7 +16,7 @@
       v-if="isCreditable"
       class="d-flex flex-nowrap justify-end text-caption deep-orange--text"
     >
-      <div>{{ lots.price }}</div>
+      <div>{{ rent }}</div>
       <v-icon
         x-small
         color="deep-orange"
