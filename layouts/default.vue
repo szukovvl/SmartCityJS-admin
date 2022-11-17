@@ -12,7 +12,7 @@
         max-height="50"
         max-width="128"
         contain
-        alt="SmartCity &quot;Администрирование&quot;"
+        alt="SmartCity «Администрирование»"
       />
 
       <v-spacer />
@@ -179,12 +179,12 @@
           <v-icon
             :class="stateSunEmulator.stopped ? 'blink mr-2' : 'mr-2'"
             size="28"
-            :color="stateSunEmulator.isOn ? 'lime darken-3' : 'blue-grey lighten-2'"
+            :color="sunIsOn ? 'lime darken-3' : 'blue-grey lighten-2'"
           >
             mdi-white-balance-sunny
           </v-icon>
         </v-badge>
-        <p>{{ stateSunEmulator.power }}%</p>
+        <p>{{ sunPower }}</p>
       </v-card>
       <v-card
         class="d-inline-flex pt-4 ml-12"
@@ -203,12 +203,12 @@
           <v-icon
             class="mr-2"
             size="28"
-            :color="stateWindEmulator.isOn ? 'lime darken-3' : 'blue-grey lighten-2'"
+            :color="windIsOn ? 'lime darken-3' : 'blue-grey lighten-2'"
           >
             mdi-weather-windy
           </v-icon>
         </v-badge>
-        <p>{{ stateWindEmulator.power }}</p>
+        <p>{{ windPower }}</p>
       </v-card>
       <v-card
         class="d-inline-flex pt-2 ml-12"
@@ -294,6 +294,7 @@
 </template>
 
 <script>
+import { GAME_PROCESS } from '~/assets/helpers'
 //
 export default {
   name: 'DefaultLayout',
@@ -377,6 +378,32 @@ export default {
         isError: false,
         stopped: true
       }
+    },
+
+    gameDatasets () {
+      return this.$store.state.game.datasets !== undefined ? this.$store.state.game.datasets : []
+    },
+    sunIsOn () {
+      return this.$store.state.game.gameStatus === GAME_PROCESS || this.stateSunEmulator.isOn
+    },
+    sunPower () {
+      if (this.$store.state.game.gameStatus === GAME_PROCESS) {
+        if (this.gameDatasets.length !== 0) {
+          return Math.round(this.gameDatasets.map(e => e.sunpower).reduce((a, b) => (a + b)) / this.gameDatasets.length)
+        }
+      }
+      return this.stateSunEmulator.power
+    },
+    windIsOn () {
+      return this.$store.state.game.gameStatus === GAME_PROCESS || this.stateWindEmulator.isOn
+    },
+    windPower () {
+      if (this.$store.state.game.gameStatus === GAME_PROCESS) {
+        if (this.gameDatasets.length !== 0) {
+          return Math.round(this.gameDatasets.map(e => e.windpower).reduce((a, b) => (a + b)) / this.gameDatasets.length)
+        }
+      }
+      return this.stateWindEmulator.power
     }
   },
 
