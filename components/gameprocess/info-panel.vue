@@ -7,10 +7,10 @@
         mdi-sprout-outline
       </v-icon>
       <div class="mx-2 px-2">
-        <div>
+        <div class="text-no-wrap">
           {{ carbonTotal }}, кгCO2экв
         </div>
-        <div class="indigo--text text--accent-4">
+        <div class="indigo--text text--accent-4 text-no-wrap">
           {{ carbon }}, гCO2экв
         </div>
       </div>
@@ -23,10 +23,10 @@
         mdi-power-plug-outline
       </v-icon>
       <div class="mx-2 px-2">
-        <div>
+        <div class="text-no-wrap">
           {{ energyTotal }}, МВт
         </div>
-        <div class="indigo--text text--accent-4">
+        <div class="indigo--text text--accent-4 text-no-wrap">
           {{ energy }}, кВт
         </div>
       </div>
@@ -39,10 +39,10 @@
         mdi-lightning-bolt
       </v-icon>
       <div class="mx-2 px-2">
-        <div>
+        <div class="text-no-wrap">
           {{ generationTotal }}, МВт
         </div>
-        <div class="indigo--text text--accent-4">
+        <div class="indigo--text text--accent-4 text-no-wrap">
           {{ generation }}, кВт
         </div>
       </div>
@@ -55,10 +55,10 @@
         mdi-piggy-bank-outline
       </v-icon>
       <div class="mx-2 px-2">
-        <div>
+        <div class="text-no-wrap">
           {{ debitTotal }}
         </div>
-        <div class="indigo--text text--accent-4">
+        <div class="indigo--text text--accent-4 text-no-wrap">
           {{ debit }}
         </div>
       </div>
@@ -76,10 +76,10 @@
         mdi-credit-card-refund-outline
       </v-icon>
       <div class="mx-2 px-2">
-        <div>
+        <div class="text-no-wrap">
           {{ creditTotal }}
         </div>
-        <div class="indigo--text text--accent-4">
+        <div class="indigo--text text--accent-4 text-no-wrap">
           {{ credit }}
         </div>
       </div>
