@@ -187,31 +187,25 @@ export const mutations = {
         /* eslint-enable no-console */
         break
       case GAME_EVENT_SCENE_IDENTIFY:
-        internalTranslateScene(state, GAME_STATUS_SCENE_1)
         break
       case GAME_EVENT_SCENE_CHOICE:
         state.choiceAll = data.data.items
         state.gamersCohice = data.data.gamers
-        internalTranslateScene(state, GAME_STATUS_SCENE_2)
         break
       case GAME_EVENT_SCENE_AUCTION_PREPARE:
         state.auction = data.data
-        internalTranslateScene(state, GAME_STATUS_SCENE_3)
         break
       case GAME_EVENT_SCENE_AUCTION:
         state.auction = data.data
-        internalTranslateScene(state, data.data.status)
         break
       case GAME_EVENT_SCENE_AUCTION_SALE:
         state.auction = data.data
-        internalTranslateScene(state, GAME_STATUS_SCENE_4)
         break
       case GAME_EVENT_SCENE_AUCTION_TIME_LOT:
         state.lotTime = data.data
         break
       case GAME_EVENT_GAME_SCENE_SCHEME:
         state.schemeData = data.data
-        internalTranslateScene(state, GAME_STATUS_SCENE_5)
         break
       case GAME_EVENT_GAME_SCHEMA_DATA:
         state.scheme = data.data
