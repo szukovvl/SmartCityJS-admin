@@ -1,5 +1,6 @@
 <template>
   <div>
+    <CriteriaPanel :dataset="gameDataset" />
     <InformationPanel :dataset="gameDataset" />
     <UnusedDevicesPanel
       v-if="data.udevices !== undefined && data.udevices.length !== 0"
@@ -73,6 +74,7 @@ import MainStationCard from '~/components/gameprocess/main-station-card.vue'
 import GeneratorCard from '~/components/gameprocess/generator-card.vue'
 import ConsumerCadr from '~/components/gameprocess/consumer-card.vue'
 import DistributorCadr from '~/components/gameprocess/distributor-card.vue'
+import CriteriaPanel from '~/components/gameprocess/criteria-panel.vue'
 import {
   ESO_GENERATOR_TYPE,
   ESO_GREEGENERATOR_TYPE,
@@ -94,7 +96,8 @@ export default {
     MainStationCard,
     GeneratorCard,
     ConsumerCadr,
-    DistributorCadr
+    DistributorCadr,
+    CriteriaPanel
   },
 
   props: {
