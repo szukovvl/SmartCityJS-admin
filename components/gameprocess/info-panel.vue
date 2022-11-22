@@ -8,10 +8,10 @@
       </v-icon>
       <div class="mx-2 px-2">
         <div class="text-no-wrap">
-          {{ carbonTotal }}, кгCO2экв
+          {{ carbonTotal }} [кгCO2экв]
         </div>
         <div class="indigo--text text--accent-4 text-no-wrap">
-          {{ carbon }}, гCO2экв
+          {{ carbon }} [гCO2экв]
         </div>
       </div>
     </div>
@@ -24,10 +24,10 @@
       </v-icon>
       <div class="mx-2 px-2">
         <div class="text-no-wrap">
-          {{ energyTotal }}, МВт
+          {{ energyTotal }} [МВт]
         </div>
         <div class="indigo--text text--accent-4 text-no-wrap">
-          {{ energy }}, кВт
+          {{ energy }} [кВт]
         </div>
       </div>
     </div>
@@ -40,10 +40,10 @@
       </v-icon>
       <div class="mx-2 px-2">
         <div class="text-no-wrap">
-          {{ generationTotal }}, МВт
+          {{ generationTotal }} [МВт]
         </div>
         <div class="indigo--text text--accent-4 text-no-wrap">
-          {{ generation }}, кВт
+          {{ generation }} [кВт]
         </div>
       </div>
     </div>

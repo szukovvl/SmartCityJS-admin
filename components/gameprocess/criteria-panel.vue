@@ -1,10 +1,8 @@
 <template>
-  <div class="d-flex align-center">
+  <div class="d-flex align-center teal lighten-4">
     <div class="d-flex align-center flex-nowrap ma-2">
-      <v-icon
-        color="green"
-      >
-        mdi-sprout-outline
+      <v-icon>
+        mdi-leaf
       </v-icon>
       <div class="mx-2 px-2">
         {{ ecology }}
@@ -12,10 +10,8 @@
     </div>
 
     <div class="d-flex align-center flex-nowrap ma-2">
-      <v-icon
-        color="orange"
-      >
-        mdi-power-plug-outline
+      <v-icon>
+        mdi-fuel-cell
       </v-icon>
       <div class="mx-2 px-2">
         {{ balance }}
@@ -23,10 +19,8 @@
     </div>
 
     <div class="d-flex align-center flex-nowrap ma-2">
-      <v-icon
-        color="indigo"
-      >
-        mdi-piggy-bank-outline
+      <v-icon>
+        mdi-pencil-box-multiple-outline
       </v-icon>
       <div class="mx-2 px-2">
         {{ economic }}
@@ -34,10 +28,8 @@
     </div>
 
     <div class="d-flex align-center flex-nowrap ma-2">
-      <v-icon
-        color="indigo"
-      >
-        mdi-scoreboard-outline
+      <v-icon>
+        mdi-scale-unbalanced
       </v-icon>
       <div class="mx-2 px-2">
         {{ scores }}
