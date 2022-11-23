@@ -35,7 +35,7 @@
           :key="data.mainstation"
         >
           <div class="blue-grey lighten-5 pa-2 text-center">
-            {{ 'Игрок ' + (index + 1) }}
+            {{ getCommandName(data, 'Игрок ' + (index + 1)) }}
           </div>
           <GamerChoiceView :gamer-key="data.mainstation" />
         </v-col>
@@ -77,6 +77,17 @@ export default {
     scenesData () {
       const items = this.$store.state.game.scenesData
       return items != null ? items : []
+    }
+  },
+
+  methods: {
+    getCommandName (data, defname) {
+      return data.sceneidentify !== undefined &&
+        data.sceneidentify.commandname !== undefined &&
+        data.sceneidentify.commandname !== null &&
+        data.sceneidentify.commandname.trim()
+        ? data.sceneidentify.commandname
+        : defname
     }
   }
 }

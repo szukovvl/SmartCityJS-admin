@@ -340,5 +340,8 @@ export const actions = {
   },
   requestProcessData (context, data) {
     sendEventMessage(GAME_EVENT_GAME_PROCESS_DATA)
+  },
+  requestScanesData (context, data) {
+    sendEventMessage(GAME_EVENT_SCENES_DATA)
   }
 }

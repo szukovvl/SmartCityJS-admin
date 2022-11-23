@@ -149,7 +149,7 @@
                   :key="data.mainstation"
                 >
                   <div class="blue-grey lighten-5 pa-2 text-center">
-                    {{ 'Игрок ' + (index + 1) }}
+                    {{ getCommandName(data, 'Игрок ' + (index + 1)) }}
                   </div>
                   <GamerCardComponent :gamer-card="data" />
                 </v-col>
@@ -377,6 +377,14 @@ export default {
     },
     doPrevScene () {
       this.$store.dispatch('game/prevGameScene')
+    },
+    getCommandName (data, defname) {
+      return data.sceneidentify !== undefined &&
+        data.sceneidentify.commandname !== undefined &&
+        data.sceneidentify.commandname !== null &&
+        data.sceneidentify.commandname.trim()
+        ? data.sceneidentify.commandname
+        : defname
     }
   }
 }

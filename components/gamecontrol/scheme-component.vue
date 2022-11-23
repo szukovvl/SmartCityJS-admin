@@ -5,7 +5,7 @@
       :key="data.gamerkey"
     >
       <div class="text-subtitle-1 teal darken-4 px-2 py-1 white--text">
-        {{ 'Игрок ' + (index + 1) }}
+        {{ getCommandName(data, 'Игрок ' + (index + 1)) }}
       </div>
       <div>
         <SchemeOesView :data="scheme.find(e => e.address == data.gamerkey)" />
@@ -35,6 +35,10 @@ export default {
     scheme () {
       const items = this.$store.state.game.scheme
       return items !== undefined ? items : []
+    },
+    scenesData () {
+      const items = this.$store.state.game.scenesData
+      return items != null ? items : []
     }
   },
 
@@ -46,6 +50,22 @@ export default {
       this.$store.state.game.scheme.length === 0) {
         this.$store.dispatch('game/requestSchemesData')
       }
+      if (this.scenesData.length === 0) {
+        this.$store.dispatch('game/requestScanesData')
+      }
+    }
+  },
+
+  methods: {
+    getCommandName (data, defname) {
+      const scene = this.scenesData.find(e => e.mainstation === data.gamerkey)
+      return scene !== undefined &&
+        scene.sceneidentify !== undefined &&
+        scene.sceneidentify.commandname !== undefined &&
+        scene.sceneidentify.commandname !== null &&
+        scene.sceneidentify.commandname.trim()
+        ? scene.sceneidentify.commandname
+        : defname
     }
   }
 }

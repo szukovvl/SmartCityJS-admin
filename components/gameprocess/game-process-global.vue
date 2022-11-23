@@ -6,7 +6,7 @@
     >
       <div class="d-flex align-center text-subtitle-1 teal darken-4 px-2 py-1 white--text">
         <div>
-          {{ 'Игрок ' + (index + 1) }}
+          {{ getCommandName(data, 'Игрок ' + (index + 1)) }}
         </div>
         <v-spacer />
         <div
@@ -41,6 +41,10 @@ export default {
     scheme () {
       const items = this.$store.state.game.prepareData
       return items !== undefined ? items : []
+    },
+    scenesData () {
+      const items = this.$store.state.game.scenesData
+      return items != null ? items : []
     }
   },
 
@@ -48,6 +52,9 @@ export default {
     if (process.client) {
       if (this.$store.state.game.prepareData.length === 0) {
         this.$store.dispatch('game/requestProcessData')
+      }
+      if (this.scenesData.length === 0) {
+        this.$store.dispatch('game/requestScanesData')
       }
     }
   },
@@ -61,6 +68,16 @@ export default {
       const dataobj = new Date(0, 0, 0, 0, 0, 0)
       dataobj.setSeconds(seconds)
       return dataobj.toLocaleTimeString()
+    },
+    getCommandName (data, defname) {
+      const scene = this.scenesData.find(e => e.mainstation === data.root.address)
+      return scene !== undefined &&
+        scene.sceneidentify !== undefined &&
+        scene.sceneidentify.commandname !== undefined &&
+        scene.sceneidentify.commandname !== null &&
+        scene.sceneidentify.commandname.trim()
+        ? scene.sceneidentify.commandname
+        : defname
     }
   }
 }

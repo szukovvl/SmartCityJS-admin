@@ -42,7 +42,7 @@
         :key="data.mainstation"
       >
         <div class="text-subtitle-1 teal darken-4 px-2 py-1 white--text">
-          {{ 'Игрок ' + (index + 1) }}
+          {{ getCommandName(data, 'Игрок ' + (index + 1)) }}
         </div>
         <div>
           <AuctionGamerLots :gamer-key="data.mainstation" />
@@ -118,6 +118,17 @@ export default {
       if (this.$store.state.game.auction === undefined || this.$store.state.game.auction.lots === undefined) {
         this.$store.dispatch('game/requestActionData')
       }
+    }
+  },
+
+  methods: {
+    getCommandName (data, defname) {
+      return data.sceneidentify !== undefined &&
+        data.sceneidentify.commandname !== undefined &&
+        data.sceneidentify.commandname !== null &&
+        data.sceneidentify.commandname.trim()
+        ? data.sceneidentify.commandname
+        : defname
     }
   }
 }
