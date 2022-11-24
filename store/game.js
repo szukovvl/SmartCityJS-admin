@@ -27,6 +27,8 @@ import {
   GAME_EVENT_GAME_PROCESS_START,
   GAME_EVENT_GAME_PROCESS_DATA,
   GAME_EVENT_GAME_PROCESS_ITERATION,
+  GAME_EVENT_GAME_PROCESS_STOP,
+  GAME_EVENT_GAME_PROCESS_EXIT,
 
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
@@ -35,6 +37,7 @@ import {
   GAME_STATUS_SCENE_4,
   GAME_STATUS_SCENE_5,
   GAME_PROCESS,
+  GAME_STOPPING,
 
   ENERGYSYSTEM_OBJECT_TYPES
 } from '~/assets/helpers'
@@ -149,6 +152,7 @@ function internalTranslateScene (state, srvstatus) {
       state.sceneNumber = 5
       break
     case GAME_PROCESS:
+    case GAME_STOPPING:
       break
     default:
       /* eslint-disable no-console */
@@ -343,5 +347,11 @@ export const actions = {
   },
   requestScanesData (context, data) {
     sendEventMessage(GAME_EVENT_SCENES_DATA)
+  },
+  requestStoppingGame (context, data) {
+    sendEventMessage(GAME_EVENT_GAME_PROCESS_STOP)
+  },
+  requestExitingGame (context, data) {
+    sendEventMessage(GAME_EVENT_GAME_PROCESS_EXIT)
   }
 }

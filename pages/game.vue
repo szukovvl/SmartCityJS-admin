@@ -81,7 +81,15 @@
       </v-toolbar>
       <div class="d-flex justify-center">
         <v-btn
-          v-if="!noGameScene && $store.state.game.hasAdmin"
+          v-if="inGameProcess && $store.state.game.hasAdmin"
+          class="ma-2"
+          color="success"
+          @click="doStopOrExitGame"
+        >
+          {{ isStoppingState ? 'Завершить' : 'Остановить игру' }}
+        </v-btn>
+        <v-btn
+          v-else-if="!noGameScene && $store.state.game.hasAdmin"
           class="ma-2"
           color="warning"
           @click="doCancelGameScenes"
@@ -279,7 +287,8 @@ import {
   GAME_STATUS_NONE,
   GAME_STATUS_SCENE_1,
   GAME_STATUS_SCENE_5,
-  GAME_PROCESS
+  GAME_PROCESS,
+  GAME_STOPPING
 } from '~/assets/helpers'
 
 export default {
@@ -332,7 +341,11 @@ export default {
       return this.$store.state.game.gameStatus === GAME_STATUS_SCENE_5
     },
     inGameProcess () {
-      return this.$store.state.game.gameStatus === GAME_PROCESS
+      return this.$store.state.game.gameStatus === GAME_PROCESS ||
+      this.$store.state.game.gameStatus === GAME_STOPPING
+    },
+    isStoppingState () {
+      return this.$store.state.game.gameStatus === GAME_STOPPING
     }
   },
 
@@ -385,6 +398,13 @@ export default {
         data.sceneidentify.commandname.trim()
         ? data.sceneidentify.commandname
         : defname
+    },
+    doStopOrExitGame () {
+      if (this.$store.state.game.gameStatus === GAME_PROCESS) {
+        this.$store.dispatch('game/requestStoppingGame')
+      } else {
+        this.$store.dispatch('game/requestExitingGame')
+      }
     }
   }
 }
