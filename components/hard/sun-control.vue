@@ -13,7 +13,7 @@
           mdi-white-balance-sunny
         </v-icon>
       </v-avatar>
-      &laquo;Имитатор солнца&raquo;
+      &laquo;Солнечная модель&raquo;
       <v-tooltip
         right
         max-width="600"
@@ -30,7 +30,7 @@
           </v-icon>
         </template>
         <p class="px-0 ma-0 py-2">
-          <span class="light-blue--text text--lighten-3"><b>Имитатор солнца</b></span> – программируемый ПЛК,
+          <span class="light-blue--text text--lighten-3"><b>Солнечная модель</b></span> – программируемый ПЛК,
           управляющий осветителями стэнда.
         </p>
       </v-tooltip>
@@ -79,11 +79,11 @@
         />
       </div>
     </v-card-text>
-    <v-card-subtitle>Модель солнца</v-card-subtitle>
+    <v-card-subtitle>Солнечная модель</v-card-subtitle>
     <v-card-text>
       <v-switch
         v-model="setUseForecast"
-        :label="setUseForecast ? 'Использовать модель солнца' : 'Использовать задание мощности' "
+        :label="setUseForecast ? 'Использовать солнечную модель' : 'Использовать заданную мощность' "
         :disabled="forecast === undefined"
       />
       <v-menu
@@ -131,7 +131,7 @@
         v-if="forecast === undefined"
         class="grey--text text--lighten-1 text-subtitle-2 d-flex justify-center font-weight-medium"
       >
-        ветровая модель не выбрана
+        солнечная модель не выбрана
       </div>
       <div v-else>
         <ForecastChart :chart-data="axesdata" :chart-options="chartOptions" :width="400" />
