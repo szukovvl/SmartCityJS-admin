@@ -278,7 +278,7 @@
         target="_blank"
         rel="noopener noreferrer"
       >
-        ООО «Новатор Лаб»
+        ООО «Рекуп Энерго»
       </a>, {{ new Date().getFullYear() }}
       <v-spacer />
       <v-icon
